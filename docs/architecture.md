@@ -42,6 +42,8 @@ Local Data Foundation is implemented as schema/migration/types only. No local Su
 
 Workspace Shell is implemented as navigation and placeholder pages. Chat is implemented as UI/state plus browser `localStorage` persistence. TASK 009 added an AI Provider Skeleton and TASK 010 added Gemini as the first real provider. The provider registry supports mock plus Gemini, with mock always available and Gemini selected only when explicitly configured through environment variables. `/workspace/chat` calls `/api/ai/chat`, which validates a minimal messages payload and uses the provider abstraction. There are no installed Anthropic/OpenAI SDKs, no Supabase read/write, no RAG, no embeddings, no upload, no pgvector, no streaming, no usage persistence, and no cloud chat persistence.
 
+TASK 010.1 added diagnostic fallback behavior for Gemini provider failures. Runtime testing confirmed the integration reaches the Gemini API and receives a real API response. The current blocker is Google quota/billing: Gemini returns `429 RESOURCE_EXHAUSTED`, and the free tier quota appears to be `0` for the tested Gemini model. No code blocker is currently known. The mock provider fallback remains operational while quota is unavailable.
+
 ## Planned Architecture
 
 The planned SENSEI architecture includes:

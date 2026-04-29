@@ -196,6 +196,12 @@ Gemini is available through the server route when explicitly enabled with `AI_PR
 
 Anthropic and OpenAI are planned provider ids, but no Anthropic/OpenAI SDKs are installed. There is no RAG, embeddings, upload, pgvector, Supabase persistence, streaming, or usage persistence yet.
 
+## Gemini Runtime Status
+
+Gemini provider integration is implemented and `/api/ai/chat` reaches the Gemini API when configured. Current real-call testing is blocked by Google quota/billing: the API returns `429 RESOURCE_EXHAUSTED`, and the free tier quota appears to be `0` for the tested Gemini model. This is a quota/runtime account limitation, not a known code integration blocker.
+
+Mock fallback remains operational. To test real Gemini later, make sure the Google AI Studio/API project has available quota or billing enabled, set the Gemini variables in `.env.local`, and restart `pnpm dev`.
+
 ## Secrets
 
 Never commit secrets to git. Use `.env.local` only for local secrets and keep real keys out of version control. `.env.example` must contain placeholders only.

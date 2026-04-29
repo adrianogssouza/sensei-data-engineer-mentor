@@ -204,3 +204,15 @@ Gemini oferece caminho adequado para experimentação inicial com controle de cu
 
 Impacto:
 `@google/genai` foi adicionado, `/api/ai/chat` foi criado e o chat passou a chamar a API interna. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados; caso contrário, o mock provider continua como fallback seguro.
+
+---
+
+### DEC-019 — Gemini provider validated technically; quota blocks runtime response
+
+TASK 010.2 registrou o status real de runtime do provider Gemini.
+
+Motivo:
+Teste manual confirmou que a integração alcança a API Gemini e recebe resposta real, mas a chamada é bloqueada por quota/billing do Google com `429 RESOURCE_EXHAUSTED`. O limite free tier parece estar em `0` para o modelo testado.
+
+Impacto:
+O bloqueio atual deve ser tratado como limitação de quota/billing, não como falha conhecida de integração. O mock fallback permanece operacional até haver quota disponível ou billing habilitado.
