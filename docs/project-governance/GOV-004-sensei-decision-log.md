@@ -1,0 +1,182 @@
+# GOV-004 — Decision Log
+
+## 2026-04-29
+
+### DEC-001 — Codex como executor principal
+
+Executor principal alterado para Codex.
+
+Motivo:
+Melhor fluxo de execução orientado a repositório.
+
+Impacto:
+Prompts devem ser estruturados como tasks pequenas e verificáveis.
+
+---
+
+### DEC-002 — ChatGPT como arquiteto/revisor
+
+ChatGPT definido como arquiteto/revisor permanente.
+
+Motivo:
+Separar execução de estratégia.
+
+Impacto:
+Codex executa; ChatGPT planeja, revisa e controla escopo.
+
+---
+
+### DEC-003 — Camada formal de governança documental
+
+Criada camada formal de governança documental.
+
+Motivo:
+Evitar perda de controle conforme crescimento do projeto.
+
+Impacto:
+Foram criados documentos GOV, STR e OPS.
+
+---
+
+### DEC-004 — Instalação de pnpm e Supabase CLI
+
+TASK 000.1 concluída com instalação de pnpm e Supabase CLI.
+
+Motivo:
+Remover bloqueios técnicos antes da foundation Next.js.
+
+Impacto:
+Ambiente local ficou pronto para scaffold do app.
+
+---
+
+### DEC-005 — Foundation Next.js criada
+
+TASK 001 concluiu a base inicial do projeto.
+
+Motivo:
+Criar fundação executável antes de backend/auth/IA.
+
+Impacto:
+Next.js, TypeScript, Tailwind, ESLint, src/ e alias @/* foram configurados.
+
+---
+
+### DEC-006 — Documentação e AGENTS.md normalizados
+
+TASK 002 normalizou README, AGENTS.md, architecture, development e task-log.
+
+Motivo:
+Reduzir risco de drift operacional antes de backend/auth.
+
+Impacto:
+Codex passou a ter instruções internas mais claras.
+
+---
+
+### DEC-007 — GOV-005 criado como regras operacionais vivas
+
+Criado documento permanente para regras operacionais do projeto.
+
+Motivo:
+Toda regra nova deve ser registrada nas fontes para evitar regressão.
+
+Impacto:
+Regras de execução, segurança, consumo, qualidade e comunicação passam a ter registro oficial.
+
+---
+
+### DEC-008 — Recomendações objetivas e executáveis
+
+Definido que recomendações práticas devem ser diretas.
+
+Motivo:
+Reduzir textos longos quando a próxima ação já estiver clara.
+
+Impacto:
+Ao recomendar próximos passos, usar formato simples:
+“Para seguir para a próxima etapa, agora é preciso fazer isso: ...”
+
+---
+
+### DEC-009 — Supabase Foundation antes de auth/database
+
+TASK 003 criou a fundação mínima do Supabase antes de autenticação e migrations.
+
+Motivo:
+Preparar SDK, validação de ambiente e clients reutilizáveis sem antecipar UI de login, schema, RLS ou integrações de produto.
+
+Impacto:
+O projeto agora tem uma base Supabase validável por lint/build, mantendo auth, banco e migrations para tasks futuras.
+
+---
+
+### DEC-010 — Supabase Auth Foundation antes de schema/migrations
+
+TASK 004 implementou a fundação de autenticação Supabase antes de criar schema de banco ou migrations.
+
+Motivo:
+Validar o fluxo mínimo de sessão com email/password, cookies e rota protegida antes de introduzir tabelas, RLS ou features de produto.
+
+Impacto:
+O projeto agora possui login, signup, logout, proxy de sessão e dashboard protegido, mantendo database schema, profiles, migrations e políticas RLS para tasks futuras.
+
+---
+
+### DEC-011 — Auth despriorizado e Single-User Mode ativado
+
+TASK 004.1 mudou o fluxo operacional para Single-User Mode.
+
+Motivo:
+O projeto está privado e voltado a um único usuário neste momento. Remover login obrigatório acelera validação de produto e reduz fricção antes das features principais.
+
+Impacto:
+A homepage e `/workspace` ficam públicas para uso diário. Login, signup e `/dashboard` protegido continuam no código para uso futuro, mas auth não é mais o fluxo principal imediato.
+
+---
+
+### DEC-012 — Initial single-user data schema before AI/RAG
+
+TASK 005 criou o schema inicial de dados em modo single-user antes de qualquer implementação de AI/RAG.
+
+Motivo:
+Preparar uma base local para histórico futuro, eventos de uso e documentos sem antecipar embeddings, upload, pgvector, chat UI ou multi-user/RLS.
+
+Impacto:
+O repositório agora possui estrutura `supabase/`, migration inicial e tipos TypeScript para as tabelas base. Migrations ainda não foram aplicadas a banco remoto.
+
+---
+
+### DEC-013 — Workspace shell before feature implementation
+
+TASK 006 criou o shell de workspace antes de implementar módulos funcionais.
+
+Motivo:
+Estabelecer navegação e estrutura visual para os futuros módulos do SENSEI sem acoplar cedo a banco, IA, RAG, upload ou chat.
+
+Impacto:
+O workspace agora possui layout, navegação interna e rotas placeholder para chat, documents, usage e settings. As páginas ainda não executam lógica de produto.
+
+---
+
+### DEC-014 — Local mock chat antes de provider real
+
+TASK 007 implementou um chat local com respostas mock antes de integrar qualquer provider de IA.
+
+Motivo:
+Validar a experiência básica de conversa sem custo de API, sem dependência externa e sem acoplar cedo persistência, RAG ou provider real.
+
+Impacto:
+`/workspace/chat` agora permite enviar mensagens e receber respostas determinísticas locais. Integrações com IA, banco, streaming e RAG permanecem para tasks futuras.
+
+---
+
+### DEC-015 — Local chat persistence antes de backend persistence
+
+TASK 008 adicionou persistência local do chat mock via `localStorage`.
+
+Motivo:
+Manter a experiência básica utilizável entre refreshes sem custo, sem API route, sem Supabase writes e sem complexidade de backend.
+
+Impacto:
+`/workspace/chat` agora preserva mensagens neste navegador e permite limpar a conversa. Persistência em Supabase, sync, histórico multi-dispositivo e integração com AI/RAG permanecem para tasks futuras.
