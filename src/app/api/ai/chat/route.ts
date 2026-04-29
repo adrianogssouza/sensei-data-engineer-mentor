@@ -47,6 +47,26 @@ function parseMessages(body: ChatRequestBody): AiMessage[] | undefined {
   return messages;
 }
 
+function getSafeErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return "Selected AI provider failed.";
+}
+
+function getFallbackReason(providerId: string, error: unknown): string {
+  const safeMessage = getSafeErrorMessage(error);
+
+  if (providerId === "gemini") {
+    return safeMessage.startsWith("Gemini failed:")
+      ? safeMessage
+      : `Gemini failed: ${safeMessage}`;
+  }
+
+  return `Selected AI provider failed: ${safeMessage}`;
+}
+
 export async function POST(request: Request) {
   let body: ChatRequestBody;
 
@@ -82,14 +102,25 @@ export async function POST(request: Request) {
         selectionNote,
       },
     });
-  } catch {
+  } catch (error) {
+    const fallbackReason = getFallbackReason(provider.id, error);
     const fallbackResponse = await mockAiProvider.generate(generateRequest);
+    const debugMetadata =
+      process.env.NODE_ENV === "development"
+        ? {
+            attemptedProvider: provider.id,
+            attemptedModel: provider.defaultModel,
+          }
+        : {};
 
     return Response.json({
       ...fallbackResponse,
       metadata: {
         ...fallbackResponse.metadata,
-        fallbackReason: "Selected AI provider failed; mock fallback used.",
+        ...debugMetadata,
+        selectedProvider: fallbackResponse.provider,
+        fallbackUsed: true,
+        fallbackReason,
       },
     });
   }

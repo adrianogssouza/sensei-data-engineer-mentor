@@ -9,6 +9,7 @@ import type {
 } from "@/types/ai";
 
 const GEMINI_PROVIDER_ID = "gemini";
+const REDACTED_SECRET = "[redacted]";
 
 function getDefaultModel(): string {
   return getAiProviderEnv().GEMINI_MODEL;
@@ -62,6 +63,17 @@ function getErrorMessage(error: unknown): string {
   return "Gemini provider request failed.";
 }
 
+function sanitizeErrorMessage(message: string): string {
+  const apiKey = getAiProviderEnv().GEMINI_API_KEY;
+  let sanitizedMessage = message;
+
+  if (apiKey) {
+    sanitizedMessage = sanitizedMessage.split(apiKey).join(REDACTED_SECRET);
+  }
+
+  return sanitizedMessage.replace(/AIza[0-9A-Za-z_-]+/g, REDACTED_SECRET);
+}
+
 export const geminiAiProvider: AiProvider = {
   id: GEMINI_PROVIDER_ID,
   name: "Gemini provider",
@@ -104,7 +116,15 @@ export const geminiAiProvider: AiProvider = {
         },
       };
     } catch (error) {
-      throw new Error(getErrorMessage(error));
+      const sanitizedMessage = sanitizeErrorMessage(getErrorMessage(error));
+
+      console.error("[ai-provider-error]", {
+        provider: GEMINI_PROVIDER_ID,
+        model,
+        message: sanitizedMessage,
+      });
+
+      throw new Error(`Gemini failed: ${sanitizedMessage}`);
     }
   },
 };
