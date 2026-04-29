@@ -6,7 +6,7 @@ Before changing code, always read:
 
 - `docs/project-governance/GOV-002-sensei-fonte-oficial-consolidada.md`
 - `docs/project-governance/STR-001-sensei-plano-oficial-v2-3.md`
-- `docs/project-governance/OPS-001-sensei-codex-operating-plan-v1-1.md`
+- `docs/project-governance/OPS-001-sensei-codex-operating-plan-v1-2.md`
 - `docs/project-governance/GOV-003-sensei-status-atual.md`
 
 For documentation-only tasks, also read the files being updated.

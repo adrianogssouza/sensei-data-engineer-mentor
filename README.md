@@ -6,7 +6,7 @@ SENSEI Data Engineer Mentor is a personal AI study mentor for Data Engineering. 
 
 Current phase: v0.1-alpha preparation.
 
-The repository has the initial Next.js foundation, governance documentation, Supabase client foundation, a minimal Supabase Auth foundation, an initial local Supabase data schema, a workspace navigation shell, and a local mock chat UI with browser-only persistence. The current operational mode is single-user/private, so auth exists but is optional and not part of the main daily flow. Real AI providers, RAG, upload, pgvector, Supabase chat persistence, shadcn/ui, and deployment are not implemented yet.
+The repository has the initial Next.js foundation, governance documentation, Supabase client foundation, a minimal Supabase Auth foundation, an initial local Supabase data schema, a workspace navigation shell, a local mock chat UI with browser-only persistence, and an internal AI provider skeleton. The current operational mode is single-user/private, so auth exists but is optional and not part of the main daily flow. Real AI providers, RAG, upload, pgvector, Supabase chat persistence, shadcn/ui, and deployment are not implemented yet.
 
 ## Operational Mode
 
@@ -24,7 +24,7 @@ Available workspace routes:
 - `/workspace/usage` - usage/cost placeholder
 - `/workspace/settings` - private settings placeholder
 
-The chat page currently uses deterministic local mock responses only. Messages persist in this browser using `localStorage`. It does not connect to Supabase, read or write cloud data, call AI providers, upload files, or run RAG. There is no AI cost, no cloud sync, and no Supabase persistence yet.
+The chat page currently uses deterministic local mock responses through the internal mock AI provider only. Messages persist in this browser using `localStorage`. It does not connect to Supabase, read or write cloud data, call external AI providers, upload files, or run RAG. There is no AI cost, no cloud sync, and no Supabase persistence yet.
 
 ## Tech Stack Currently Installed
 
@@ -38,12 +38,14 @@ The chat page currently uses deterministic local mock responses only. Messages p
 - Supabase SSR helpers
 - Minimal Supabase Auth foundation
 - Supabase local schema/migration foundation
+- Internal AI provider skeleton with mock provider only
 
 ## Planned Stack Not Yet Installed
 
 - pgvector
 - OpenAI embeddings
 - Anthropic Claude
+- Real OpenAI/Anthropic text generation providers
 - Vercel deployment
 - RAG ingestion and evaluation tooling
 
@@ -138,6 +140,7 @@ src/
 - `src/app/workspace/` contains the public primary daily-use workspace placeholder.
 - `src/app/workspace/*` contains the workspace shell and placeholder routes.
 - `src/components/workspace/` contains simple reusable workspace shell components.
+- `src/lib/ai/` contains the internal AI provider registry and active mock provider.
 - `src/lib/env.ts` contains environment validation helpers.
 - `src/lib/supabase/` contains the browser/server Supabase client foundation and placeholder database types.
 - `src/proxy.ts` refreshes Supabase auth cookies and protects `/dashboard`.
@@ -158,10 +161,20 @@ src/
 - TASK 006 - Workspace Shell + Navigation
 - TASK 007 - Local Chat Mock
 - TASK 008 - Local Chat Persistence
+- TASK 008.1 - Sync GOV-006 into repo
+- TASK 009 - AI Provider Skeleton
 
 ## Next Task
 
-TASK 009
+TASK 010
+
+## AI Provider Status
+
+An internal AI provider skeleton exists under `src/lib/ai/` with shared types in `src/types/ai.ts`.
+
+Current active provider: `mock`.
+
+Anthropic and OpenAI are planned provider ids, but no Anthropic/OpenAI SDKs are installed and no real provider calls are implemented. There is no API cost yet.
 
 ## Secrets
 

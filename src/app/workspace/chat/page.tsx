@@ -11,8 +11,10 @@ import {
   loadLocalChatMessages,
   saveLocalChatMessages,
 } from "@/lib/chat/local-chat-storage";
-import { createMockAssistantResponse } from "@/lib/chat/mock-chat";
+import { getDefaultAiProvider } from "@/lib/ai";
 import type { ChatMessage, ChatRole } from "@/types/chat";
+
+const aiProvider = getDefaultAiProvider();
 
 function createMessage(role: ChatRole, content: string): ChatMessage {
   return {
@@ -52,13 +54,21 @@ export default function WorkspaceChatPage() {
     setIsResponding(true);
 
     window.setTimeout(() => {
-      const assistantMessage = createMessage(
-        "assistant",
-        createMockAssistantResponse(content),
-      );
+      void aiProvider
+        .generate({
+          messages: [{ role: "user", content }],
+        })
+        .then((response) => {
+          const assistantMessage = createMessage("assistant", response.content);
 
-      setMessages((currentMessages) => [...currentMessages, assistantMessage]);
-      setIsResponding(false);
+          setMessages((currentMessages) => [
+            ...currentMessages,
+            assistantMessage,
+          ]);
+        })
+        .finally(() => {
+          setIsResponding(false);
+        });
     }, 250);
   }
 
@@ -77,9 +87,9 @@ export default function WorkspaceChatPage() {
       </h2>
       <p className="mt-4 max-w-2xl text-zinc-700 dark:text-zinc-300">
         This is the first local-only SENSEI interaction. Responses are
-        deterministic mock mentor replies. There is no AI provider, API route,
-        Supabase persistence, streaming, or RAG. Messages are saved locally in
-        this browser only.
+        deterministic mock mentor replies through the local mock provider.
+        There is no external API call, API route, Supabase persistence,
+        streaming, or RAG. Messages are saved locally in this browser only.
       </p>
 
       <ChatToolbar

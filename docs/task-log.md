@@ -15,3 +15,5 @@
 - TASK 006 - Completed: workspace shell and placeholder navigation routes created for chat, documents, usage, and settings.
 - TASK 007 - Completed: local-only mock chat UI created with deterministic assistant responses and in-memory React state.
 - TASK 008 - Completed: local mock chat persistence added with browser localStorage and clear-chat control.
+- TASK 008.1 - Completed: GOV-006 Quality Assurance Policy synced into the repository after QA baseline.
+- TASK 009 - Completed: AI provider skeleton created with typed provider contracts, local mock provider, provider registry, and chat still running locally with no external API calls.

@@ -180,3 +180,15 @@ Manter a experiência básica utilizável entre refreshes sem custo, sem API rou
 
 Impacto:
 `/workspace/chat` agora preserva mensagens neste navegador e permite limpar a conversa. Persistência em Supabase, sync, histórico multi-dispositivo e integração com AI/RAG permanecem para tasks futuras.
+
+---
+
+### DEC-017 — AI Provider Skeleton created before real provider integration
+
+TASK 009 criou uma abstração interna de provider de IA antes de integrar Anthropic, OpenAI ou qualquer provider real.
+
+Motivo:
+Preparar contratos, seleção segura de provider e metadados de uso/custo sem risco de chamada externa, custo de API, dependência prematura ou acoplamento com backend.
+
+Impacto:
+O chat local passa a usar o provider mock por meio do skeleton. Anthropic/OpenAI seguem planejados, sem SDK instalado, sem API route, sem RAG, sem embeddings e sem chamadas externas.

@@ -10,6 +10,8 @@
 | GOV-004 | Decision Log | Governança | Ativo |
 | GOV-005 | Regras Operacionais | Governança | Ativo |
 | GOV-006 | Quality Assurance Policy | Governança | Ativo |
+| GOV-007 | Codex Resource Management Policy | Governança | Ativo |
+| GOV-008 | Codex Session Management Policy | Governança | Ativo |
 
 ## Regra de manutenção
 

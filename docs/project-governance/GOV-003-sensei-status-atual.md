@@ -4,8 +4,8 @@
 
 - Data de atualização: 2026-04-29
 - Fase: v0.1-alpha preparation
-- Última task concluída: TASK 008
-- Próxima task: TASK 009
+- Última task concluída: TASK 009.1
+- Próxima task: TASK 010
 - Modo operacional: Single-user / private
 
 ## Ambiente validado
@@ -33,6 +33,9 @@
 - TASK 006 — Workspace Shell + Navigation
 - TASK 007 — Local Chat Mock
 - TASK 008 — Local Chat Persistence
+- TASK 008.1 — Sync GOV-006 into repo
+- TASK 009 — AI Provider Skeleton
+- TASK 009.1 — Sync Resource/Session Governance Docs
 
 ## Bloqueios
 
@@ -42,6 +45,7 @@
 
 - GOV-006 Quality Assurance Policy sincronizado no repositório.
 - Repo e fontes documentais agora incluem política de QA leve por task e robusto por milestone.
+- GOV-007 Resource Management Policy e GOV-008 Session Management Policy sincronizados no repositório antes da TASK 010.
 
 ## Fundação Supabase
 
@@ -101,7 +105,18 @@
 - Persistência é local deste navegador apenas.
 - Clear chat remove mensagens do estado React e do `localStorage`.
 - JSON inválido/corrompido é tratado sem quebrar a aplicação.
-- Não há cloud sync, Supabase persistence, API route, AI provider, RAG ou custo de IA.
+- Não há cloud sync, Supabase persistence, API route, provider real, RAG ou custo de IA.
+
+## AI Provider Skeleton
+
+- Tipos internos de provider de IA criados em `src/types/ai.ts`.
+- Registry interno criado em `src/lib/ai/provider-registry.ts`.
+- Provider mock local criado em `src/lib/ai/providers/mock-provider.ts`.
+- Chat local usa o provider mock sem mudar para backend.
+- Provider ativo atual: `mock`.
+- Anthropic e OpenAI estão planejados nos tipos, mas não estão ativos.
+- Nenhum SDK de Anthropic/OpenAI foi instalado.
+- Não há chamadas externas, API route, RAG, embeddings, upload ou custo real de IA.
 
 ## Riscos
 
@@ -109,7 +124,8 @@
 - Manter atenção para não executar prompts em projeto errado.
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
+- Governança documental sincronizada antes da TASK 010.
 
 ## Próxima ação recomendada
 
-Iniciar TASK 009.
+Iniciar TASK 010.
