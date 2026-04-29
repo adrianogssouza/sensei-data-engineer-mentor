@@ -192,3 +192,15 @@ Preparar contratos, seleção segura de provider e metadados de uso/custo sem ri
 
 Impacto:
 O chat local passa a usar o provider mock por meio do skeleton. Anthropic/OpenAI seguem planejados, sem SDK instalado, sem API route, sem RAG, sem embeddings e sem chamadas externas.
+
+---
+
+### DEC-018 — Gemini selected as first real provider for cost-controlled testing
+
+TASK 010 integrou Gemini como primeiro provider real por trás da abstração interna de IA.
+
+Motivo:
+Gemini oferece caminho adequado para experimentação inicial com controle de custo/free-dev tier, permitindo validar integração real antes de OpenAI/Anthropic, RAG, embeddings ou persistência.
+
+Impacto:
+`@google/genai` foi adicionado, `/api/ai/chat` foi criado e o chat passou a chamar a API interna. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados; caso contrário, o mock provider continua como fallback seguro.

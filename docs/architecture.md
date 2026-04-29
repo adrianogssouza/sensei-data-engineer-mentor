@@ -33,12 +33,14 @@ The project currently has the initial Next.js app foundation, a minimal Supabase
 - Internal AI provider types in `src/types/ai.ts`.
 - AI provider registry under `src/lib/ai/`.
 - Active local mock AI provider under `src/lib/ai/providers/mock-provider.ts`.
+- Gemini AI provider under `src/lib/ai/providers/gemini-provider.ts`.
+- Non-streaming AI chat API route under `src/app/api/ai/chat/route.ts`.
 
 Supabase Auth Foundation exists, but the current operational mode is single-user/private. Auth can be re-enabled as the primary flow later. For now, `/workspace` is public and is the recommended daily-use route. The protected dashboard remains available for future authenticated flows.
 
 Local Data Foundation is implemented as schema/migration/types only. No local Supabase services were started and no remote database was modified.
 
-Workspace Shell is implemented as navigation and placeholder pages. Local Chat Mock is implemented as UI/state plus browser `localStorage` persistence. TASK 009 added an AI Provider Skeleton with the mock provider active and future Anthropic/OpenAI provider ids represented in internal types only. There are no installed Anthropic/OpenAI SDKs, no real provider calls, no external API calls, no Supabase read/write, no API route, no RAG, no upload, no pgvector, no streaming, and no cloud chat persistence.
+Workspace Shell is implemented as navigation and placeholder pages. Chat is implemented as UI/state plus browser `localStorage` persistence. TASK 009 added an AI Provider Skeleton and TASK 010 added Gemini as the first real provider. The provider registry supports mock plus Gemini, with mock always available and Gemini selected only when explicitly configured through environment variables. `/workspace/chat` calls `/api/ai/chat`, which validates a minimal messages payload and uses the provider abstraction. There are no installed Anthropic/OpenAI SDKs, no Supabase read/write, no RAG, no embeddings, no upload, no pgvector, no streaming, no usage persistence, and no cloud chat persistence.
 
 ## Planned Architecture
 
@@ -54,4 +56,4 @@ The planned SENSEI architecture includes:
 
 ## Not Implemented Yet
 
-The planned components above are not implemented yet. There is no pgvector extension, `document_chunks` table, embeddings column, Anthropic SDK, OpenAI SDK, real AI provider integration, document ingestion flow, RAG pipeline, eval runner, multi-user `user_id` ownership, RLS policy, Supabase chat persistence, or deployment configuration in the current repository state.
+The planned components above are not implemented yet. There is no pgvector extension, `document_chunks` table, embeddings column, Anthropic SDK, OpenAI SDK, document ingestion flow, RAG pipeline, eval runner, multi-user `user_id` ownership, RLS policy, Supabase chat persistence, usage persistence, streaming, or deployment configuration in the current repository state.

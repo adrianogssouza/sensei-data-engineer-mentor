@@ -17,3 +17,5 @@
 - TASK 008 - Completed: local mock chat persistence added with browser localStorage and clear-chat control.
 - TASK 008.1 - Completed: GOV-006 Quality Assurance Policy synced into the repository after QA baseline.
 - TASK 009 - Completed: AI provider skeleton created with typed provider contracts, local mock provider, provider registry, and chat still running locally with no external API calls.
+- TASK 009.1 - Completed: GOV-007/GOV-008 governance docs synced and AGENTS.md updated to OPS v1.2.
+- TASK 010 - Completed: Gemini provider integration added with `@google/genai`, `/api/ai/chat`, provider registry fallback to mock, and chat API wiring without RAG, embeddings, upload, Supabase persistence, or streaming.

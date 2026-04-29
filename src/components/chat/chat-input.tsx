@@ -37,7 +37,7 @@ export function ChatInput({ disabled = false, onSend }: ChatInputProps) {
       />
       <div className="flex items-center justify-between gap-4">
         <p className="text-xs text-zinc-500">
-          Local mock only. Browser storage only. No API, no database, no RAG.
+          Provider API. Browser storage only. No database, no RAG.
         </p>
         <button
           className="bg-zinc-950 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-950"

@@ -6,7 +6,7 @@ SENSEI Data Engineer Mentor is a personal AI study mentor for Data Engineering. 
 
 Current phase: v0.1-alpha preparation.
 
-The repository has the initial Next.js foundation, governance documentation, Supabase client foundation, a minimal Supabase Auth foundation, an initial local Supabase data schema, a workspace navigation shell, a local mock chat UI with browser-only persistence, and an internal AI provider skeleton. The current operational mode is single-user/private, so auth exists but is optional and not part of the main daily flow. Real AI providers, RAG, upload, pgvector, Supabase chat persistence, shadcn/ui, and deployment are not implemented yet.
+The repository has the initial Next.js foundation, governance documentation, Supabase client foundation, a minimal Supabase Auth foundation, an initial local Supabase data schema, a workspace navigation shell, a chat UI with browser-only persistence, an internal AI provider skeleton, and a first Gemini provider integration behind a server API route. The current operational mode is single-user/private, so auth exists but is optional and not part of the main daily flow. RAG, embeddings, upload, pgvector, Supabase chat persistence, shadcn/ui, and deployment are not implemented yet.
 
 ## Operational Mode
 
@@ -24,7 +24,7 @@ Available workspace routes:
 - `/workspace/usage` - usage/cost placeholder
 - `/workspace/settings` - private settings placeholder
 
-The chat page currently uses deterministic local mock responses through the internal mock AI provider only. Messages persist in this browser using `localStorage`. It does not connect to Supabase, read or write cloud data, call external AI providers, upload files, or run RAG. There is no AI cost, no cloud sync, and no Supabase persistence yet.
+The chat page calls `/api/ai/chat`, which uses the internal provider registry. Gemini is used only when `AI_PROVIDER=gemini` and `GEMINI_API_KEY` are configured. Without a Gemini key, the app falls back to the deterministic mock provider. Messages persist in this browser using `localStorage`. It does not connect to Supabase, read or write cloud data, upload files, or run RAG. There is no cloud sync and no Supabase persistence yet.
 
 ## Tech Stack Currently Installed
 
@@ -38,7 +38,8 @@ The chat page currently uses deterministic local mock responses through the inte
 - Supabase SSR helpers
 - Minimal Supabase Auth foundation
 - Supabase local schema/migration foundation
-- Internal AI provider skeleton with mock provider only
+- Internal AI provider skeleton with mock fallback
+- Gemini provider via `@google/genai`
 
 ## Planned Stack Not Yet Installed
 
@@ -84,6 +85,20 @@ Required for Supabase client usage:
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+```
+
+Optional for Gemini provider usage:
+
+```bash
+AI_PROVIDER=gemini
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-2.0-flash-lite
+```
+
+Gemini is the first real provider for cost-controlled free/dev-tier experimentation. Keep real keys only in `.env.local`. If `AI_PROVIDER=gemini` is set without `GEMINI_API_KEY`, the app falls back to the mock provider. The mock provider remains available with:
+
+```bash
+AI_PROVIDER=mock
 ```
 
 Authentication foundation is implemented with email/password login, signup, logout, and a protected dashboard route. It is currently optional because the app is operating in single-user/private mode. To test auth locally:
@@ -139,8 +154,9 @@ src/
 - `src/app/(protected)/dashboard/` contains a minimal protected dashboard.
 - `src/app/workspace/` contains the public primary daily-use workspace placeholder.
 - `src/app/workspace/*` contains the workspace shell and placeholder routes.
+- `src/app/api/ai/chat/route.ts` contains the non-streaming AI chat API route.
 - `src/components/workspace/` contains simple reusable workspace shell components.
-- `src/lib/ai/` contains the internal AI provider registry and active mock provider.
+- `src/lib/ai/` contains the internal AI provider registry, mock provider, and Gemini provider.
 - `src/lib/env.ts` contains environment validation helpers.
 - `src/lib/supabase/` contains the browser/server Supabase client foundation and placeholder database types.
 - `src/proxy.ts` refreshes Supabase auth cookies and protects `/dashboard`.
@@ -163,18 +179,22 @@ src/
 - TASK 008 - Local Chat Persistence
 - TASK 008.1 - Sync GOV-006 into repo
 - TASK 009 - AI Provider Skeleton
+- TASK 009.1 - Sync Resource/Session Governance Docs
+- TASK 010 - Gemini Provider Integration
 
 ## Next Task
 
-TASK 010
+TASK 011
 
 ## AI Provider Status
 
 An internal AI provider skeleton exists under `src/lib/ai/` with shared types in `src/types/ai.ts`.
 
-Current active provider: `mock`.
+Current default provider: `mock`.
 
-Anthropic and OpenAI are planned provider ids, but no Anthropic/OpenAI SDKs are installed and no real provider calls are implemented. There is no API cost yet.
+Gemini is available through the server route when explicitly enabled with `AI_PROVIDER=gemini` and `GEMINI_API_KEY`. The default model is `gemini-2.0-flash-lite`, chosen for cost-controlled experimentation. If Gemini is not configured or fails, the mock provider remains the fallback.
+
+Anthropic and OpenAI are planned provider ids, but no Anthropic/OpenAI SDKs are installed. There is no RAG, embeddings, upload, pgvector, Supabase persistence, streaming, or usage persistence yet.
 
 ## Secrets
 

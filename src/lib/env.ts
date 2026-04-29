@@ -7,6 +7,15 @@ type RequiredPublicEnvKey = (typeof REQUIRED_PUBLIC_ENV_KEYS)[number];
 
 export type PublicEnv = Record<RequiredPublicEnvKey, string>;
 
+export type AiProviderEnv = {
+  AI_PROVIDER: string;
+  GEMINI_API_KEY?: string;
+  GEMINI_MODEL: string;
+};
+
+const DEFAULT_AI_PROVIDER = "mock";
+const DEFAULT_GEMINI_MODEL = "gemini-2.0-flash-lite";
+
 function readRequiredEnv(key: RequiredPublicEnvKey): string {
   const value = process.env[key];
 
@@ -30,4 +39,12 @@ export function assertPublicEnv(): void {
   for (const key of REQUIRED_PUBLIC_ENV_KEYS) {
     readRequiredEnv(key);
   }
+}
+
+export function getAiProviderEnv(): AiProviderEnv {
+  return {
+    AI_PROVIDER: process.env.AI_PROVIDER ?? DEFAULT_AI_PROVIDER,
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    GEMINI_MODEL: process.env.GEMINI_MODEL ?? DEFAULT_GEMINI_MODEL,
+  };
 }

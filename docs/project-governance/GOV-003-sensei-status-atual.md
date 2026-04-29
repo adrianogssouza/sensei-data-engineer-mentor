@@ -4,8 +4,8 @@
 
 - Data de atualização: 2026-04-29
 - Fase: v0.1-alpha preparation
-- Última task concluída: TASK 009.1
-- Próxima task: TASK 010
+- Última task concluída: TASK 010
+- Próxima task: TASK 011
 - Modo operacional: Single-user / private
 
 ## Ambiente validado
@@ -36,10 +36,11 @@
 - TASK 008.1 — Sync GOV-006 into repo
 - TASK 009 — AI Provider Skeleton
 - TASK 009.1 — Sync Resource/Session Governance Docs
+- TASK 010 — Gemini Provider Integration
 
 ## Bloqueios
 
-- Nenhum bloqueio técnico imediato para TASK 009.
+- Nenhum bloqueio técnico imediato para TASK 011.
 
 ## Governança QA
 
@@ -112,11 +113,15 @@
 - Tipos internos de provider de IA criados em `src/types/ai.ts`.
 - Registry interno criado em `src/lib/ai/provider-registry.ts`.
 - Provider mock local criado em `src/lib/ai/providers/mock-provider.ts`.
-- Chat local usa o provider mock sem mudar para backend.
-- Provider ativo atual: `mock`.
+- Provider Gemini criado em `src/lib/ai/providers/gemini-provider.ts`.
+- API route `/api/ai/chat` criada para chamadas não-streaming via provider abstraction.
+- Chat usa `/api/ai/chat` e mantém persistência local em `localStorage`.
+- Provider padrão atual: `mock`.
+- Gemini é usado apenas quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados.
+- Sem `GEMINI_API_KEY`, a aplicação volta para o mock provider.
 - Anthropic e OpenAI estão planejados nos tipos, mas não estão ativos.
 - Nenhum SDK de Anthropic/OpenAI foi instalado.
-- Não há chamadas externas, API route, RAG, embeddings, upload ou custo real de IA.
+- Não há RAG, embeddings, upload, pgvector, Supabase persistence, streaming ou usage persistence.
 
 ## Riscos
 
@@ -128,4 +133,4 @@
 
 ## Próxima ação recomendada
 
-Iniciar TASK 010.
+Iniciar TASK 011.

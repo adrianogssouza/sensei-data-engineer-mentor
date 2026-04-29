@@ -5,8 +5,8 @@ export function ChatEmptyState() {
         Start a local mock conversation
       </h3>
       <p className="mt-2 leading-6">
-        Ask about SQL, Python, RAG, or a study topic. Responses are generated
-        locally with deterministic mock logic. Messages are saved only in this
+        Ask about SQL, Python, RAG, or a study topic. Responses use the
+        configured provider with mock fallback. Messages are saved only in this
         browser with localStorage.
       </p>
     </div>

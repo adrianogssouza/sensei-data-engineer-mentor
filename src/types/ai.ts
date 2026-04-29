@@ -1,4 +1,4 @@
-export type AiProviderId = "mock" | "anthropic" | "openai";
+export type AiProviderId = "mock" | "gemini" | "anthropic" | "openai";
 
 export type AiModelId = string;
 
