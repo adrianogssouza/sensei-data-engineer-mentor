@@ -85,7 +85,7 @@ Se o diretório atual não for o repositório SENSEI, a task deve ser interrompi
 
 # BLOCO 3 — Governança Documental
 
-## REG-010 — GOV-002 é Source of Truth
+## REG-010 — GOV-002 é a fonte oficial
 
 Em conflito documental, seguir a precedência definida no GOV-002.
 
@@ -94,7 +94,7 @@ Em conflito documental, seguir a precedência definida no GOV-002.
 Mudanças relevantes devem entrar em:
 
 ```txt
-GOV-004-sensei-decision-log.md
+GOV-004-sensei-log-de-decisoes.md
 ```
 
 ## REG-012 — Toda regra nova entra neste arquivo

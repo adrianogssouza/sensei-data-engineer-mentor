@@ -1,32 +1,32 @@
 # SENSEI Data Engineer Mentor
 
-SENSEI Data Engineer Mentor is a personal AI study mentor for Data Engineering. It is being built incrementally as both a useful study tool and a technical portfolio project.
+SENSEI Data Engineer Mentor é um mentor pessoal de estudos com IA focado em Engenharia de Dados. O projeto está sendo construído de forma incremental para ser, ao mesmo tempo, uma ferramenta útil de estudo e um projeto forte de portfólio técnico.
 
-## Current Phase
+## Fase Atual
 
-Current phase: v0.1-alpha preparation.
+Fase atual: preparação da v0.1-alpha.
 
-The repository has the initial Next.js foundation, governance documentation, Supabase client foundation, a minimal Supabase Auth foundation, an initial local Supabase data schema, a workspace navigation shell, a chat UI with browser-only persistence, an internal AI provider skeleton, and a first Gemini provider integration behind a server API route. The current operational mode is single-user/private, so auth exists but is optional and not part of the main daily flow. RAG, embeddings, upload, pgvector, Supabase chat persistence, shadcn/ui, and deployment are not implemented yet.
+O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema local inicial do Supabase, shell de workspace, UI de chat com persistência apenas no navegador, skeleton interno de provider de IA e primeira integração com Gemini por trás de uma API route no servidor. O modo operacional atual é single-user/private: autenticação existe, mas é opcional e não faz parte do fluxo principal de uso diário. RAG, embeddings, upload, pgvector, persistência de chat no Supabase, shadcn/ui e deploy ainda não foram implementados.
 
-## Operational Mode
+## Modo Operacional
 
-Current mode: Single-user / private.
+Modo atual: Single-user / private.
 
-Recommended local usage starts at `/workspace`. The public homepage links to the workspace, login, signup, and the protected dashboard. Auth remains available in the codebase for future use, but it is not required to use the main workspace right now.
+O uso local recomendado começa em `/workspace`. A homepage pública aponta para workspace, login, signup e dashboard protegido. Auth permanece disponível no código para uso futuro, mas neste momento não é necessário para usar o workspace principal.
 
-## Workspace Routes
+## Rotas do Workspace
 
-Available workspace routes:
+Rotas disponíveis:
 
-- `/workspace` - public workspace overview
-- `/workspace/chat` - local mock chat UI
-- `/workspace/documents` - documents module placeholder
-- `/workspace/usage` - usage/cost placeholder
-- `/workspace/settings` - private settings placeholder
+- `/workspace` - visão geral pública do workspace
+- `/workspace/chat` - UI de chat local com mock
+- `/workspace/documents` - placeholder do módulo de documentos
+- `/workspace/usage` - placeholder de uso/custo
+- `/workspace/settings` - placeholder de configurações privadas
 
-The chat page calls `/api/ai/chat`, which uses the internal provider registry. Gemini is used only when `AI_PROVIDER=gemini` and `GEMINI_API_KEY` are configured. Without a Gemini key, the app falls back to the deterministic mock provider. Messages persist in this browser using `localStorage`. It does not connect to Supabase, read or write cloud data, upload files, or run RAG. There is no cloud sync and no Supabase persistence yet.
+A página de chat chama `/api/ai/chat`, que usa o registry interno de providers. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados. Sem chave Gemini, o app volta para o provider mock determinístico. As mensagens persistem neste navegador usando `localStorage`. A página ainda não conecta ao Supabase, não lê nem escreve dados em cloud, não faz upload de arquivos e não executa RAG. Ainda não há sincronização em cloud nem persistência no Supabase.
 
-## Tech Stack Currently Installed
+## Stack Técnica Instalada
 
 - Next.js App Router
 - React
@@ -36,58 +36,58 @@ The chat page calls `/api/ai/chat`, which uses the internal provider registry. G
 - pnpm
 - Supabase JavaScript SDK
 - Supabase SSR helpers
-- Minimal Supabase Auth foundation
-- Supabase local schema/migration foundation
-- Internal AI provider skeleton with mock fallback
-- Gemini provider via `@google/genai`
+- Fundação mínima de Supabase Auth
+- Fundação local de schema/migration Supabase
+- Skeleton interno de provider de IA com fallback mock
+- Provider Gemini via `@google/genai`
 
-## Planned Stack Not Yet Installed
+## Stack Planejada Ainda Não Instalada
 
 - pgvector
 - OpenAI embeddings
 - Anthropic Claude
-- Real OpenAI/Anthropic text generation providers
-- Vercel deployment
-- RAG ingestion and evaluation tooling
+- Providers reais de geração de texto com OpenAI/Anthropic
+- Deploy na Vercel
+- Ingestão RAG e ferramentas de avaliação
 
-## Local Development
+## Desenvolvimento Local
 
-Install dependencies:
+Instalar dependências:
 
 ```bash
 pnpm install
 ```
 
-Run the development server:
+Rodar servidor de desenvolvimento:
 
 ```bash
 pnpm dev
 ```
 
-Run lint:
+Rodar lint:
 
 ```bash
 pnpm lint
 ```
 
-Build for production:
+Gerar build de produção:
 
 ```bash
 pnpm build
 ```
 
-## Local Environment
+## Ambiente Local
 
-Create `.env.local` locally when Supabase credentials are available. Do not commit it.
+Crie `.env.local` localmente quando as credenciais do Supabase estiverem disponíveis. Não commitar esse arquivo.
 
-Required for Supabase client usage:
+Necessário para uso do client Supabase:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
-Optional for Gemini provider usage:
+Opcional para uso do provider Gemini:
 
 ```bash
 AI_PROVIDER=gemini
@@ -95,47 +95,47 @@ GEMINI_API_KEY=
 GEMINI_MODEL=gemini-2.0-flash-lite
 ```
 
-Gemini is the first real provider for cost-controlled free/dev-tier experimentation. Keep real keys only in `.env.local`. If `AI_PROVIDER=gemini` is set without `GEMINI_API_KEY`, the app falls back to the mock provider. The mock provider remains available with:
+Gemini é o primeiro provider real para experimentação inicial com controle de custo/free-dev tier. Mantenha chaves reais apenas em `.env.local`. Se `AI_PROVIDER=gemini` estiver configurado sem `GEMINI_API_KEY`, o app volta para o provider mock. O provider mock permanece disponível com:
 
 ```bash
 AI_PROVIDER=mock
 ```
 
-Authentication foundation is implemented with email/password login, signup, logout, and a protected dashboard route. It is currently optional because the app is operating in single-user/private mode. To test auth locally:
+A fundação de autenticação foi implementada com login por email/password, signup, logout e rota protegida de dashboard. Ela é opcional porque o app está operando em modo single-user/private. Para testar auth localmente:
 
-1. Create a Supabase project.
-2. Enable email/password auth in Supabase Auth settings.
-3. Add the public project URL and anon key to `.env.local`.
-4. Run `pnpm dev`.
-5. Visit `/signup`, `/login`, and `/dashboard`.
+1. Crie um projeto no Supabase.
+2. Habilite email/password nas configurações do Supabase Auth.
+3. Adicione a URL pública do projeto e a anon key em `.env.local`.
+4. Rode `pnpm dev`.
+5. Acesse `/signup`, `/login` e `/dashboard`.
 
-No service role key is used by the auth UI/server flows.
+Nenhuma service role key é usada pelos fluxos de UI/server de auth.
 
-## Supabase Local Schema
+## Schema Local do Supabase
 
-The local Supabase structure exists under `supabase/`, with migrations in:
+A estrutura local do Supabase existe em `supabase/`, com migrations em:
 
 ```bash
 supabase/migrations
 ```
 
-Inspect migrations:
+Inspecionar migrations:
 
 ```bash
 ls supabase/migrations
 ```
 
-Do not start Supabase local services unless a task explicitly requires it. This task did not start Docker, did not apply migrations to a local database, and did not apply anything to a remote Supabase project.
+Não iniciar serviços locais do Supabase a menos que uma task peça isso explicitamente. A task atual não iniciou Docker, não aplicou migrations em banco local e não aplicou nada em projeto remoto do Supabase.
 
-The initial schema is single-user/private and includes app settings, future chat history tables, usage events, and document metadata. It does not include `pgvector`, `document_chunks`, embeddings, RAG tables, user ownership columns, or RLS policies yet.
+O schema inicial é single-user/private e inclui configurações do app, tabelas futuras de histórico de chat, eventos de uso e metadados de documentos. Ele ainda não inclui `pgvector`, `document_chunks`, embeddings, tabelas RAG, colunas de ownership por usuário ou políticas RLS.
 
-## Project Structure
+## Estrutura do Projeto
 
 ```text
 docs/
-  architecture.md
-  development.md
-  task-log.md
+  arquitetura.md
+  desenvolvimento.md
+  log-de-tasks.md
   project-governance/
 src/
   app/
@@ -148,64 +148,64 @@ src/
   types/
 ```
 
-- `docs/project-governance/` contains official governance, strategy, status, and decision-log documents.
-- `src/app/` contains the Next.js App Router foundation.
-- `src/app/(auth)/` contains minimal login/signup pages and auth actions.
-- `src/app/(protected)/dashboard/` contains a minimal protected dashboard.
-- `src/app/workspace/` contains the public primary daily-use workspace placeholder.
-- `src/app/workspace/*` contains the workspace shell and placeholder routes.
-- `src/app/api/ai/chat/route.ts` contains the non-streaming AI chat API route.
-- `src/components/workspace/` contains simple reusable workspace shell components.
-- `src/lib/ai/` contains the internal AI provider registry, mock provider, and Gemini provider.
-- `src/lib/env.ts` contains environment validation helpers.
-- `src/lib/supabase/` contains the browser/server Supabase client foundation and placeholder database types.
-- `src/proxy.ts` refreshes Supabase auth cookies and protects `/dashboard`.
-- `src/components/` and `src/types/` are placeholders for future shared code.
-- `supabase/migrations/` contains local database migrations that have not been applied remotely by this repo.
+- `docs/project-governance/` contém documentos oficiais de governança, estratégia, status e decisões.
+- `src/app/` contém a fundação do Next.js App Router.
+- `src/app/(auth)/` contém páginas mínimas de login/signup e actions de auth.
+- `src/app/(protected)/dashboard/` contém um dashboard mínimo protegido.
+- `src/app/workspace/` contém o workspace público principal para uso diário.
+- `src/app/workspace/*` contém o shell do workspace e rotas placeholder.
+- `src/app/api/ai/chat/route.ts` contém a API route de chat com IA sem streaming.
+- `src/components/workspace/` contém componentes reutilizáveis simples do shell do workspace.
+- `src/lib/ai/` contém o registry interno de providers de IA, provider mock e provider Gemini.
+- `src/lib/env.ts` contém helpers de validação de ambiente.
+- `src/lib/supabase/` contém a fundação dos clients Supabase browser/server e tipos placeholder do banco.
+- `src/proxy.ts` atualiza cookies de auth do Supabase e protege `/dashboard`.
+- `src/components/` e `src/types/` reservam espaço para código compartilhado futuro.
+- `supabase/migrations/` contém migrations locais que ainda não foram aplicadas remotamente por este repo.
 
-## Completed Tasks
+## Tasks Concluídas
 
-- TASK 000 - Initial bootstrap and environment audit
-- TASK 000.1 - Fix local tooling blockers
-- TASK 000.2 - Synchronize official project documentation into the repository
-- TASK 001 - Create initial Next.js project structure
-- TASK 002 - Normalize repository documentation and Codex instructions
-- TASK 003 - Supabase Foundation
-- TASK 004 - Supabase Auth Foundation
-- TASK 004.1 - Switch to Single-User Mode
-- TASK 005 - Local Data Foundation
-- TASK 006 - Workspace Shell + Navigation
-- TASK 007 - Local Chat Mock
-- TASK 008 - Local Chat Persistence
-- TASK 008.1 - Sync GOV-006 into repo
-- TASK 009 - AI Provider Skeleton
-- TASK 009.1 - Sync Resource/Session Governance Docs
-- TASK 010 - Gemini Provider Integration
-- TASK 010.1 - Gemini Diagnostics / Fallback Reason
-- TASK 010.2 - Document Gemini Quota Limitation
+- TASK 000 - Bootstrap inicial e auditoria de ambiente
+- TASK 000.1 - Correção de bloqueios locais de tooling
+- TASK 000.2 - Sincronização da documentação oficial do projeto no repositório
+- TASK 001 - Criação da estrutura inicial do projeto Next.js
+- TASK 002 - Normalização da documentação do repositório e instruções do Codex
+- TASK 003 - Fundação Supabase
+- TASK 004 - Fundação Supabase Auth
+- TASK 004.1 - Mudança para modo Single-User
+- TASK 005 - Fundação local de dados
+- TASK 006 - Shell do workspace e navegação
+- TASK 007 - Chat local com mock
+- TASK 008 - Persistência local do chat
+- TASK 008.1 - Sincronização do GOV-006 no repo
+- TASK 009 - Skeleton de provider de IA
+- TASK 009.1 - Sincronização de docs de governança de recursos/sessão
+- TASK 010 - Integração do provider Gemini
+- TASK 010.1 - Diagnóstico Gemini / motivo de fallback
+- TASK 010.2 - Documentação da limitação de quota Gemini
 
-## Next Task
+## Próxima Task
 
-TASK 011
+TASK 011 — Guardrails de Uso / Custo
 
-## AI Provider Status
+## Status do Provider de IA
 
-An internal AI provider skeleton exists under `src/lib/ai/` with shared types in `src/types/ai.ts`.
+Existe um skeleton interno de provider de IA em `src/lib/ai/`, com tipos compartilhados em `src/types/ai.ts`.
 
-Current default provider: `mock`.
+Provider padrão atual: `mock`.
 
-Gemini is available through the server route when explicitly enabled with `AI_PROVIDER=gemini` and `GEMINI_API_KEY`. The default model is `gemini-2.0-flash-lite`, chosen for cost-controlled experimentation. If Gemini is not configured or fails, the mock provider remains the fallback.
+Gemini está disponível pela rota server quando explicitamente habilitado com `AI_PROVIDER=gemini` e `GEMINI_API_KEY`. O modelo padrão é `gemini-2.0-flash-lite`, escolhido para experimentação com controle de custo. Se Gemini não estiver configurado ou falhar, o provider mock permanece como fallback.
 
-Anthropic and OpenAI are planned provider ids, but no Anthropic/OpenAI SDKs are installed. There is no RAG, embeddings, upload, pgvector, Supabase persistence, streaming, or usage persistence yet.
+Anthropic e OpenAI estão planejados como ids de provider, mas nenhum SDK Anthropic/OpenAI foi instalado. Ainda não há RAG, embeddings, upload, pgvector, persistência Supabase, streaming ou persistência de uso.
 
-## Gemini Runtime Status
+## Status Runtime do Gemini
 
-Gemini provider integration is implemented and `/api/ai/chat` reaches the Gemini API when configured. Current real-call testing is blocked by Google quota/billing: the API returns `429 RESOURCE_EXHAUSTED`, and the free tier quota appears to be `0` for the tested Gemini model. This is a quota/runtime account limitation, not a known code integration blocker.
+A integração do provider Gemini está implementada e `/api/ai/chat` alcança a API Gemini quando configurada. O teste de chamada real está bloqueado por quota/billing do Google: a API retorna `429 RESOURCE_EXHAUSTED`, e a quota free tier parece estar em `0` para o modelo Gemini testado. Isso é uma limitação de conta/quota em runtime, não um bloqueio conhecido de integração de código.
 
-Mock fallback remains operational. To test real Gemini later, make sure the Google AI Studio/API project has available quota or billing enabled, set the Gemini variables in `.env.local`, and restart `pnpm dev`.
+O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-End-of-day checkpoint: work is synchronized through TASK 010.2. The next planned task is TASK 011 - Usage / Cost Guardrails.
+Checkpoint de fim do dia: o trabalho está sincronizado até TASK 010.2. A próxima task planejada é TASK 011 — Guardrails de Uso / Custo.
 
-## Secrets
+## Segredos
 
-Never commit secrets to git. Use `.env.local` only for local secrets and keep real keys out of version control. `.env.example` must contain placeholders only.
+Nunca commitar segredos no git. Use `.env.local` apenas para segredos locais e mantenha chaves reais fora do versionamento. `.env.example` deve conter apenas placeholders.

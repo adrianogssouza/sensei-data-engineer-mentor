@@ -1,13 +1,13 @@
 # GOV-003 — Status Atual
 
-## Snapshot
+## Retrato Atual
 
 - Data de atualização: 2026-04-29
-- Fase: v0.1-alpha preparation
+- Fase: preparação da v0.1-alpha
 - Última task concluída: TASK 010.2
 - Checkpoint atual: fim do dia após validação de quota Gemini
 - Próxima task: TASK 011
-- Modo operacional: Single-user / private
+- Modo operacional: single-user/private
 
 ## Ambiente validado
 
@@ -24,40 +24,40 @@
 - TASK 000 — Bootstrap inicial e auditoria de ambiente
 - TASK 000.1 — Instalação/validação de pnpm e Supabase CLI
 - TASK 000.2 — Sincronização de governança no repo
-- TASK 001 — Foundation Next.js
+- TASK 001 — Fundação Next.js
 - TASK 002 — Normalização de documentação e AGENTS.md
 - TASK 002.1 — Sincronização do pacote documental oficial v2
-- TASK 003 — Supabase Foundation
-- TASK 004 — Supabase Auth Foundation
-- TASK 004.1 — Switch to Single-User Mode
-- TASK 005 — Local Data Foundation
-- TASK 006 — Workspace Shell + Navigation
-- TASK 007 — Local Chat Mock
-- TASK 008 — Local Chat Persistence
+- TASK 003 — Fundação Supabase
+- TASK 004 — Fundação Supabase Auth
+- TASK 004.1 — Mudança para modo single-user
+- TASK 005 — Fundação local de dados
+- TASK 006 — Shell do workspace + navegação
+- TASK 007 — Chat local com mock
+- TASK 008 — Persistência local do chat
 - TASK 008.1 — Sync GOV-006 into repo
-- TASK 009 — AI Provider Skeleton
-- TASK 009.1 — Sync Resource/Session Governance Docs
-- TASK 010 — Gemini Provider Integration
-- TASK 010.1 — Expose Gemini Provider Error
-- TASK 010.2 — Document Gemini Quota Limitation
+- TASK 009 — Skeleton de provider de IA
+- TASK 009.1 — Sincronização de docs de governança de recursos/sessão
+- TASK 010 — Integração do provider Gemini
+- TASK 010.1 — Exposição de erro do provider Gemini
+- TASK 010.2 — Documentação da limitação de quota Gemini
 
 ## Bloqueios
 
-- Bloqueio atual: Google Gemini quota/billing para chamada real (`429 RESOURCE_EXHAUSTED`).
+- Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`).
 - Nenhum bloqueio de código conhecido para iniciar TASK 011.
 
 ## Governança QA
 
-- GOV-006 Quality Assurance Policy sincronizado no repositório.
+- GOV-006 Política de Garantia de Qualidade sincronizada no repositório.
 - Repo e fontes documentais agora incluem política de QA leve por task e robusto por milestone.
-- GOV-007 Resource Management Policy e GOV-008 Session Management Policy sincronizados no repositório antes da TASK 010.
+- GOV-007 Política de Gestão de Recursos e GOV-008 Política de Gestão de Sessões sincronizados no repositório antes da TASK 010.
 
 ## Fundação Supabase
 
 - `@supabase/supabase-js` instalado.
 - Validação de ambiente criada para `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 - Client Supabase browser criado.
-- Client Supabase server foundation criado sem integração de cookies/auth.
+- Fundação do client Supabase server criada sem integração de cookies/auth.
 - Tipos placeholder preparados para futura geração de tipos do banco.
 - Auth UI, migrations, RLS, schema e chamadas Supabase na UI ainda não foram implementados.
 
@@ -79,18 +79,18 @@
 - Login e signup permanecem disponíveis, mas não são obrigatórios no fluxo principal.
 - `/dashboard` permanece protegido para preservar a fundação de auth futura.
 
-## Local Data Foundation
+## Fundação Local de Dados
 
 - Estrutura local `supabase/` inicializada.
 - Migration inicial criada para `app_settings`, `chat_threads`, `chat_messages`, `usage_events` e `documents`.
 - Trigger helper `set_updated_at()` criado e aplicado às tabelas com `updated_at`.
 - Índices básicos criados para mensagens, eventos de uso e documentos.
 - Tipos TypeScript do banco atualizados manualmente.
-- Schema atual é single-user/private, sem `user_id`, RLS multi-user ou `auth.uid()` policies.
+- Schema atual é single-user/private, sem `user_id`, RLS multi-user ou policies com `auth.uid()`.
 - pgvector, `document_chunks`, embeddings, upload, AI e RAG ainda não foram implementados.
 - Nenhuma migration foi aplicada a banco remoto nesta task.
 
-## Workspace Shell
+## Shell do Workspace
 
 - Layout de workspace criado em `/workspace`.
 - Navegação interna criada para overview, chat, documents, usage e settings.
@@ -98,21 +98,21 @@
 - Nenhuma rota faz leitura/escrita no banco.
 - Chat, AI, RAG, upload, embeddings, pgvector e usage UI conectada ainda não foram implementados.
 
-## Local Chat Mock
+## Chat Local com Mock
 
 - `/workspace/chat` agora possui interface local de chat.
 - Respostas do assistente são determinísticas e locais.
-- Não há API route, chamadas externas, Supabase read/write, persistência, streaming, AI provider, RAG ou custo de IA.
+- Não há API route, chamadas externas, leitura/escrita no Supabase, persistência, streaming, provider de IA, RAG ou custo de IA.
 
-## Local Chat Persistence
+## Persistência Local do Chat
 
 - Mensagens do mock chat persistem em `localStorage`.
 - Persistência é local deste navegador apenas.
 - Clear chat remove mensagens do estado React e do `localStorage`.
 - JSON inválido/corrompido é tratado sem quebrar a aplicação.
-- Não há cloud sync, Supabase persistence, API route, provider real, RAG ou custo de IA.
+- Não há cloud sync, persistência Supabase, API route, provider real, RAG ou custo de IA.
 
-## AI Provider Skeleton
+## Skeleton de Provider de IA
 
 - Tipos internos de provider de IA criados em `src/types/ai.ts`.
 - Registry interno criado em `src/lib/ai/provider-registry.ts`.
@@ -124,21 +124,21 @@
 - Gemini é usado apenas quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados.
 - Sem `GEMINI_API_KEY`, a aplicação volta para o mock provider.
 - Integração Gemini foi validada tecnicamente: `/api/ai/chat` alcança a API Gemini e recebe resposta real.
-- Bloqueio atual de runtime: `429 RESOURCE_EXHAUSTED` por quota/billing Google; free tier parece `0` para o modelo testado.
+- Bloqueio atual de runtime: `429 RESOURCE_EXHAUSTED` por quota/billing do Google; free tier parece `0` para o modelo testado.
 - Nenhum bloqueio de código conhecido neste ponto; mock fallback permanece ativo.
 - Fallback operacional atual: provider mock.
 - Anthropic e OpenAI estão planejados nos tipos, mas não estão ativos.
 - Nenhum SDK de Anthropic/OpenAI foi instalado.
-- Não há RAG, embeddings, upload, pgvector, Supabase persistence, streaming ou usage persistence.
+- Não há RAG, embeddings, upload, pgvector, persistência Supabase, streaming ou persistência de uso.
 
 ## Riscos
 
-- Repo ainda sem commits.
+- Repo publicado no GitHub como repositório privado.
 - Manter atenção para não executar prompts em projeto errado.
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão com TASK 011 — Usage / Cost Guardrails.
+- Retomar na próxima sessão com TASK 011 — Guardrails de Uso / Custo.
 
 ## Próxima ação recomendada
 

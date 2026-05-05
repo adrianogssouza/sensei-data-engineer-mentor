@@ -1,4 +1,4 @@
-# GOV-006 — Quality Assurance Policy
+# GOV-006 — Política de Garantia de Qualidade
 
 ## Finalidade
 
@@ -34,7 +34,7 @@ Também verificar:
 
 Tasks somente documentais não precisam rodar build/lint, salvo se código mudar por acidente.
 
-## QA Robusto por Milestone
+## QA Robusto por Marco
 
 Antes de fechar uma fase ou milestone, executar QA mais amplo:
 
@@ -46,11 +46,11 @@ Antes de fechar uma fase ou milestone, executar QA mais amplo:
 - revisão de documentação/status;
 - teste manual dos fluxos principais.
 
-## QA Antes de Real AI
+## QA Antes de IA Real
 
 Antes de integrar OpenAI, Anthropic ou outro provider real, validar:
 
-- mock/local flow funcionando;
+- fluxo mock/local funcionando;
 - UI não quebra em erro;
 - não há chamadas automáticas desnecessárias;
 - limites de custo/tokens estão planejados;
@@ -58,14 +58,14 @@ Antes de integrar OpenAI, Anthropic ou outro provider real, validar:
 - `.env.local` continua fora do git;
 - comportamento sem credenciais é claro.
 
-## QA Antes de DB Persistence
+## QA Antes de Persistência em Banco
 
 Antes de persistir dados em Supabase/PostgreSQL, validar:
 
 - schema/migrations revisadas;
 - tipos TypeScript alinhados;
 - impacto de single-user vs multi-user documentado;
-- RLS/user_id policy não foi improvisada;
+- policy RLS/`user_id` não foi improvisada;
 - nenhuma service role key é usada em fluxo de UI;
 - falhas de banco são tratáveis.
 
@@ -85,15 +85,15 @@ Antes de qualquer deploy:
 Usar este formato para auditorias de baseline:
 
 ```md
-1. Confirmed repo path
-2. Executive summary (PASS / PASS WITH WARNINGS / FAIL)
-3. Build & lint results
-4. Routes audited
-5. Functional findings
-6. Risks found
-7. Recommended fixes before next task
+1. Caminho do repo confirmado
+2. Resumo executivo (PASS / PASS WITH WARNINGS / FAIL)
+3. Resultado de build & lint
+4. Rotas auditadas
+5. Achados funcionais
+6. Riscos encontrados
+7. Correções recomendadas antes da próxima task
 8. Go / No-Go
-9. Confirmation no code changes were made
+9. Confirmação de que nenhuma mudança de código foi feita
 ```
 
 ## Política de Go / No-Go
@@ -127,4 +127,4 @@ NO-GO quando:
 
 ## 2026-04-29
 
-Documento sincronizado no repositório após QA baseline antes da integração com provider real de IA.
+Documento sincronizado no repositório após baseline de QA antes da integração com provider real de IA.

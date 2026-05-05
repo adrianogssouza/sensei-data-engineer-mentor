@@ -1,6 +1,6 @@
 # GOV-002 — Fonte Oficial Consolidada
 
-## Source of Truth do Projeto
+## Fonte Oficial do Projeto
 
 Em caso de conflito entre documentos, seguir esta precedência:
 
@@ -16,12 +16,13 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-alpha preparation
+- Fase atual: preparação da v0.1-alpha
 - Última task concluída: TASK 010.2
 - Checkpoint atual: fim do dia após validação de quota Gemini
 - Próxima task: TASK 011
-- Bloqueio atual: Google Gemini quota/billing para chamada real (`429 RESOURCE_EXHAUSTED`)
+- Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
+- Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
 
 ## Objetivo principal 2026
 

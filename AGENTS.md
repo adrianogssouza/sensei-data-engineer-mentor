@@ -1,47 +1,47 @@
-# SENSEI Agent Rules
+# Regras dos Agentes SENSEI
 
-## Required Reading
+## Leitura Obrigatória
 
-Before changing code, always read:
+Antes de alterar código, sempre ler:
 
 - `docs/project-governance/GOV-002-sensei-fonte-oficial-consolidada.md`
 - `docs/project-governance/STR-001-sensei-plano-oficial-v2-3.md`
 - `docs/project-governance/OPS-001-sensei-codex-operating-plan-v1-2.md`
 - `docs/project-governance/GOV-003-sensei-status-atual.md`
 
-For documentation-only tasks, also read the files being updated.
+Para tasks apenas documentais, ler também os arquivos que serão atualizados.
 
-## Task Discipline
+## Disciplina de Task
 
-- Work one task at a time.
-- Do not implement future tasks.
-- Keep changes minimal and reviewable.
-- Do not add dependencies unless necessary for the current task.
-- Preserve existing meaningful documentation and code.
-- Use `pnpm` for package and script commands.
+- Trabalhar em uma task por vez.
+- Não implementar tasks futuras.
+- Manter mudanças mínimas e revisáveis.
+- Não adicionar dependências sem necessidade da task atual.
+- Preservar documentação e código existentes que tenham significado.
+- Usar `pnpm` para comandos de pacote e scripts.
 
-## Secrets and Configuration
+## Segredos e Configuração
 
-- Never commit secrets.
-- Never hardcode API keys, tokens, service-role keys, or credentials.
-- Do not commit `.env` or `.env.local`.
-- Use `.env.local` only for local secrets.
-- Keep `.env.example` limited to placeholders and safe defaults.
+- Nunca commitar segredos.
+- Nunca hardcodar API keys, tokens, service-role keys ou credenciais.
+- Não commitar `.env` nem `.env.local`.
+- Usar `.env.local` apenas para segredos locais.
+- Manter `.env.example` limitado a placeholders e defaults seguros.
 
-## Code Quality
+## Qualidade de Código
 
-- Preserve TypeScript strictness.
-- Preserve Supabase RLS assumptions and `user_id` filtering once database work begins.
-- Run `pnpm lint` and `pnpm build` when code changes.
-- For documentation-only tasks, no build is required unless code files changed unexpectedly.
+- Preservar strictness do TypeScript.
+- Preservar premissas de RLS do Supabase e filtro por `user_id` quando o trabalho de banco começar.
+- Rodar `pnpm lint` e `pnpm build` quando houver mudança de código.
+- Para tasks apenas documentais, build não é obrigatório a menos que arquivos de código mudem inesperadamente.
 
-## Reporting
+## Relatório
 
-Always return:
+Sempre retornar:
 
-1. Summary
-2. Files changed
-3. Commands run
-4. Validation
-5. Risks / notes
-6. Confirmation next task was not started
+1. Resumo
+2. Arquivos alterados
+3. Comandos executados
+4. Validação
+5. Riscos / notas
+6. Confirmação de que a próxima task não foi iniciada

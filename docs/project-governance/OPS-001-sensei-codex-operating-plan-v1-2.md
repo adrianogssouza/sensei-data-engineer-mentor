@@ -16,12 +16,12 @@
 - Ambiente validado
 - Documentação base criada e normalizada
 - Gemini integrado tecnicamente
-- Runtime real bloqueado por quota/billing Google (`429 RESOURCE_EXHAUSTED`)
+- Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 
 ## Próxima task
 
-TASK 011 — Usage / Cost Guardrails
+TASK 011 — Guardrails de Uso / Custo
 
 Objetivo esperado:
 - definir limites de uso/custo antes de aprofundar IA real

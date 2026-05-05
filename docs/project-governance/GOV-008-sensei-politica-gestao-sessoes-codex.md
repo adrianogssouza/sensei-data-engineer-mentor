@@ -1,4 +1,4 @@
-# GOV-008 — Codex Session Management Policy
+# GOV-008 — Política de Gestão de Sessões do Codex
 
 ## Finalidade
 

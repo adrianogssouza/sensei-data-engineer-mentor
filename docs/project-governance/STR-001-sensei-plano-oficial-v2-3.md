@@ -30,7 +30,7 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - Anthropic Claude
 - Vercel
 
-## Workflow oficial
+## Fluxo de trabalho oficial
 
 - Executor principal: Codex
 - Arquiteto/Revisor: ChatGPT
@@ -65,13 +65,13 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 010.2 concluída
 - Ambiente local validado
 - Documentação normalizada
-- Foundation Next.js criada
-- Gemini integrado tecnicamente, mas runtime real está limitado por quota/billing Google (`429 RESOURCE_EXHAUSTED`).
+- Fundação Next.js criada
+- Gemini integrado tecnicamente, mas runtime real está limitado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`).
 - Mock fallback permanece operacional.
 
 ## Próximo passo
 
-TASK 011 — Usage / Cost Guardrails
+TASK 011 — Guardrails de Uso / Custo
 
 ## Regra central
 

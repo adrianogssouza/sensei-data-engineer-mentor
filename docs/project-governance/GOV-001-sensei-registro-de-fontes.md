@@ -7,11 +7,11 @@
 | GOV-001 | Registro de Fontes | Governança | Ativo |
 | GOV-002 | Fonte Oficial Consolidada | Governança | Ativo |
 | GOV-003 | Status Atual | Governança | Ativo |
-| GOV-004 | Decision Log | Governança | Ativo |
+| GOV-004 | Log de Decisões | Governança | Ativo |
 | GOV-005 | Regras Operacionais | Governança | Ativo |
-| GOV-006 | Quality Assurance Policy | Governança | Ativo |
-| GOV-007 | Codex Resource Management Policy | Governança | Ativo |
-| GOV-008 | Codex Session Management Policy | Governança | Ativo |
+| GOV-006 | Política de Garantia de Qualidade | Governança | Ativo |
+| GOV-007 | Política de Gestão de Recursos do Codex | Governança | Ativo |
+| GOV-008 | Política de Gestão de Sessões do Codex | Governança | Ativo |
 
 ## Regra de manutenção
 

@@ -1,4 +1,4 @@
-# GOV-007 — Codex Resource Management Policy
+# GOV-007 — Política de Gestão de Recursos do Codex
 
 ## Finalidade
 
