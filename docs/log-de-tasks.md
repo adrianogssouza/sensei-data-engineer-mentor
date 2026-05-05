@@ -21,4 +21,5 @@
 - TASK 010 - Concluída: integração do provider Gemini adicionada com `@google/genai`, `/api/ai/chat`, fallback do provider registry para mock e wiring do chat API sem RAG, embeddings, upload, persistência Supabase ou streaming.
 - TASK 010.1 - Concluída: diagnósticos Gemini e motivo de fallback melhorados para tornar falhas do provider visíveis em logs sanitizados do servidor e metadados mais claros na UI.
 - TASK 010.2 - Concluída: limitação de quota runtime do Gemini documentada após resposta real da API retornar `429 RESOURCE_EXHAUSTED`; fallback mock permanece operacional.
-- Checkpoint de fim do dia - Concluído: documentação e governança sincronizadas após validação de quota Gemini; próxima task planejada é TASK 011 — Guardrails de Uso / Custo.
+- TASK 011 - Concluída: guardrails locais em memória adicionados para limitar chamadas reais de IA, tokens estimados, contexto, output e custo estimado configurável, mantendo fallback mock e sem persistência Supabase.
+- Checkpoint atual - Concluído: guardrails locais de uso/custo implementados; próxima task planejada é TASK 012, a definir antes da próxima implementação.

@@ -4,9 +4,9 @@
 
 - Data de atualização: 2026-04-29
 - Fase: preparação da v0.1-alpha
-- Última task concluída: TASK 010.2
-- Checkpoint atual: fim do dia após validação de quota Gemini
-- Próxima task: TASK 011
+- Última task concluída: TASK 011
+- Checkpoint atual: guardrails locais de uso/custo implementados
+- Próxima task: TASK 012
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -40,11 +40,12 @@
 - TASK 010 — Integração do provider Gemini
 - TASK 010.1 — Exposição de erro do provider Gemini
 - TASK 010.2 — Documentação da limitação de quota Gemini
+- TASK 011 — Guardrails de Uso / Custo
 
 ## Bloqueios
 
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`).
-- Nenhum bloqueio de código conhecido para iniciar TASK 011.
+- Nenhum bloqueio de código conhecido após TASK 011.
 
 ## Governança QA
 
@@ -131,6 +132,15 @@
 - Nenhum SDK de Anthropic/OpenAI foi instalado.
 - Não há RAG, embeddings, upload, pgvector, persistência Supabase, streaming ou persistência de uso.
 
+## Guardrails de Uso / Custo
+
+- Guardrails locais em memória adicionados em `src/lib/ai/usage-guardrails.ts`.
+- `/api/ai/chat` agora aplica limite de contexto, output, chamadas reais por dia, tokens estimados por dia e custo estimado configurável.
+- Quando provider real excede guardrail, a rota evita chamada externa e usa fallback mock.
+- `/workspace/usage` mostra limites e uso em memória do processo atual.
+- `.env.example` documenta limites seguros para uso local.
+- Não há persistência Supabase de uso, dashboard histórico, RAG, embeddings, upload ou pgvector.
+
 ## Riscos
 
 - Repo publicado no GitHub como repositório privado.
@@ -138,8 +148,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão com TASK 011 — Guardrails de Uso / Custo.
+- Retomar na próxima sessão com TASK 012.
 
 ## Próxima ação recomendada
 
-Iniciar TASK 011.
+Definir TASK 012 antes de implementar nova feature.

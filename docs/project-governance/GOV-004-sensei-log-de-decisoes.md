@@ -228,3 +228,15 @@ Encerrar o bloco de trabalho com estado claro: Gemini está tecnicamente integra
 
 Impacto:
 A próxima sessão deve começar por TASK 011 — Guardrails de Uso / Custo. Não iniciar RAG, embeddings, upload, pgvector, persistência Supabase ou deploy antes dessa etapa.
+
+---
+
+### DEC-021 — Guardrails locais antes de aprofundar IA real
+
+TASK 011 implementou guardrails locais em memória para chamadas reais de IA.
+
+Motivo:
+Antes de avançar com IA real, RAG ou persistência, o projeto precisa ter limites explícitos de uso/custo e fallback seguro para evitar consumo acidental de API.
+
+Impacto:
+`/api/ai/chat` passa a validar contexto, output, chamadas reais por dia, tokens estimados e custo estimado configurável. Quando um provider real excede limites, a rota usa fallback mock. A implementação não grava eventos em Supabase e os contadores são resetados ao reiniciar o processo.

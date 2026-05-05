@@ -10,23 +10,24 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 010.2
-- Checkpoint: fim do dia após validação de quota Gemini
+- Task atual concluída: TASK 011
+- Checkpoint: guardrails locais de uso/custo implementados
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
 - Gemini integrado tecnicamente
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
+- Guardrails locais em memória operacionais
 
 ## Próxima task
 
-TASK 011 — Guardrails de Uso / Custo
+TASK 012 — a definir antes da próxima implementação
 
 Objetivo esperado:
-- definir limites de uso/custo antes de aprofundar IA real
+- escolher a próxima task com escopo explícito
 - manter mock fallback seguro
-- não implementar RAG, embeddings, upload, pgvector ou persistência Supabase
+- não implementar RAG, embeddings, upload, pgvector ou persistência Supabase sem nova decisão
 - continuar usando sessões curtas de Codex
 - declarar perfil recomendado de recursos por task conforme GOV-007
 

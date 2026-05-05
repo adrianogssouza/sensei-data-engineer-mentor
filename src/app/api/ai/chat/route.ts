@@ -3,11 +3,14 @@ import {
   getDefaultAiProvider,
   mockAiProvider,
 } from "@/lib/ai";
+import {
+  evaluateAiUsageGuardrails,
+  recordExternalAiUsage,
+} from "@/lib/ai/usage-guardrails";
 import type { AiGenerateRequest, AiMessage } from "@/types/ai";
 
 const MAX_MESSAGES = 20;
 const MAX_MESSAGE_LENGTH = 4000;
-const MAX_OUTPUT_TOKENS = 600;
 
 export const runtime = "nodejs";
 
@@ -85,21 +88,65 @@ export async function POST(request: Request) {
     );
   }
 
-  const generateRequest: AiGenerateRequest = {
-    messages,
-    maxTokens: MAX_OUTPUT_TOKENS,
-  };
   const provider = getDefaultAiProvider();
   const selectionNote = getAiProviderSelectionNote();
+  const guardrailDecision = evaluateAiUsageGuardrails(messages, provider.id);
+  const generateRequest: AiGenerateRequest = {
+    messages,
+    maxTokens: guardrailDecision.maxOutputTokens,
+    metadata: {
+      promptTokensEstimate: guardrailDecision.promptTokensEstimate,
+    },
+  };
+
+  if (!guardrailDecision.allowed) {
+    if (provider.id === "mock") {
+      return Response.json(
+        {
+          error:
+            guardrailDecision.reason ?? "AI usage guardrail blocked request.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const fallbackResponse = await mockAiProvider.generate(generateRequest);
+
+    return Response.json({
+      ...fallbackResponse,
+      metadata: {
+        ...fallbackResponse.metadata,
+        selectedProvider: fallbackResponse.provider,
+        attemptedProvider: provider.id,
+        fallbackUsed: true,
+        fallbackReason: guardrailDecision.reason,
+        usageGuardrails: {
+          promptTokensEstimate: guardrailDecision.promptTokensEstimate,
+          projectedTokens: guardrailDecision.projectedTokens,
+          projectedCostUsd: guardrailDecision.projectedCostUsd,
+        },
+      },
+    });
+  }
 
   try {
     const response = await provider.generate(generateRequest);
+    const usageSnapshot =
+      provider.id === "mock"
+        ? undefined
+        : recordExternalAiUsage(response, guardrailDecision);
 
     return Response.json({
       ...response,
       metadata: {
         ...response.metadata,
         selectionNote,
+        usageGuardrails: {
+          promptTokensEstimate: guardrailDecision.promptTokensEstimate,
+          projectedTokens: guardrailDecision.projectedTokens,
+          projectedCostUsd: guardrailDecision.projectedCostUsd,
+          dailyUsage: usageSnapshot,
+        },
       },
     });
   } catch (error) {
@@ -121,6 +168,11 @@ export async function POST(request: Request) {
         selectedProvider: fallbackResponse.provider,
         fallbackUsed: true,
         fallbackReason,
+        usageGuardrails: {
+          promptTokensEstimate: guardrailDecision.promptTokensEstimate,
+          projectedTokens: guardrailDecision.projectedTokens,
+          projectedCostUsd: guardrailDecision.projectedCostUsd,
+        },
       },
     });
   }

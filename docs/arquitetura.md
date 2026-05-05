@@ -44,6 +44,8 @@ O shell do workspace foi implementado como navegação e páginas placeholder. O
 
 A TASK 010.1 adicionou comportamento diagnóstico de fallback para falhas do provider Gemini. Testes de runtime confirmaram que a integração alcança a API Gemini e recebe uma resposta real da API. A TASK 010.2 documentou o bloqueio atual: quota/billing do Google. Gemini retorna `429 RESOURCE_EXHAUSTED`, e a quota free tier parece estar em `0` para o modelo Gemini testado. Não há bloqueio de código conhecido. O fallback mock permanece operacional enquanto a quota não estiver disponível. A documentação de fim do dia está sincronizada com TASK 011 como próxima task planejada.
 
+A TASK 011 adicionou guardrails locais em memória para chamadas reais de IA. A API `/api/ai/chat` estima tokens de contexto, limita output, limita chamadas reais por dia e pode bloquear por custo estimado quando houver taxa configurada. Se um provider real exceder os limites, a rota evita a chamada externa e usa fallback mock. Esses contadores não persistem em Supabase e são resetados ao reiniciar o processo.
+
 ## Arquitetura Planejada
 
 A arquitetura planejada do SENSEI inclui:
@@ -53,9 +55,9 @@ A arquitetura planejada do SENSEI inclui:
 - OpenAI embeddings para indexação e recuperação por chunks.
 - RAG para respostas do tutor baseadas em fontes.
 - Providers Anthropic e OpenAI por trás da abstração de provider.
-- Registro de custos e tokens para chamadas de modelo.
+- Logging persistente de custo e tokens para chamadas de modelo.
 - Fluxos de avaliação para casos RAG positivos e negativos.
 
 ## Ainda Não Implementado
 
-Os componentes planejados acima ainda não foram implementados. O estado atual do repositório não possui extensão pgvector, tabela `document_chunks`, coluna de embeddings, SDK Anthropic, SDK OpenAI, fluxo de ingestão de documentos, pipeline RAG, eval runner, ownership multi-user com `user_id`, política RLS, persistência de chat no Supabase, persistência de uso, streaming ou configuração de deploy.
+Os componentes planejados acima ainda não foram implementados. O estado atual do repositório não possui extensão pgvector, tabela `document_chunks`, coluna de embeddings, SDK Anthropic, SDK OpenAI, fluxo de ingestão de documentos, pipeline RAG, eval runner, ownership multi-user com `user_id`, política RLS, persistência de chat no Supabase, persistência de uso em banco, streaming ou configuração de deploy.

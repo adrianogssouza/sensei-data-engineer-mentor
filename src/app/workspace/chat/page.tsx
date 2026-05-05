@@ -139,16 +139,16 @@ export default function WorkspaceChatPage() {
         Chat
       </p>
       <h2 className="mt-3 text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
-        AI chat
+        Chat com IA
       </h2>
       <p className="mt-4 max-w-2xl text-zinc-700 dark:text-zinc-300">
-        SENSEI routes chat through the internal AI provider API. Gemini is used
-        only when explicitly configured; otherwise the local mock provider keeps
-        the chat available. There is no Supabase persistence, streaming, or RAG.
-        Messages are saved locally in this browser only.
+        O SENSEI roteia o chat pela API interna de providers de IA. Gemini só
+        é usado quando configurado explicitamente; caso contrário, o provider
+        mock local mantém o chat disponível. Não há persistência Supabase,
+        streaming ou RAG. As mensagens ficam salvas apenas neste navegador.
       </p>
       <p className="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
-        Provider mode: {providerMode}
+        Modo do provider: {providerMode}
       </p>
 
       {errorMessage ? (

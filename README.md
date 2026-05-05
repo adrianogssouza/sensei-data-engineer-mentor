@@ -101,6 +101,23 @@ Gemini é o primeiro provider real para experimentação inicial com controle de
 AI_PROVIDER=mock
 ```
 
+Guardrails locais de uso/custo:
+
+```bash
+DAILY_TOKEN_LIMIT=100000
+DAILY_COST_LIMIT_USD=1.00
+DAILY_AI_REQUEST_LIMIT=20
+MAX_CONTEXT_TOKENS=6000
+MAX_OUTPUT_TOKENS=600
+AI_ESTIMATED_COST_USD_PER_1K_TOKENS=0
+```
+
+Esses limites são aplicados em memória no servidor. Eles protegem chamadas
+reais de IA antes de haver persistência em banco. Quando um provider real
+excede os limites, o chat usa fallback mock. `AI_ESTIMATED_COST_USD_PER_1K_TOKENS=0`
+mantém o guardrail de custo apenas informativo; defina um valor maior que zero
+para bloquear por custo estimado.
+
 A fundação de autenticação foi implementada com login por email/password, signup, logout e rota protegida de dashboard. Ela é opcional porque o app está operando em modo single-user/private. Para testar auth localmente:
 
 1. Crie um projeto no Supabase.
@@ -196,7 +213,21 @@ Provider padrão atual: `mock`.
 
 Gemini está disponível pela rota server quando explicitamente habilitado com `AI_PROVIDER=gemini` e `GEMINI_API_KEY`. O modelo padrão é `gemini-2.0-flash-lite`, escolhido para experimentação com controle de custo. Se Gemini não estiver configurado ou falhar, o provider mock permanece como fallback.
 
-Anthropic e OpenAI estão planejados como ids de provider, mas nenhum SDK Anthropic/OpenAI foi instalado. Ainda não há RAG, embeddings, upload, pgvector, persistência Supabase, streaming ou persistência de uso.
+Anthropic e OpenAI estão planejados como ids de provider, mas nenhum SDK Anthropic/OpenAI foi instalado. Ainda não há RAG, embeddings, upload, pgvector, persistência Supabase, streaming ou persistência de uso em banco.
+
+## Guardrails de Uso / Custo
+
+A TASK 011 adicionou guardrails locais em memória para chamadas reais de IA:
+
+- limite diário de chamadas reais;
+- limite diário de tokens estimados;
+- limite máximo de contexto por request;
+- limite máximo de output por request;
+- limite diário de custo estimado quando `AI_ESTIMATED_COST_USD_PER_1K_TOKENS` for maior que zero.
+
+Esses guardrails não gravam eventos em Supabase e não implementam dashboard
+persistente de custos. A rota `/workspace/usage` mostra o estado local em
+memória do processo atual. Reiniciar o servidor zera esses contadores.
 
 ## Status Runtime do Gemini
 
@@ -204,7 +235,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint de fim do dia: o trabalho está sincronizado até TASK 010.2. A próxima task planejada é TASK 011 — Guardrails de Uso / Custo.
+Checkpoint atual: o trabalho está sincronizado até TASK 011. A próxima task planejada é TASK 012, a definir antes da próxima implementação.
 
 ## Segredos
 
