@@ -17,13 +17,13 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
 - Fase atual: preparação da v0.1-alpha
-- Última task concluída: TASK 012
-- Checkpoint atual: plano curto da v0.1-alpha definido
-- Próxima task: TASK 013
+- Última task concluída: TASK 013
+- Checkpoint atual: persistência Supabase do histórico de chat implementada com fallback local
+- Próxima task: TASK 014
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
-- Próxima implementação planejada: persistência Supabase do histórico de chat
+- Próxima implementação planejada: UI mínima de histórico no workspace
 
 ## Objetivo principal 2026
 

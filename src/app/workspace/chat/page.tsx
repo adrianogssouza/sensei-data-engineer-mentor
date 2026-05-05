@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ChatEmptyState } from "@/components/chat/chat-empty-state";
 import { ChatInput } from "@/components/chat/chat-input";
@@ -8,8 +8,11 @@ import { ChatMessageList } from "@/components/chat/chat-message-list";
 import { ChatToolbar } from "@/components/chat/chat-toolbar";
 import {
   clearLocalChatMessages,
+  clearLocalChatThreadId,
   loadLocalChatMessages,
+  loadLocalChatThreadId,
   saveLocalChatMessages,
+  saveLocalChatThreadId,
 } from "@/lib/chat/local-chat-storage";
 import { createMockAssistantResponse } from "@/lib/chat/mock-chat";
 import type { AiGenerateResponse, AiMessage } from "@/types/ai";
@@ -17,6 +20,28 @@ import type { ChatMessage, ChatRole } from "@/types/chat";
 
 type ChatApiResponse = AiGenerateResponse & {
   error?: string;
+};
+
+type ChatThread = {
+  id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  archived_at: string | null;
+};
+
+type ChatThreadsApiResponse = {
+  available?: boolean;
+  error?: string;
+  threads?: ChatThread[];
+  thread?: ChatThread;
+};
+
+type ChatMessagesApiResponse = {
+  available?: boolean;
+  error?: string;
+  threadId?: string;
+  messages?: ChatMessage[];
 };
 
 function createMessage(role: ChatRole, content: string): ChatMessage {
@@ -32,17 +57,120 @@ export default function WorkspaceChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isResponding, setIsResponding] = useState(false);
   const [providerMode, setProviderMode] = useState("mock");
+  const [historyMode, setHistoryMode] = useState("local");
+  const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const hasHydrated = useRef(false);
 
+  function toAiMessages(chatMessages: ChatMessage[]): AiMessage[] {
+    return chatMessages.map((message) => ({
+      role: message.role,
+      content: message.content,
+    }));
+  }
+
+  const persistMessages = useCallback(async (
+    threadId: string | null,
+    messagesToPersist: ChatMessage[],
+  ): Promise<string | null> => {
+    try {
+      const response = await fetch("/api/chat/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          threadId,
+          title:
+            messagesToPersist.find((message) => message.role === "user")
+              ?.content ?? "Conversa principal",
+          messages: messagesToPersist,
+        }),
+      });
+      const payload = (await response.json()) as ChatMessagesApiResponse;
+
+      if (!response.ok || !payload.available || !payload.threadId) {
+        setHistoryMode("local");
+        return threadId;
+      }
+
+      setActiveThreadId(payload.threadId);
+      saveLocalChatThreadId(payload.threadId);
+      setHistoryMode("supabase");
+
+      return payload.threadId;
+    } catch {
+      setHistoryMode("local");
+      return threadId;
+    }
+  }, []);
+
+  const loadRemoteHistory = useCallback(
+    async (localThreadId: string | null, localMessages: ChatMessage[]) => {
+      try {
+        const threadsResponse = await fetch("/api/chat/threads", {
+          cache: "no-store",
+        });
+        const threadsPayload =
+          (await threadsResponse.json()) as ChatThreadsApiResponse;
+
+        if (!threadsResponse.ok || !threadsPayload.available) {
+          setHistoryMode("local");
+          return;
+        }
+
+        const remoteThread =
+          threadsPayload.threads?.find(
+            (thread) => thread.id === localThreadId,
+          ) ?? threadsPayload.threads?.[0];
+
+        if (!remoteThread) {
+          setHistoryMode("supabase-ready");
+          return;
+        }
+
+        const messagesResponse = await fetch(
+          `/api/chat/messages?threadId=${encodeURIComponent(remoteThread.id)}`,
+          { cache: "no-store" },
+        );
+        const messagesPayload =
+          (await messagesResponse.json()) as ChatMessagesApiResponse;
+
+        if (!messagesResponse.ok || !messagesPayload.available) {
+          setHistoryMode("local");
+          return;
+        }
+
+        setActiveThreadId(remoteThread.id);
+        saveLocalChatThreadId(remoteThread.id);
+        setHistoryMode("supabase");
+
+        if (messagesPayload.messages && messagesPayload.messages.length > 0) {
+          setMessages(messagesPayload.messages);
+          saveLocalChatMessages(messagesPayload.messages);
+        } else if (localMessages.length > 0) {
+          void persistMessages(remoteThread.id, localMessages);
+        }
+      } catch {
+        setHistoryMode("local");
+      }
+    },
+    [persistMessages],
+  );
+
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
+      const localMessages = loadLocalChatMessages();
+      const localThreadId = loadLocalChatThreadId();
+
       hasHydrated.current = true;
-      setMessages(loadLocalChatMessages());
+      setMessages(localMessages);
+      setActiveThreadId(localThreadId);
+      void loadRemoteHistory(localThreadId, localMessages);
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, []);
+  }, [loadRemoteHistory]);
 
   useEffect(() => {
     if (!hasHydrated.current) {
@@ -52,11 +180,18 @@ export default function WorkspaceChatPage() {
     saveLocalChatMessages(messages);
   }, [messages]);
 
-  function toAiMessages(chatMessages: ChatMessage[]): AiMessage[] {
-    return chatMessages.map((message) => ({
-      role: message.role,
-      content: message.content,
-    }));
+  async function archiveRemoteThread(threadId: string | null) {
+    if (!threadId) {
+      return;
+    }
+
+    try {
+      await fetch(`/api/chat/threads?threadId=${encodeURIComponent(threadId)}`, {
+        method: "DELETE",
+      });
+    } catch {
+      // Local fallback already clears browser state.
+    }
   }
 
   async function requestAssistantResponse(
@@ -92,6 +227,7 @@ export default function WorkspaceChatPage() {
       void requestAssistantResponse(conversationMessages)
         .then((response) => {
           const assistantMessage = createMessage("assistant", response.content);
+          const persistedMessages = [userMessage, assistantMessage];
           const fallbackReason = response.metadata?.fallbackReason;
           const selectionNote = response.metadata?.selectionNote;
 
@@ -107,12 +243,14 @@ export default function WorkspaceChatPage() {
             ...currentMessages,
             assistantMessage,
           ]);
+          void persistMessages(activeThreadId, persistedMessages);
         })
         .catch(() => {
           const assistantMessage = createMessage(
             "assistant",
             createMockAssistantResponse(content),
           );
+          const persistedMessages = [userMessage, assistantMessage];
 
           setProviderMode("mock");
           setErrorMessage("AI route failed; local mock fallback used.");
@@ -120,6 +258,7 @@ export default function WorkspaceChatPage() {
             ...currentMessages,
             assistantMessage,
           ]);
+          void persistMessages(activeThreadId, persistedMessages);
         })
         .finally(() => {
           setIsResponding(false);
@@ -128,9 +267,13 @@ export default function WorkspaceChatPage() {
   }
 
   function handleClearChat() {
+    void archiveRemoteThread(activeThreadId);
     setMessages([]);
     setErrorMessage(null);
+    setActiveThreadId(null);
+    setHistoryMode("local");
     clearLocalChatMessages();
+    clearLocalChatThreadId();
   }
 
   return (
@@ -144,11 +287,12 @@ export default function WorkspaceChatPage() {
       <p className="mt-4 max-w-2xl text-zinc-700 dark:text-zinc-300">
         O SENSEI roteia o chat pela API interna de providers de IA. Gemini só
         é usado quando configurado explicitamente; caso contrário, o provider
-        mock local mantém o chat disponível. Não há persistência Supabase,
-        streaming ou RAG. As mensagens ficam salvas apenas neste navegador.
+        mock local mantém o chat disponível. Quando Supabase está configurado,
+        o histórico é salvo no banco; caso contrário, as mensagens ficam apenas
+        neste navegador. Ainda não há streaming ou RAG.
       </p>
       <p className="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
-        Modo do provider: {providerMode}
+        Modo do provider: {providerMode} · Histórico: {historyMode}
       </p>
 
       {errorMessage ? (

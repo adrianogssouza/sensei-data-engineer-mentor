@@ -6,7 +6,7 @@ SENSEI Data Engineer Mentor é um mentor pessoal de estudos com IA focado em Eng
 
 Fase atual: preparação da v0.1-alpha.
 
-O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema local inicial do Supabase, shell de workspace, UI de chat com persistência apenas no navegador, skeleton interno de provider de IA e primeira integração com Gemini por trás de uma API route no servidor. O modo operacional atual é single-user/private: autenticação existe, mas é opcional e não faz parte do fluxo principal de uso diário. RAG, embeddings, upload, pgvector, persistência de chat no Supabase, shadcn/ui e deploy ainda não foram implementados.
+O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema local inicial do Supabase, shell de workspace, UI de chat com persistência local e persistência Supabase quando configurada, skeleton interno de provider de IA e primeira integração com Gemini por trás de uma API route no servidor. O modo operacional atual é single-user/private: autenticação existe, mas é opcional e não faz parte do fluxo principal de uso diário. RAG, embeddings, upload, pgvector, shadcn/ui e deploy ainda não foram implementados.
 
 O plano curto atual da v0.1-alpha está em `docs/plano-v0.1-alpha.md`.
 
@@ -26,7 +26,7 @@ Rotas disponíveis:
 - `/workspace/usage` - placeholder de uso/custo
 - `/workspace/settings` - placeholder de configurações privadas
 
-A página de chat chama `/api/ai/chat`, que usa o registry interno de providers. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados. Sem chave Gemini, o app volta para o provider mock determinístico. As mensagens persistem neste navegador usando `localStorage`. A página ainda não conecta ao Supabase, não lê nem escreve dados em cloud, não faz upload de arquivos e não executa RAG. Ainda não há sincronização em cloud nem persistência no Supabase.
+A página de chat chama `/api/ai/chat`, que usa o registry interno de providers. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados. Sem chave Gemini, o app volta para o provider mock determinístico. O histórico usa Supabase quando as variáveis públicas estão configuradas; caso contrário, as mensagens persistem neste navegador usando `localStorage`. A página ainda não faz upload de arquivos e não executa RAG.
 
 ## Stack Técnica Instalada
 
@@ -174,6 +174,7 @@ src/
 - `src/app/workspace/` contém o workspace público principal para uso diário.
 - `src/app/workspace/*` contém o shell do workspace e rotas placeholder.
 - `src/app/api/ai/chat/route.ts` contém a API route de chat com IA sem streaming.
+- `src/app/api/chat/threads/route.ts` e `src/app/api/chat/messages/route.ts` contêm as rotas internas de histórico.
 - `src/components/workspace/` contém componentes reutilizáveis simples do shell do workspace.
 - `src/lib/ai/` contém o registry interno de providers de IA, provider mock e provider Gemini.
 - `src/lib/env.ts` contém helpers de validação de ambiente.
@@ -204,10 +205,11 @@ src/
 - TASK 010.2 - Documentação da limitação de quota Gemini
 - TASK 011 - Guardrails de Uso / Custo
 - TASK 012 - Planejamento curto da v0.1-alpha
+- TASK 013 - Persistência Supabase do histórico de chat
 
 ## Próxima Task
 
-TASK 013 — Persistência Supabase do histórico de chat
+TASK 014 — UI mínima de histórico no workspace
 
 ## Status do Provider de IA
 
@@ -239,7 +241,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 012. A próxima task planejada é TASK 013 — Persistência Supabase do histórico de chat.
+Checkpoint atual: o trabalho está sincronizado até TASK 013. A próxima task planejada é TASK 014 — UI mínima de histórico no workspace.
 
 ## Segredos
 

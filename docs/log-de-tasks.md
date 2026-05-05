@@ -23,4 +23,5 @@
 - TASK 010.2 - Concluída: limitação de quota runtime do Gemini documentada após resposta real da API retornar `429 RESOURCE_EXHAUSTED`; fallback mock permanece operacional.
 - TASK 011 - Concluída: guardrails locais em memória adicionados para limitar chamadas reais de IA, tokens estimados, contexto, output e custo estimado configurável, mantendo fallback mock e sem persistência Supabase.
 - TASK 012 - Concluída: plano curto da v0.1-alpha definido com sequência TASK 013 a TASK 017, priorizando histórico Supabase, deploy mock-first, QA e handoff de portfólio.
-- Checkpoint atual - Concluído: próxima task planejada é TASK 013 — Persistência Supabase do histórico de chat.
+- TASK 013 - Concluída: rotas internas de threads/mensagens e persistência Supabase do histórico de chat implementadas com fallback local em `localStorage`.
+- Checkpoint atual - Concluído: próxima task planejada é TASK 014 — UI mínima de histórico no workspace.

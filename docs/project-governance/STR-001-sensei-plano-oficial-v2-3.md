@@ -65,6 +65,7 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 010.2 concluída
 - TASK 011 concluída
 - TASK 012 concluída
+- TASK 013 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Fundação Next.js criada
@@ -72,10 +73,11 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - Mock fallback permanece operacional.
 - Guardrails locais de uso/custo implementados.
 - Plano curto da v0.1-alpha definido.
+- Persistência Supabase do histórico de chat implementada com fallback local.
 
 ## Próximo passo
 
-TASK 013 — Persistência Supabase do histórico de chat
+TASK 014 — UI mínima de histórico no workspace
 
 ## Regra central
 

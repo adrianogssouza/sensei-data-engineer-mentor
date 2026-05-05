@@ -1,6 +1,7 @@
 import type { ChatMessage } from "@/types/chat";
 
 export const LOCAL_CHAT_STORAGE_KEY = "sensei.localChat.v1";
+const LOCAL_CHAT_THREAD_STORAGE_KEY = "sensei.localChatThread.v1";
 
 function canUseLocalStorage(): boolean {
   return typeof window !== "undefined" && Boolean(window.localStorage);
@@ -77,6 +78,42 @@ export function clearLocalChatMessages(): void {
 
   try {
     window.localStorage.removeItem(LOCAL_CHAT_STORAGE_KEY);
+  } catch {
+    // Ignore browser storage errors.
+  }
+}
+
+export function loadLocalChatThreadId(): string | null {
+  if (!canUseLocalStorage()) {
+    return null;
+  }
+
+  try {
+    return window.localStorage.getItem(LOCAL_CHAT_THREAD_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function saveLocalChatThreadId(threadId: string): void {
+  if (!canUseLocalStorage()) {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(LOCAL_CHAT_THREAD_STORAGE_KEY, threadId);
+  } catch {
+    // Ignore storage quota or browser privacy errors.
+  }
+}
+
+export function clearLocalChatThreadId(): void {
+  if (!canUseLocalStorage()) {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(LOCAL_CHAT_THREAD_STORAGE_KEY);
   } catch {
     // Ignore browser storage errors.
   }

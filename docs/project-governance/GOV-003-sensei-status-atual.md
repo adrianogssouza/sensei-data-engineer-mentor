@@ -4,9 +4,9 @@
 
 - Data de atualização: 2026-05-05
 - Fase: preparação da v0.1-alpha
-- Última task concluída: TASK 012
-- Checkpoint atual: plano curto da v0.1-alpha definido
-- Próxima task: TASK 013
+- Última task concluída: TASK 013
+- Checkpoint atual: persistência Supabase do histórico de chat implementada com fallback local
+- Próxima task: TASK 014
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -42,11 +42,12 @@
 - TASK 010.2 — Documentação da limitação de quota Gemini
 - TASK 011 — Guardrails de Uso / Custo
 - TASK 012 — Planejamento curto da v0.1-alpha
+- TASK 013 — Persistência Supabase do histórico de chat
 
 ## Bloqueios
 
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`).
-- Nenhum bloqueio de código conhecido após TASK 011.
+- Nenhum bloqueio de código conhecido após TASK 013.
 
 ## Governança QA
 
@@ -97,14 +98,16 @@
 - Layout de workspace criado em `/workspace`.
 - Navegação interna criada para overview, chat, documents, usage e settings.
 - Rotas placeholder criadas para `/workspace/chat`, `/workspace/documents`, `/workspace/usage` e `/workspace/settings`.
-- Nenhuma rota faz leitura/escrita no banco.
-- Chat, AI, RAG, upload, embeddings, pgvector e usage UI conectada ainda não foram implementados.
+- Chat agora possui rotas internas para persistência Supabase quando configurado.
+- RAG, upload, embeddings, pgvector e usage UI persistente ainda não foram implementados.
 
 ## Chat Local com Mock
 
 - `/workspace/chat` agora possui interface local de chat.
 - Respostas do assistente são determinísticas e locais.
-- Não há API route, chamadas externas, leitura/escrita no Supabase, persistência, streaming, provider de IA, RAG ou custo de IA.
+- Chat usa API interna de IA e API interna de histórico quando Supabase está configurado.
+- Sem Supabase configurado, o fallback local via `localStorage` permanece operacional.
+- Não há streaming, RAG ou persistência de uso.
 
 ## Persistência Local do Chat
 
@@ -112,7 +115,9 @@
 - Persistência é local deste navegador apenas.
 - Clear chat remove mensagens do estado React e do `localStorage`.
 - JSON inválido/corrompido é tratado sem quebrar a aplicação.
-- Não há cloud sync, persistência Supabase, API route, provider real, RAG ou custo de IA.
+- Há persistência Supabase de histórico quando env Supabase está configurado.
+- Sem Supabase configurado, não há cloud sync e a persistência permanece local.
+- RAG e persistência de uso ainda não foram implementados.
 
 ## Skeleton de Provider de IA
 
@@ -142,10 +147,20 @@
 - `.env.example` documenta limites seguros para uso local.
 - Não há persistência Supabase de uso, dashboard histórico, RAG, embeddings, upload ou pgvector.
 
+## Persistência Supabase do Histórico de Chat
+
+- Rotas internas criadas em `/api/chat/threads` e `/api/chat/messages`.
+- `/workspace/chat` tenta carregar o thread remoto mais recente quando Supabase está configurado.
+- Novas mensagens de usuário e assistente são persistidas no Supabase em background quando possível.
+- Se Supabase não estiver configurado ou falhar, o chat continua funcionando com `localStorage`.
+- Limpar chat arquiva o thread remoto atual quando possível e limpa o fallback local.
+- Ainda não há UI de lista/seleção de conversas; isso fica para TASK 014.
+- Não foram adicionados RAG, embeddings, upload, pgvector, multi-user/RLS ou persistência de uso.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
-- Próxima implementação planejada: TASK 013 — Persistência Supabase do histórico de chat.
+- Próxima implementação planejada: TASK 014 — UI mínima de histórico no workspace.
 - Sequência planejada: TASK 013 histórico Supabase, TASK 014 UI mínima de histórico, TASK 015 preparação de deploy mock-first, TASK 016 QA v0.1-alpha, TASK 017 handoff de portfólio.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
@@ -157,8 +172,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão com TASK 013.
+- Retomar na próxima sessão com TASK 014.
 
 ## Próxima ação recomendada
 
-Iniciar TASK 013 — Persistência Supabase do histórico de chat.
+Iniciar TASK 014 — UI mínima de histórico no workspace.

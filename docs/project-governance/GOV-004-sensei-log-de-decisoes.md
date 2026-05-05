@@ -252,3 +252,15 @@ O projeto precisa avançar para histórico e deploy sem abrir escopo de RAG, emb
 
 Impacto:
 A próxima implementação será TASK 013 — Persistência Supabase do histórico de chat. Em seguida, o plano prioriza UI mínima de histórico, preparação de deploy mock-first, QA da v0.1-alpha e handoff de portfólio. Gemini continua integrado, mas o fluxo oficial segue com mock fallback até haver quota/billing disponível.
+
+---
+
+### DEC-023 — Persistência Supabase do histórico com fallback local
+
+TASK 013 implementou persistência do histórico de chat usando o schema existente de `chat_threads` e `chat_messages`.
+
+Motivo:
+Histórico de chat é parte explícita da v0.1-alpha e aumenta a utilidade diária do app sem exigir RAG, embeddings ou provider real funcionando.
+
+Impacto:
+Foram criadas rotas internas para threads e mensagens, e `/workspace/chat` passou a sincronizar com Supabase quando configurado. Se Supabase não estiver configurado ou falhar, o chat continua usando `localStorage`. Limpar chat arquiva o thread remoto atual quando possível. Lista/seleção de conversas fica para TASK 014.

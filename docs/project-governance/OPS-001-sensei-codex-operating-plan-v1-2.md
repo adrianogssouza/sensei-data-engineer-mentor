@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 012
-- Checkpoint: plano curto da v0.1-alpha definido
+- Task atual concluída: TASK 013
+- Checkpoint: persistência Supabase do histórico de chat implementada com fallback local
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,15 +19,16 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: persistência Supabase do histórico de chat
+- Próxima implementação definida: UI mínima de histórico no workspace
 
 ## Próxima task
 
-TASK 013 — Persistência Supabase do histórico de chat
+TASK 014 — UI mínima de histórico no workspace
 
 Objetivo esperado:
-- criar leitura/escrita de threads e mensagens usando o schema existente
-- conectar `/workspace/chat` a uma API interna segura
+- listar conversas salvas
+- permitir abrir conversa existente
+- permitir criar/limpar conversa
 - manter mock fallback seguro
 - não implementar RAG, embeddings, upload, pgvector ou multi-user/RLS
 - continuar usando sessões curtas de Codex
