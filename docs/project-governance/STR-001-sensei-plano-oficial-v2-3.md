@@ -50,13 +50,28 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 000.2 concluída
 - TASK 001 concluída
 - TASK 002 concluída
+- TASK 003 concluída
+- TASK 004 concluída
+- TASK 004.1 concluída
+- TASK 005 concluída
+- TASK 006 concluída
+- TASK 007 concluída
+- TASK 008 concluída
+- TASK 008.1 concluída
+- TASK 009 concluída
+- TASK 009.1 concluída
+- TASK 010 concluída
+- TASK 010.1 concluída
+- TASK 010.2 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Foundation Next.js criada
+- Gemini integrado tecnicamente, mas runtime real está limitado por quota/billing Google (`429 RESOURCE_EXHAUSTED`).
+- Mock fallback permanece operacional.
 
 ## Próximo passo
 
-TASK 003 — Supabase Foundation
+TASK 011 — Usage / Cost Guardrails
 
 ## Regra central
 

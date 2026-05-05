@@ -216,3 +216,15 @@ Teste manual confirmou que a integração alcança a API Gemini e recebe respost
 
 Impacto:
 O bloqueio atual deve ser tratado como limitação de quota/billing, não como falha conhecida de integração. O mock fallback permanece operacional até haver quota disponível ou billing habilitado.
+
+---
+
+### DEC-020 — End-of-day checkpoint after TASK 010.2
+
+O checkpoint de fim do dia sincronizou documentação e governança após a validação de quota Gemini.
+
+Motivo:
+Encerrar o bloco de trabalho com estado claro: Gemini está tecnicamente integrado, runtime real está bloqueado por quota/billing Google, e o fallback mock permanece operacional.
+
+Impacto:
+A próxima sessão deve começar por TASK 011 — Usage / Cost Guardrails. Não iniciar RAG, embeddings, upload, pgvector, persistência Supabase ou deploy antes dessa etapa.

@@ -17,8 +17,11 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
 - Fase atual: v0.1-alpha preparation
-- Última task concluída: TASK 002
-- Próxima task: TASK 003
+- Última task concluída: TASK 010.2
+- Checkpoint atual: fim do dia após validação de quota Gemini
+- Próxima task: TASK 011
+- Bloqueio atual: Google Gemini quota/billing para chamada real (`429 RESOURCE_EXHAUSTED`)
+- Fallback operacional atual: provider mock
 
 ## Objetivo principal 2026
 

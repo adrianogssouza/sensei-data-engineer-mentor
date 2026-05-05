@@ -5,6 +5,7 @@
 - Data de atualização: 2026-04-29
 - Fase: v0.1-alpha preparation
 - Última task concluída: TASK 010.2
+- Checkpoint atual: fim do dia após validação de quota Gemini
 - Próxima task: TASK 011
 - Modo operacional: Single-user / private
 
@@ -37,11 +38,13 @@
 - TASK 009 — AI Provider Skeleton
 - TASK 009.1 — Sync Resource/Session Governance Docs
 - TASK 010 — Gemini Provider Integration
+- TASK 010.1 — Expose Gemini Provider Error
 - TASK 010.2 — Document Gemini Quota Limitation
 
 ## Bloqueios
 
-- Nenhum bloqueio técnico imediato para TASK 011.
+- Bloqueio atual: Google Gemini quota/billing para chamada real (`429 RESOURCE_EXHAUSTED`).
+- Nenhum bloqueio de código conhecido para iniciar TASK 011.
 
 ## Governança QA
 
@@ -123,6 +126,7 @@
 - Integração Gemini foi validada tecnicamente: `/api/ai/chat` alcança a API Gemini e recebe resposta real.
 - Bloqueio atual de runtime: `429 RESOURCE_EXHAUSTED` por quota/billing Google; free tier parece `0` para o modelo testado.
 - Nenhum bloqueio de código conhecido neste ponto; mock fallback permanece ativo.
+- Fallback operacional atual: provider mock.
 - Anthropic e OpenAI estão planejados nos tipos, mas não estão ativos.
 - Nenhum SDK de Anthropic/OpenAI foi instalado.
 - Não há RAG, embeddings, upload, pgvector, Supabase persistence, streaming ou usage persistence.
@@ -134,6 +138,7 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
+- Retomar na próxima sessão com TASK 011 — Usage / Cost Guardrails.
 
 ## Próxima ação recomendada
 

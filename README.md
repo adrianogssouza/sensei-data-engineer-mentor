@@ -181,6 +181,8 @@ src/
 - TASK 009 - AI Provider Skeleton
 - TASK 009.1 - Sync Resource/Session Governance Docs
 - TASK 010 - Gemini Provider Integration
+- TASK 010.1 - Gemini Diagnostics / Fallback Reason
+- TASK 010.2 - Document Gemini Quota Limitation
 
 ## Next Task
 
@@ -201,6 +203,8 @@ Anthropic and OpenAI are planned provider ids, but no Anthropic/OpenAI SDKs are 
 Gemini provider integration is implemented and `/api/ai/chat` reaches the Gemini API when configured. Current real-call testing is blocked by Google quota/billing: the API returns `429 RESOURCE_EXHAUSTED`, and the free tier quota appears to be `0` for the tested Gemini model. This is a quota/runtime account limitation, not a known code integration blocker.
 
 Mock fallback remains operational. To test real Gemini later, make sure the Google AI Studio/API project has available quota or billing enabled, set the Gemini variables in `.env.local`, and restart `pnpm dev`.
+
+End-of-day checkpoint: work is synchronized through TASK 010.2. The next planned task is TASK 011 - Usage / Cost Guardrails.
 
 ## Secrets
 

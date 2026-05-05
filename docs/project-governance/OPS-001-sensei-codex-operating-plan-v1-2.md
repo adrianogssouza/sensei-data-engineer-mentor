@@ -10,26 +10,25 @@
 
 ## Estado atual
 
-- TASK 000 concluída
-- TASK 000.1 concluída
-- TASK 000.2 concluída
-- TASK 001 concluída
-- TASK 002 concluída
+- Task atual concluída: TASK 010.2
+- Checkpoint: fim do dia após validação de quota Gemini
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
-- Foundation Next.js criada
+- Gemini integrado tecnicamente
+- Runtime real bloqueado por quota/billing Google (`429 RESOURCE_EXHAUSTED`)
+- Mock fallback operacional
 
 ## Próxima task
 
-TASK 003 — Supabase Foundation
+TASK 011 — Usage / Cost Guardrails
 
 Objetivo esperado:
-- instalar SDK Supabase se necessário
-- criar estrutura de clients
-- preparar env validation
-- não implementar auth ainda
-- não criar migrations ainda
+- definir limites de uso/custo antes de aprofundar IA real
+- manter mock fallback seguro
+- não implementar RAG, embeddings, upload, pgvector ou persistência Supabase
+- continuar usando sessões curtas de Codex
+- declarar perfil recomendado de recursos por task conforme GOV-007
 
 ## Regras de consumo
 

@@ -19,4 +19,6 @@
 - TASK 009 - Completed: AI provider skeleton created with typed provider contracts, local mock provider, provider registry, and chat still running locally with no external API calls.
 - TASK 009.1 - Completed: GOV-007/GOV-008 governance docs synced and AGENTS.md updated to OPS v1.2.
 - TASK 010 - Completed: Gemini provider integration added with `@google/genai`, `/api/ai/chat`, provider registry fallback to mock, and chat API wiring without RAG, embeddings, upload, Supabase persistence, or streaming.
+- TASK 010.1 - Completed: Gemini diagnostics and fallback reason improved so provider failures are visible in sanitized server logs and clearer UI metadata.
 - TASK 010.2 - Completed: documented Gemini runtime quota limitation after real API response returned `429 RESOURCE_EXHAUSTED`; mock fallback remains operational.
+- End-of-day checkpoint - Completed: documentation and governance synchronized after Gemini quota validation; next planned task is TASK 011 - Usage / Cost Guardrails.
