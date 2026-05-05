@@ -240,3 +240,15 @@ Antes de avançar com IA real, RAG ou persistência, o projeto precisa ter limit
 
 Impacto:
 `/api/ai/chat` passa a validar contexto, output, chamadas reais por dia, tokens estimados e custo estimado configurável. Quando um provider real excede limites, a rota usa fallback mock. A implementação não grava eventos em Supabase e os contadores são resetados ao reiniciar o processo.
+
+---
+
+### DEC-022 — Sequência curta da v0.1-alpha definida
+
+TASK 012 definiu a sequência curta de trabalho até o fechamento da v0.1-alpha.
+
+Motivo:
+O projeto precisa avançar para histórico e deploy sem abrir escopo de RAG, embeddings, upload ou projeto infinito. Como o Gemini real segue bloqueado por quota/billing, o provider real não deve impedir o avanço do MVP.
+
+Impacto:
+A próxima implementação será TASK 013 — Persistência Supabase do histórico de chat. Em seguida, o plano prioriza UI mínima de histórico, preparação de deploy mock-first, QA da v0.1-alpha e handoff de portfólio. Gemini continua integrado, mas o fluxo oficial segue com mock fallback até haver quota/billing disponível.

@@ -2,11 +2,11 @@
 
 ## Retrato Atual
 
-- Data de atualização: 2026-04-29
+- Data de atualização: 2026-05-05
 - Fase: preparação da v0.1-alpha
-- Última task concluída: TASK 011
-- Checkpoint atual: guardrails locais de uso/custo implementados
-- Próxima task: TASK 012
+- Última task concluída: TASK 012
+- Checkpoint atual: plano curto da v0.1-alpha definido
+- Próxima task: TASK 013
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -41,6 +41,7 @@
 - TASK 010.1 — Exposição de erro do provider Gemini
 - TASK 010.2 — Documentação da limitação de quota Gemini
 - TASK 011 — Guardrails de Uso / Custo
+- TASK 012 — Planejamento curto da v0.1-alpha
 
 ## Bloqueios
 
@@ -141,6 +142,14 @@
 - `.env.example` documenta limites seguros para uso local.
 - Não há persistência Supabase de uso, dashboard histórico, RAG, embeddings, upload ou pgvector.
 
+## Plano Curto v0.1-alpha
+
+- TASK 012 definiu a sequência curta para fechar v0.1-alpha.
+- Próxima implementação planejada: TASK 013 — Persistência Supabase do histórico de chat.
+- Sequência planejada: TASK 013 histórico Supabase, TASK 014 UI mínima de histórico, TASK 015 preparação de deploy mock-first, TASK 016 QA v0.1-alpha, TASK 017 handoff de portfólio.
+- Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
+- RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
+
 ## Riscos
 
 - Repo publicado no GitHub como repositório privado.
@@ -148,8 +157,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão com TASK 012.
+- Retomar na próxima sessão com TASK 013.
 
 ## Próxima ação recomendada
 
-Definir TASK 012 antes de implementar nova feature.
+Iniciar TASK 013 — Persistência Supabase do histórico de chat.

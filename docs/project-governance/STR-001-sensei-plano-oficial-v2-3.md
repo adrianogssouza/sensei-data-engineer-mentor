@@ -64,16 +64,18 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 010.1 concluída
 - TASK 010.2 concluída
 - TASK 011 concluída
+- TASK 012 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Fundação Next.js criada
 - Gemini integrado tecnicamente, mas runtime real está limitado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`).
 - Mock fallback permanece operacional.
 - Guardrails locais de uso/custo implementados.
+- Plano curto da v0.1-alpha definido.
 
 ## Próximo passo
 
-TASK 012 — a definir antes da próxima implementação
+TASK 013 — Persistência Supabase do histórico de chat
 
 ## Regra central
 

@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 011
-- Checkpoint: guardrails locais de uso/custo implementados
+- Task atual concluída: TASK 012
+- Checkpoint: plano curto da v0.1-alpha definido
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,15 +19,17 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
+- Próxima implementação definida: persistência Supabase do histórico de chat
 
 ## Próxima task
 
-TASK 012 — a definir antes da próxima implementação
+TASK 013 — Persistência Supabase do histórico de chat
 
 Objetivo esperado:
-- escolher a próxima task com escopo explícito
+- criar leitura/escrita de threads e mensagens usando o schema existente
+- conectar `/workspace/chat` a uma API interna segura
 - manter mock fallback seguro
-- não implementar RAG, embeddings, upload, pgvector ou persistência Supabase sem nova decisão
+- não implementar RAG, embeddings, upload, pgvector ou multi-user/RLS
 - continuar usando sessões curtas de Codex
 - declarar perfil recomendado de recursos por task conforme GOV-007
 

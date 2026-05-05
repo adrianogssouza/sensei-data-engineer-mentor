@@ -8,6 +8,8 @@ Fase atual: preparação da v0.1-alpha.
 
 O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema local inicial do Supabase, shell de workspace, UI de chat com persistência apenas no navegador, skeleton interno de provider de IA e primeira integração com Gemini por trás de uma API route no servidor. O modo operacional atual é single-user/private: autenticação existe, mas é opcional e não faz parte do fluxo principal de uso diário. RAG, embeddings, upload, pgvector, persistência de chat no Supabase, shadcn/ui e deploy ainda não foram implementados.
 
+O plano curto atual da v0.1-alpha está em `docs/plano-v0.1-alpha.md`.
+
 ## Modo Operacional
 
 Modo atual: Single-user / private.
@@ -200,10 +202,12 @@ src/
 - TASK 010 - Integração do provider Gemini
 - TASK 010.1 - Diagnóstico Gemini / motivo de fallback
 - TASK 010.2 - Documentação da limitação de quota Gemini
+- TASK 011 - Guardrails de Uso / Custo
+- TASK 012 - Planejamento curto da v0.1-alpha
 
 ## Próxima Task
 
-TASK 011 — Guardrails de Uso / Custo
+TASK 013 — Persistência Supabase do histórico de chat
 
 ## Status do Provider de IA
 
@@ -235,7 +239,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 011. A próxima task planejada é TASK 012, a definir antes da próxima implementação.
+Checkpoint atual: o trabalho está sincronizado até TASK 012. A próxima task planejada é TASK 013 — Persistência Supabase do histórico de chat.
 
 ## Segredos
 
