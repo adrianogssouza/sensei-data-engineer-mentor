@@ -36,18 +36,27 @@ O projeto possui hoje a fundação inicial do app Next.js, uma fundação mínim
 - Provider Gemini em `src/lib/ai/providers/gemini-provider.ts`.
 - API route de chat com IA sem streaming em `src/app/api/ai/chat/route.ts`.
 - Rotas internas de histórico em `src/app/api/chat/threads/route.ts` e `src/app/api/chat/messages/route.ts`.
+- UI mínima de histórico em `/workspace/chat` para listar conversas remotas, abrir conversa existente, criar nova conversa e limpar conversa.
 
 A fundação de Supabase Auth existe, mas o modo operacional atual é single-user/private. Auth pode voltar a ser o fluxo principal no futuro. Por enquanto, `/workspace` é público e é a rota recomendada para uso diário. O dashboard protegido continua disponível para fluxos autenticados futuros.
 
 A fundação local de dados foi implementada apenas como schema/migration/types. Nenhum serviço local do Supabase foi iniciado e nenhum banco remoto foi modificado.
 
-O shell do workspace foi implementado como navegação e páginas placeholder. O chat foi implementado como UI/estado com persistência em `localStorage` e persistência Supabase quando configurada. A TASK 009 adicionou o skeleton de provider de IA e a TASK 010 adicionou Gemini como primeiro provider real. O registry de providers suporta mock e Gemini, com mock sempre disponível e Gemini selecionado apenas quando configurado explicitamente via variáveis de ambiente. `/workspace/chat` chama `/api/ai/chat`, que valida um payload mínimo de mensagens e usa a abstração de provider. A TASK 013 adicionou rotas internas para threads e mensagens do histórico. Não há SDKs Anthropic/OpenAI instalados, RAG, embeddings, upload, pgvector, streaming ou persistência de uso em banco.
+O shell do workspace foi implementado como navegação e páginas placeholder. O chat foi implementado como UI/estado com persistência em `localStorage`, persistência Supabase quando configurada e UI mínima de histórico. A TASK 009 adicionou o skeleton de provider de IA e a TASK 010 adicionou Gemini como primeiro provider real. O registry de providers suporta mock e Gemini, com mock sempre disponível e Gemini selecionado apenas quando configurado explicitamente via variáveis de ambiente. `/workspace/chat` chama `/api/ai/chat`, que valida um payload mínimo de mensagens e usa a abstração de provider. A TASK 013 adicionou rotas internas para threads e mensagens do histórico. Não há SDKs Anthropic/OpenAI instalados, RAG, embeddings, upload, pgvector, streaming ou persistência de uso em banco.
 
 A TASK 010.1 adicionou comportamento diagnóstico de fallback para falhas do provider Gemini. Testes de runtime confirmaram que a integração alcança a API Gemini e recebe uma resposta real da API. A TASK 010.2 documentou o bloqueio atual: quota/billing do Google. Gemini retorna `429 RESOURCE_EXHAUSTED`, e a quota free tier parece estar em `0` para o modelo Gemini testado. Não há bloqueio de código conhecido. O fallback mock permanece operacional enquanto a quota não estiver disponível. A documentação de fim do dia está sincronizada com TASK 011 como próxima task planejada.
 
 A TASK 011 adicionou guardrails locais em memória para chamadas reais de IA. A API `/api/ai/chat` estima tokens de contexto, limita output, limita chamadas reais por dia e pode bloquear por custo estimado quando houver taxa configurada. Se um provider real exceder os limites, a rota evita a chamada externa e usa fallback mock. Esses contadores não persistem em Supabase e são resetados ao reiniciar o processo.
 
 A TASK 013 adicionou persistência Supabase para histórico de chat usando as tabelas `chat_threads` e `chat_messages`. O chat carrega o thread remoto mais recente quando possível e persiste novas mensagens em background. Quando Supabase não está configurado ou falha, o fallback local em `localStorage` mantém a experiência funcionando.
+
+A TASK 014 adicionou a UI mínima de histórico no workspace. A lista lateral de `/workspace/chat` mostra conversas remotas quando Supabase está disponível, permite abrir conversas existentes e iniciar nova conversa. O fallback local continua operacional quando Supabase não está configurado.
+
+A TASK 015 preparou o caminho de deploy mock-first para v0.1-alpha. O fluxo recomendado para deploy inicial usa `AI_PROVIDER=mock`, mantém Gemini desabilitado enquanto houver bloqueio de quota/billing e documenta as variáveis/checklist em `docs/deploy-mock-first.md`.
+
+A TASK 016 validou a v0.1-alpha local/mock-first com rotas principais, API de IA mock, fallback de histórico, lint, build e diff check. O relatório está em `docs/qa-v0.1-alpha.md`.
+
+A TASK 017 fechou o handoff de portfólio da v0.1-alpha. A descrição de apresentação, como demonstrar e próximos passos estão em `docs/handoff-portfolio-v0.1-alpha.md`.
 
 ## Arquitetura Planejada
 
@@ -63,4 +72,4 @@ A arquitetura planejada do SENSEI inclui:
 
 ## Ainda Não Implementado
 
-Os componentes planejados acima ainda não foram implementados. O estado atual do repositório não possui extensão pgvector, tabela `document_chunks`, coluna de embeddings, SDK Anthropic, SDK OpenAI, fluxo de ingestão de documentos, pipeline RAG, eval runner, ownership multi-user com `user_id`, política RLS, UI de lista/seleção de histórico, persistência de uso em banco, streaming ou configuração de deploy.
+Os componentes planejados acima ainda não foram implementados. O estado atual do repositório não possui extensão pgvector, tabela `document_chunks`, coluna de embeddings, SDK Anthropic, SDK OpenAI, fluxo de ingestão de documentos, pipeline RAG, eval runner, ownership multi-user com `user_id`, política RLS final, persistência de uso em banco, streaming ou deploy real executado.

@@ -59,6 +59,8 @@ export default function WorkspaceChatPage() {
   const [providerMode, setProviderMode] = useState("mock");
   const [historyMode, setHistoryMode] = useState("local");
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
+  const [threads, setThreads] = useState<ChatThread[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const hasHydrated = useRef(false);
 
@@ -68,6 +70,30 @@ export default function WorkspaceChatPage() {
       content: message.content,
     }));
   }
+
+  const refreshThreads = useCallback(async (): Promise<ChatThread[] | null> => {
+    try {
+      const response = await fetch("/api/chat/threads", {
+        cache: "no-store",
+      });
+      const payload = (await response.json()) as ChatThreadsApiResponse;
+
+      if (!response.ok || !payload.available || !payload.threads) {
+        setThreads([]);
+        setHistoryMode("local");
+        return null;
+      }
+
+      setThreads(payload.threads);
+      setHistoryMode(payload.threads.length > 0 ? "supabase" : "supabase-ready");
+
+      return payload.threads;
+    } catch {
+      setThreads([]);
+      setHistoryMode("local");
+      return null;
+    }
+  }, []);
 
   const persistMessages = useCallback(async (
     threadId: string | null,
@@ -97,32 +123,29 @@ export default function WorkspaceChatPage() {
       setActiveThreadId(payload.threadId);
       saveLocalChatThreadId(payload.threadId);
       setHistoryMode("supabase");
+      void refreshThreads();
 
       return payload.threadId;
     } catch {
       setHistoryMode("local");
       return threadId;
     }
-  }, []);
+  }, [refreshThreads]);
 
   const loadRemoteHistory = useCallback(
     async (localThreadId: string | null, localMessages: ChatMessage[]) => {
       try {
-        const threadsResponse = await fetch("/api/chat/threads", {
-          cache: "no-store",
-        });
-        const threadsPayload =
-          (await threadsResponse.json()) as ChatThreadsApiResponse;
+        const remoteThreads = await refreshThreads();
 
-        if (!threadsResponse.ok || !threadsPayload.available) {
+        if (!remoteThreads) {
           setHistoryMode("local");
           return;
         }
 
         const remoteThread =
-          threadsPayload.threads?.find(
+          remoteThreads.find(
             (thread) => thread.id === localThreadId,
-          ) ?? threadsPayload.threads?.[0];
+          ) ?? remoteThreads[0];
 
         if (!remoteThread) {
           setHistoryMode("supabase-ready");
@@ -153,9 +176,11 @@ export default function WorkspaceChatPage() {
         }
       } catch {
         setHistoryMode("local");
+      } finally {
+        setIsLoadingHistory(false);
       }
     },
-    [persistMessages],
+    [persistMessages, refreshThreads],
   );
 
   useEffect(() => {
@@ -189,8 +214,79 @@ export default function WorkspaceChatPage() {
       await fetch(`/api/chat/threads?threadId=${encodeURIComponent(threadId)}`, {
         method: "DELETE",
       });
+      void refreshThreads();
     } catch {
       // Local fallback already clears browser state.
+    }
+  }
+
+  async function loadThreadMessages(threadId: string) {
+    setIsLoadingHistory(true);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch(
+        `/api/chat/messages?threadId=${encodeURIComponent(threadId)}`,
+        { cache: "no-store" },
+      );
+      const payload = (await response.json()) as ChatMessagesApiResponse;
+
+      if (!response.ok || !payload.available || !payload.messages) {
+        setHistoryMode("local");
+        setErrorMessage("Nao foi possivel abrir esta conversa no Supabase.");
+        return;
+      }
+
+      setMessages(payload.messages);
+      setActiveThreadId(threadId);
+      saveLocalChatMessages(payload.messages);
+      saveLocalChatThreadId(threadId);
+      setHistoryMode("supabase");
+    } catch {
+      setHistoryMode("local");
+      setErrorMessage("Historico remoto indisponivel; fallback local mantido.");
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  }
+
+  async function handleNewChat() {
+    setMessages([]);
+    setErrorMessage(null);
+    clearLocalChatMessages();
+
+    if (historyMode !== "supabase" && historyMode !== "supabase-ready") {
+      setActiveThreadId(null);
+      clearLocalChatThreadId();
+      setHistoryMode("local");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/chat/threads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title: "Nova conversa" }),
+      });
+      const payload = (await response.json()) as ChatThreadsApiResponse;
+
+      if (!response.ok || !payload.available || !payload.thread) {
+        setActiveThreadId(null);
+        clearLocalChatThreadId();
+        setHistoryMode("local");
+        return;
+      }
+
+      setActiveThreadId(payload.thread.id);
+      saveLocalChatThreadId(payload.thread.id);
+      setThreads((currentThreads) => [payload.thread!, ...currentThreads]);
+      setHistoryMode("supabase");
+    } catch {
+      setActiveThreadId(null);
+      clearLocalChatThreadId();
+      setHistoryMode("local");
     }
   }
 
@@ -304,19 +400,72 @@ export default function WorkspaceChatPage() {
       <ChatToolbar
         disabled={isResponding}
         hasMessages={messages.length > 0}
+        onNew={handleNewChat}
         onClear={handleClearChat}
       />
 
-      <section className="mt-8">
-        {messages.length > 0 ? (
-          <ChatMessageList
-            isResponding={isResponding}
-            messages={messages}
-          />
-        ) : (
-          <ChatEmptyState />
-        )}
-      </section>
+      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(220px,280px)_1fr]">
+        <aside className="border border-zinc-200 p-4 dark:border-zinc-800">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-sm font-semibold text-zinc-950 dark:text-zinc-50">
+              Historico
+            </h3>
+            <span className="text-xs text-zinc-500">
+              {threads.length} salvas
+            </span>
+          </div>
+
+          {isLoadingHistory ? (
+            <p className="mt-4 text-sm text-zinc-500">Carregando...</p>
+          ) : threads.length > 0 ? (
+            <div className="mt-4 flex flex-col gap-2">
+              {threads.map((thread) => {
+                const isActive = thread.id === activeThreadId;
+
+                return (
+                  <button
+                    className={`border px-3 py-3 text-left text-sm transition ${
+                      isActive
+                        ? "border-zinc-950 bg-zinc-950 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-950"
+                        : "border-zinc-200 text-zinc-700 hover:border-zinc-400 dark:border-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-600"
+                    }`}
+                    disabled={isResponding}
+                    key={thread.id}
+                    onClick={() => void loadThreadMessages(thread.id)}
+                    type="button"
+                  >
+                    <span className="block truncate font-medium">
+                      {thread.title}
+                    </span>
+                    <span className="mt-1 block text-xs opacity-75">
+                      {new Date(thread.updated_at).toLocaleDateString([], {
+                        day: "2-digit",
+                        month: "2-digit",
+                      })}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="mt-4 text-sm leading-6 text-zinc-500">
+              Nenhuma conversa remota encontrada. O fallback local continua
+              disponivel neste navegador.
+            </p>
+          )}
+        </aside>
+
+        <section>
+          {messages.length > 0 ? (
+            <ChatMessageList
+              isResponding={isResponding}
+              messages={messages}
+            />
+          ) : (
+            <ChatEmptyState />
+          )}
+        </section>
+      </div>
 
       <ChatInput disabled={isResponding} onSend={handleSend} />
     </div>

@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 013
-- Checkpoint: persistência Supabase do histórico de chat implementada com fallback local
+- Task atual concluída: TASK 017
+- Checkpoint: handoff de portfólio v0.1-alpha concluído
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,17 +19,15 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: UI mínima de histórico no workspace
+- Próxima implementação definida: escolher próximo bloco pós-alpha
 
 ## Próxima task
 
-TASK 014 — UI mínima de histórico no workspace
+Ainda não definida.
 
 Objetivo esperado:
-- listar conversas salvas
-- permitir abrir conversa existente
-- permitir criar/limpar conversa
-- manter mock fallback seguro
+- escolher entre deploy real mock-first ou planejamento da v0.1-beta
+- manter escopo pequeno e validável
 - não implementar RAG, embeddings, upload, pgvector ou multi-user/RLS
 - continuar usando sessões curtas de Codex
 - declarar perfil recomendado de recursos por task conforme GOV-007

@@ -36,3 +36,17 @@ Incluir:
 - saída completa do erro;
 - o que mudou imediatamente antes da falha;
 - se a falha acontece de forma consistente.
+
+## Handoff de Portfólio
+
+Para apresentar a v0.1-alpha, usar como referência:
+
+- `docs/handoff-portfolio-v0.1-alpha.md`
+- `docs/qa-v0.1-alpha.md`
+- `docs/deploy-mock-first.md`
+
+O comando recomendado para demo local é:
+
+```bash
+env AI_PROVIDER=mock pnpm dev
+```

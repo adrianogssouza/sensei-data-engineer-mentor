@@ -17,6 +17,8 @@ A v0.1-alpha deve priorizar:
 
 ### TASK 013 — Persistência Supabase do histórico de chat
 
+Status: concluída.
+
 Objetivo:
 - criar leitura/escrita de threads e mensagens usando o schema existente;
 - conectar `/workspace/chat` a uma API interna segura;
@@ -29,6 +31,8 @@ Motivo:
 Persistência de histórico é parte explícita da v0.1-alpha e aumenta utilidade real do app.
 
 ### TASK 014 — UI mínima de histórico no workspace
+
+Status: concluída.
 
 Objetivo:
 - listar conversas salvas;
@@ -43,6 +47,8 @@ Persistir sem conseguir navegar no histórico deixa o benefício incompleto.
 
 ### TASK 015 — Preparação de deploy mock-first
 
+Status: concluída.
+
 Objetivo:
 - documentar variáveis de ambiente obrigatórias;
 - validar `pnpm build`;
@@ -55,6 +61,8 @@ Motivo:
 Deploy faz parte da v0.1-alpha, mas não deve depender do desbloqueio de quota Gemini.
 
 ### TASK 016 — QA v0.1-alpha
+
+Status: concluída.
 
 Objetivo:
 - validar rotas principais;
@@ -69,6 +77,8 @@ Motivo:
 Antes de declarar v0.1-alpha fechada, o fluxo principal precisa estar verificável.
 
 ### TASK 017 — Handoff de portfólio v0.1-alpha
+
+Status: concluída.
 
 Objetivo:
 - preparar descrição curta do projeto;
@@ -116,3 +126,7 @@ A v0.1-alpha pode ser considerada pronta quando:
 - build passa;
 - deploy está documentado ou executado;
 - documentação de status está sincronizada.
+
+## Resultado
+
+A sequência curta da v0.1-alpha foi concluída no escopo local/mock-first. O deploy real ainda não foi executado, mas está documentado em `docs/deploy-mock-first.md`. O handoff de portfólio está registrado em `docs/handoff-portfolio-v0.1-alpha.md`.

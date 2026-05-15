@@ -263,4 +263,52 @@ Motivo:
 Histórico de chat é parte explícita da v0.1-alpha e aumenta a utilidade diária do app sem exigir RAG, embeddings ou provider real funcionando.
 
 Impacto:
-Foram criadas rotas internas para threads e mensagens, e `/workspace/chat` passou a sincronizar com Supabase quando configurado. Se Supabase não estiver configurado ou falhar, o chat continua usando `localStorage`. Limpar chat arquiva o thread remoto atual quando possível. Lista/seleção de conversas fica para TASK 014.
+Foram criadas rotas internas para threads e mensagens, e `/workspace/chat` passou a sincronizar com Supabase quando configurado. Se Supabase não estiver configurado ou falhar, o chat continua usando `localStorage`. Limpar chat arquiva o thread remoto atual quando possível.
+
+---
+
+### DEC-024 — UI mínima de histórico antes do deploy
+
+TASK 014 implementou a UI mínima de histórico no workspace.
+
+Motivo:
+Persistir conversas sem permitir navegação pelo histórico deixa o benefício incompleto para a v0.1-alpha.
+
+Impacto:
+`/workspace/chat` agora lista conversas remotas quando Supabase está disponível, permite abrir conversa existente, iniciar nova conversa e limpar conversa. O fallback local em `localStorage` permanece operacional quando Supabase não está configurado.
+
+---
+
+### DEC-025 — Deploy mock-first antes de depender de provider real
+
+TASK 015 preparou o caminho de deploy mock-first para a v0.1-alpha.
+
+Motivo:
+Gemini segue bloqueado por quota/billing, então o deploy inicial precisa ser útil e validável com `AI_PROVIDER=mock`.
+
+Impacto:
+`.env.example` foi normalizado para variáveis atuais, o checklist `docs/deploy-mock-first.md` foi criado e `pnpm build` foi validado. Deploy real, projeto Vercel e migrations remotas ainda não foram executados. A próxima task planejada é TASK 016 — QA v0.1-alpha.
+
+---
+
+### DEC-026 — QA mock-first antes do handoff de portfólio
+
+TASK 016 validou o fluxo local da v0.1-alpha em modo mock-first.
+
+Motivo:
+Antes de preparar o handoff de portfólio, o fluxo principal precisava estar verificável sem depender de Gemini real ou deploy.
+
+Impacto:
+Rotas principais, API de IA com provider mock, fallback de histórico sem Supabase, lint, build e diff check foram validados. O relatório foi registrado em `docs/qa-v0.1-alpha.md`. A próxima task planejada é TASK 017 — Handoff de portfólio v0.1-alpha.
+
+---
+
+### DEC-027 — Handoff de portfólio fecha a sequência curta da alpha
+
+TASK 017 criou o handoff de portfólio da v0.1-alpha.
+
+Motivo:
+O objetivo principal do projeto é gerar utilidade real e ativo de carreira. Após histórico, deploy mock-first documentado e QA local, era necessário transformar a entrega em material apresentável.
+
+Impacto:
+`docs/handoff-portfolio-v0.1-alpha.md` foi criado com descrição, pitch, entregas, demo, decisões e próximos passos. O README foi reorganizado para leitura externa. A sequência curta da v0.1-alpha está concluída no escopo local/mock-first. O próximo bloco deve ser decidido entre deploy real mock-first e planejamento da v0.1-beta.

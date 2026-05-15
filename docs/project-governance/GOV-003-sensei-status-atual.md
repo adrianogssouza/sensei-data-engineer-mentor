@@ -2,11 +2,11 @@
 
 ## Retrato Atual
 
-- Data de atualização: 2026-05-05
-- Fase: preparação da v0.1-alpha
-- Última task concluída: TASK 013
-- Checkpoint atual: persistência Supabase do histórico de chat implementada com fallback local
-- Próxima task: TASK 014
+- Data de atualização: 2026-05-15
+- Fase: v0.1-alpha local/mock-first concluída
+- Última task concluída: TASK 017
+- Checkpoint atual: handoff de portfólio v0.1-alpha concluído
+- Próxima task: definir próximo bloco pós-alpha
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -43,6 +43,10 @@
 - TASK 011 — Guardrails de Uso / Custo
 - TASK 012 — Planejamento curto da v0.1-alpha
 - TASK 013 — Persistência Supabase do histórico de chat
+- TASK 014 — UI mínima de histórico no workspace
+- TASK 015 — Preparação de deploy mock-first
+- TASK 016 — QA v0.1-alpha
+- TASK 017 — Handoff de portfólio v0.1-alpha
 
 ## Bloqueios
 
@@ -154,14 +158,49 @@
 - Novas mensagens de usuário e assistente são persistidas no Supabase em background quando possível.
 - Se Supabase não estiver configurado ou falhar, o chat continua funcionando com `localStorage`.
 - Limpar chat arquiva o thread remoto atual quando possível e limpa o fallback local.
-- Ainda não há UI de lista/seleção de conversas; isso fica para TASK 014.
+- UI mínima de lista/seleção de conversas foi implementada na TASK 014.
 - Não foram adicionados RAG, embeddings, upload, pgvector, multi-user/RLS ou persistência de uso.
+
+## UI Mínima de Histórico no Workspace
+
+- `/workspace/chat` agora lista conversas remotas quando Supabase está disponível.
+- É possível abrir uma conversa existente pela lista lateral.
+- É possível iniciar nova conversa pelo toolbar do chat.
+- Limpar chat arquiva a conversa remota ativa quando possível e preserva fallback local seguro.
+- Sem Supabase configurado, a UI informa ausência de histórico remoto e mantém `localStorage`.
+- Não foram adicionados RAG, embeddings, upload, pgvector, multi-user/RLS ou persistência de uso.
+
+## Preparação de Deploy Mock-First
+
+- `.env.example` foi normalizado para refletir variáveis atualmente usadas e manter `AI_PROVIDER=mock` como padrão seguro.
+- Checklist de deploy mock-first criado em `docs/deploy-mock-first.md`.
+- README e arquitetura foram sincronizados com histórico UI e preparação de deploy.
+- `pnpm build` foi validado com o fluxo atual.
+- Deploy real, criação de projeto Vercel e aplicação de migrations remotas ainda não foram executados.
+
+## QA v0.1-alpha
+
+- Relatório criado em `docs/qa-v0.1-alpha.md`.
+- Rotas principais `/`, `/workspace`, `/workspace/chat`, `/workspace/documents`, `/workspace/usage` e `/workspace/settings` responderam `200`.
+- `/api/ai/chat` respondeu com provider `mock` e `externalApiCall: false`.
+- `/api/chat/threads` retornou indisponibilidade controlada sem Supabase configurado, preservando fallback local.
+- Verificação visual confirmou `/workspace/chat` em modo mock com painel de histórico.
+- `pnpm lint`, `pnpm build` e `git diff --check` passaram.
+- Não foram adicionados RAG, embeddings, upload, pgvector, multi-user/RLS, deploy real ou Gemini real.
+
+## Handoff de Portfólio v0.1-alpha
+
+- Documento criado em `docs/handoff-portfolio-v0.1-alpha.md`.
+- README reorganizado com visão de portfólio, demo local e entregas da alpha.
+- `docs/desenvolvimento.md` aponta para os documentos de handoff, QA e deploy mock-first.
+- Sequência curta da v0.1-alpha foi concluída no escopo local/mock-first.
+- Deploy real e v0.1-beta ainda dependem de nova decisão de próximo bloco.
 
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
-- Próxima implementação planejada: TASK 014 — UI mínima de histórico no workspace.
-- Sequência planejada: TASK 013 histórico Supabase, TASK 014 UI mínima de histórico, TASK 015 preparação de deploy mock-first, TASK 016 QA v0.1-alpha, TASK 017 handoff de portfólio.
+- Sequência curta TASK 013 a TASK 017 concluída.
+- Próxima implementação planejada: escolher próximo bloco pós-alpha.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -172,8 +211,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão com TASK 014.
+- Retomar na próxima sessão definindo se o próximo bloco será deploy real mock-first ou planejamento da v0.1-beta.
 
 ## Próxima ação recomendada
 
-Iniciar TASK 014 — UI mínima de histórico no workspace.
+Definir próximo bloco pós-alpha.

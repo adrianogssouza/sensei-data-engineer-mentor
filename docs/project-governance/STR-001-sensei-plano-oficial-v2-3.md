@@ -66,6 +66,10 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 011 concluída
 - TASK 012 concluída
 - TASK 013 concluída
+- TASK 014 concluída
+- TASK 015 concluída
+- TASK 016 concluída
+- TASK 017 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Fundação Next.js criada
@@ -74,10 +78,14 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - Guardrails locais de uso/custo implementados.
 - Plano curto da v0.1-alpha definido.
 - Persistência Supabase do histórico de chat implementada com fallback local.
+- UI mínima de histórico no workspace implementada.
+- Preparação de deploy mock-first documentada e build validado.
+- QA v0.1-alpha mock-first aprovado localmente.
+- Handoff de portfólio v0.1-alpha concluído.
 
 ## Próximo passo
 
-TASK 014 — UI mínima de histórico no workspace
+Definir próximo bloco pós-alpha: deploy real mock-first ou planejamento da v0.1-beta.
 
 ## Regra central
 

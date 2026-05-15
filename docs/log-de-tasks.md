@@ -24,4 +24,8 @@
 - TASK 011 - Concluída: guardrails locais em memória adicionados para limitar chamadas reais de IA, tokens estimados, contexto, output e custo estimado configurável, mantendo fallback mock e sem persistência Supabase.
 - TASK 012 - Concluída: plano curto da v0.1-alpha definido com sequência TASK 013 a TASK 017, priorizando histórico Supabase, deploy mock-first, QA e handoff de portfólio.
 - TASK 013 - Concluída: rotas internas de threads/mensagens e persistência Supabase do histórico de chat implementadas com fallback local em `localStorage`.
-- Checkpoint atual - Concluído: próxima task planejada é TASK 014 — UI mínima de histórico no workspace.
+- TASK 014 - Concluída: UI mínima de histórico no workspace implementada com lista de conversas, abertura de thread existente, nova conversa e fallback local preservado.
+- TASK 015 - Concluída: preparação de deploy mock-first documentada com `.env.example` normalizado, checklist Vercel/mock-first e build validado.
+- TASK 016 - Concluída: QA v0.1-alpha mock-first aprovado localmente com rotas principais, API de IA mock, fallback de histórico, lint, build e diff check validados.
+- TASK 017 - Concluída: handoff de portfólio v0.1-alpha criado com descrição, demo local, entregas, decisões técnicas, próximos passos e README reorganizado para leitura externa.
+- Checkpoint atual - Concluído: sequência curta v0.1-alpha local/mock-first finalizada; próximo bloco ainda precisa ser definido.

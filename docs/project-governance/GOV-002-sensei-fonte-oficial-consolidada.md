@@ -16,14 +16,14 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: preparação da v0.1-alpha
-- Última task concluída: TASK 013
-- Checkpoint atual: persistência Supabase do histórico de chat implementada com fallback local
-- Próxima task: TASK 014
+- Fase atual: v0.1-alpha local/mock-first concluída
+- Última task concluída: TASK 017
+- Checkpoint atual: handoff de portfólio v0.1-alpha concluído
+- Próxima task: definir próximo bloco pós-alpha
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
-- Próxima implementação planejada: UI mínima de histórico no workspace
+- Próxima implementação planejada: deploy real mock-first ou planejamento da v0.1-beta
 
 ## Objetivo principal 2026
 

@@ -2,13 +2,45 @@
 
 SENSEI Data Engineer Mentor é um mentor pessoal de estudos com IA focado em Engenharia de Dados. O projeto está sendo construído de forma incremental para ser, ao mesmo tempo, uma ferramenta útil de estudo e um projeto forte de portfólio técnico.
 
+## Visão de Portfólio
+
+O SENSEI demonstra a construção incremental de um produto de IA com base real de aplicação: workspace, chat, abstração de providers, fallback seguro, persistência de histórico, fundação Supabase/Auth, guardrails de custo e documentação operacional.
+
+A v0.1-alpha está fechada como fundação local mock-first. Ela prova o fluxo principal sem depender de quota/billing de IA real e deixa o caminho preparado para deploy, Supabase remoto e evolução futura para RAG.
+
 ## Fase Atual
 
-Fase atual: preparação da v0.1-alpha.
+Fase atual: v0.1-alpha local/mock-first validada.
 
-O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema local inicial do Supabase, shell de workspace, UI de chat com persistência local e persistência Supabase quando configurada, skeleton interno de provider de IA e primeira integração com Gemini por trás de uma API route no servidor. O modo operacional atual é single-user/private: autenticação existe, mas é opcional e não faz parte do fluxo principal de uso diário. RAG, embeddings, upload, pgvector, shadcn/ui e deploy ainda não foram implementados.
+O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema local inicial do Supabase, shell de workspace, UI de chat com persistência local, persistência Supabase quando configurada, UI mínima de histórico, skeleton interno de provider de IA e primeira integração com Gemini por trás de uma API route no servidor. O modo operacional atual é single-user/private: autenticação existe, mas é opcional e não faz parte do fluxo principal de uso diário. RAG, embeddings, upload, pgvector, shadcn/ui e deploy real ainda não foram implementados.
 
-O plano curto atual da v0.1-alpha está em `docs/plano-v0.1-alpha.md`.
+Handoff de portfólio: `docs/handoff-portfolio-v0.1-alpha.md`.
+
+QA da alpha: `docs/qa-v0.1-alpha.md`.
+
+Checklist de deploy mock-first: `docs/deploy-mock-first.md`.
+
+## Demo Local
+
+```bash
+pnpm install
+env AI_PROVIDER=mock pnpm dev
+```
+
+Abrir:
+
+```text
+http://localhost:3000/workspace/chat
+```
+
+O que demonstrar:
+
+- workspace sem login obrigatório;
+- chat em modo mock;
+- resposta local sem chamada externa;
+- painel de histórico;
+- fallback local quando Supabase não está configurado;
+- documentação de QA e deploy mock-first.
 
 ## Modo Operacional
 
@@ -21,12 +53,12 @@ O uso local recomendado começa em `/workspace`. A homepage pública aponta para
 Rotas disponíveis:
 
 - `/workspace` - visão geral pública do workspace
-- `/workspace/chat` - UI de chat local com mock
+- `/workspace/chat` - UI de chat com mock, histórico local e histórico Supabase quando configurado
 - `/workspace/documents` - placeholder do módulo de documentos
 - `/workspace/usage` - placeholder de uso/custo
 - `/workspace/settings` - placeholder de configurações privadas
 
-A página de chat chama `/api/ai/chat`, que usa o registry interno de providers. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados. Sem chave Gemini, o app volta para o provider mock determinístico. O histórico usa Supabase quando as variáveis públicas estão configuradas; caso contrário, as mensagens persistem neste navegador usando `localStorage`. A página ainda não faz upload de arquivos e não executa RAG.
+A página de chat chama `/api/ai/chat`, que usa o registry interno de providers. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados. Sem chave Gemini, o app volta para o provider mock determinístico. O histórico usa Supabase quando as variáveis públicas estão configuradas; caso contrário, as mensagens persistem neste navegador usando `localStorage`. A UI já permite listar conversas remotas, abrir conversa existente, criar nova conversa e limpar conversa. A página ainda não faz upload de arquivos e não executa RAG.
 
 ## Stack Técnica Instalada
 
@@ -42,6 +74,19 @@ A página de chat chama `/api/ai/chat`, que usa o registry interno de providers.
 - Fundação local de schema/migration Supabase
 - Skeleton interno de provider de IA com fallback mock
 - Provider Gemini via `@google/genai`
+
+## Entregue na v0.1-alpha
+
+- Workspace público em modo single-user/private.
+- Chat funcional com API interna de IA.
+- Provider mock como fluxo oficial da alpha.
+- Integração Gemini preparada, mas não bloqueante.
+- Guardrails locais de uso/custo.
+- Histórico local via `localStorage`.
+- Rotas internas de histórico com Supabase quando configurado.
+- UI mínima de histórico.
+- Checklist de deploy mock-first.
+- QA local documentado.
 
 ## Stack Planejada Ainda Não Instalada
 
@@ -78,11 +123,17 @@ Gerar build de produção:
 pnpm build
 ```
 
-## Ambiente Local
+## Ambiente Local e Deploy Mock-First
 
-Crie `.env.local` localmente quando as credenciais do Supabase estiverem disponíveis. Não commitar esse arquivo.
+Crie `.env.local` localmente quando as credenciais do Supabase estiverem disponíveis. Não commitar esse arquivo. Para deploy inicial v0.1-alpha, seguir o checklist em `docs/deploy-mock-first.md`.
 
-Necessário para uso do client Supabase:
+Padrão seguro para desenvolvimento e deploy mock-first:
+
+```bash
+AI_PROVIDER=mock
+```
+
+Necessário para uso do client Supabase, auth fundacional e histórico remoto:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
@@ -206,10 +257,14 @@ src/
 - TASK 011 - Guardrails de Uso / Custo
 - TASK 012 - Planejamento curto da v0.1-alpha
 - TASK 013 - Persistência Supabase do histórico de chat
+- TASK 014 - UI mínima de histórico no workspace
+- TASK 015 - Preparação de deploy mock-first
+- TASK 016 - QA v0.1-alpha
+- TASK 017 - Handoff de portfólio v0.1-alpha
 
-## Próxima Task
+## Próximo Marco
 
-TASK 014 — UI mínima de histórico no workspace
+Deploy real mock-first e preparação da v0.1-beta.
 
 ## Status do Provider de IA
 
@@ -241,7 +296,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 013. A próxima task planejada é TASK 014 — UI mínima de histórico no workspace.
+Checkpoint atual: o trabalho está sincronizado até TASK 017. A sequência curta da v0.1-alpha local/mock-first foi concluída.
 
 ## Segredos
 
