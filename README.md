@@ -6,11 +6,17 @@ SENSEI Data Engineer Mentor é um mentor pessoal de estudos com IA focado em Eng
 
 O SENSEI demonstra a construção incremental de um produto de IA com base real de aplicação: workspace, chat, abstração de providers, fallback seguro, persistência de histórico, fundação Supabase/Auth, guardrails de custo e documentação operacional.
 
-A v0.1-alpha está fechada como fundação local mock-first. Ela prova o fluxo principal sem depender de quota/billing de IA real e deixa o caminho preparado para deploy, Supabase remoto e evolução futura para RAG.
+A v0.1-alpha está publicada em modo mock-first. Ela prova o fluxo principal sem depender de quota/billing de IA real e deixa o caminho preparado para Supabase remoto e evolução futura para RAG.
+
+URL pública:
+
+```text
+https://sensei-data-engineer-mentor.vercel.app
+```
 
 ## Fase Atual
 
-Fase atual: v0.1-alpha local/mock-first validada.
+Fase atual: v0.1-alpha mock-first publicada.
 
 O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema local inicial do Supabase, shell de workspace, UI de chat com persistência local, persistência Supabase quando configurada, UI mínima de histórico, skeleton interno de provider de IA e primeira integração com Gemini por trás de uma API route no servidor. O modo operacional atual é single-user/private: autenticação existe, mas é opcional e não faz parte do fluxo principal de uso diário. RAG, embeddings, upload, pgvector, shadcn/ui e deploy real ainda não foram implementados.
 
@@ -19,6 +25,8 @@ Handoff de portfólio: `docs/handoff-portfolio-v0.1-alpha.md`.
 QA da alpha: `docs/qa-v0.1-alpha.md`.
 
 Checklist de deploy mock-first: `docs/deploy-mock-first.md`.
+
+Relatório do deploy: `docs/deploy-v0.1-alpha.md`.
 
 ## Demo Local
 
@@ -261,10 +269,11 @@ src/
 - TASK 015 - Preparação de deploy mock-first
 - TASK 016 - QA v0.1-alpha
 - TASK 017 - Handoff de portfólio v0.1-alpha
+- TASK 018 - Deploy real mock-first na Vercel
 
 ## Próximo Marco
 
-Deploy real mock-first e preparação da v0.1-beta.
+Configurar Supabase remoto ou preparar a v0.1-beta.
 
 ## Status do Provider de IA
 
@@ -296,7 +305,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 017. A sequência curta da v0.1-alpha local/mock-first foi concluída.
+Checkpoint atual: o trabalho está sincronizado até TASK 018. A v0.1-alpha mock-first está publicada na Vercel.
 
 ## Segredos
 

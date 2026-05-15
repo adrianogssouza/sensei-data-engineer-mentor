@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 017
-- Checkpoint: handoff de portfólio v0.1-alpha concluído
+- Task atual concluída: TASK 018
+- Checkpoint: deploy real mock-first na Vercel concluído
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: escolher próximo bloco pós-alpha
+- Próxima implementação definida: escolher próximo bloco pós-deploy
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher entre deploy real mock-first ou planejamento da v0.1-beta
+- escolher entre configurar Supabase remoto ou planejamento da v0.1-beta
 - manter escopo pequeno e validável
 - não implementar RAG, embeddings, upload, pgvector ou multi-user/RLS
 - continuar usando sessões curtas de Codex

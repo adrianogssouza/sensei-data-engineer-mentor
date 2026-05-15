@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-15
-- Fase: v0.1-alpha local/mock-first concluída
-- Última task concluída: TASK 017
-- Checkpoint atual: handoff de portfólio v0.1-alpha concluído
-- Próxima task: definir próximo bloco pós-alpha
+- Fase: v0.1-alpha mock-first publicada
+- Última task concluída: TASK 018
+- Checkpoint atual: deploy real mock-first na Vercel concluído
+- Próxima task: definir próximo bloco pós-deploy
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -47,6 +47,7 @@
 - TASK 015 — Preparação de deploy mock-first
 - TASK 016 — QA v0.1-alpha
 - TASK 017 — Handoff de portfólio v0.1-alpha
+- TASK 018 — Deploy real mock-first na Vercel
 
 ## Bloqueios
 
@@ -196,11 +197,22 @@
 - Sequência curta da v0.1-alpha foi concluída no escopo local/mock-first.
 - Deploy real e v0.1-beta ainda dependem de nova decisão de próximo bloco.
 
+## Deploy Real Mock-First
+
+- Deploy Vercel executado com `AI_PROVIDER=mock`.
+- Projeto Vercel linkado como `adrianogssouzas-projects/sensei-data-engineer-mentor`.
+- Repositório GitHub conectado pela Vercel.
+- URL pública: `https://sensei-data-engineer-mentor.vercel.app`.
+- Relatório criado em `docs/deploy-v0.1-alpha.md`.
+- `/`, `/workspace/chat`, `/api/ai/chat` e fallback de `/api/chat/threads` foram validados na URL publicada.
+- `.vercel/` foi criado localmente pela CLI e ignorado no Git.
+- Supabase remoto, migrations remotas, Gemini real, RAG, upload, embeddings, pgvector e multi-user/RLS continuam fora do escopo desta task.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: escolher próximo bloco pós-alpha.
+- Próxima implementação planejada: escolher próximo bloco pós-deploy.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -211,8 +223,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão definindo se o próximo bloco será deploy real mock-first ou planejamento da v0.1-beta.
+- Retomar na próxima sessão definindo se o próximo bloco será configurar Supabase remoto ou planejamento da v0.1-beta.
 
 ## Próxima ação recomendada
 
-Definir próximo bloco pós-alpha.
+Definir próximo bloco pós-deploy.

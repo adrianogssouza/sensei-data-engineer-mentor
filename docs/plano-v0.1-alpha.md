@@ -129,4 +129,4 @@ A v0.1-alpha pode ser considerada pronta quando:
 
 ## Resultado
 
-A sequência curta da v0.1-alpha foi concluída no escopo local/mock-first. O deploy real ainda não foi executado, mas está documentado em `docs/deploy-mock-first.md`. O handoff de portfólio está registrado em `docs/handoff-portfolio-v0.1-alpha.md`.
+A sequência curta da v0.1-alpha foi concluída no escopo mock-first e publicada na Vercel. O deploy está registrado em `docs/deploy-v0.1-alpha.md`. O handoff de portfólio está registrado em `docs/handoff-portfolio-v0.1-alpha.md`.

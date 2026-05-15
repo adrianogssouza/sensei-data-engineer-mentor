@@ -28,4 +28,5 @@
 - TASK 015 - Concluída: preparação de deploy mock-first documentada com `.env.example` normalizado, checklist Vercel/mock-first e build validado.
 - TASK 016 - Concluída: QA v0.1-alpha mock-first aprovado localmente com rotas principais, API de IA mock, fallback de histórico, lint, build e diff check validados.
 - TASK 017 - Concluída: handoff de portfólio v0.1-alpha criado com descrição, demo local, entregas, decisões técnicas, próximos passos e README reorganizado para leitura externa.
-- Checkpoint atual - Concluído: sequência curta v0.1-alpha local/mock-first finalizada; próximo bloco ainda precisa ser definido.
+- TASK 018 - Concluída: deploy real mock-first na Vercel executado, GitHub conectado, URL pública validada e relatório de deploy criado.
+- Checkpoint atual - Concluído: v0.1-alpha mock-first publicada; próximo bloco ainda precisa ser definido.

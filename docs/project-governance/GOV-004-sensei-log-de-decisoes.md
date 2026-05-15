@@ -312,3 +312,15 @@ O objetivo principal do projeto é gerar utilidade real e ativo de carreira. Ap�
 
 Impacto:
 `docs/handoff-portfolio-v0.1-alpha.md` foi criado com descrição, pitch, entregas, demo, decisões e próximos passos. O README foi reorganizado para leitura externa. A sequência curta da v0.1-alpha está concluída no escopo local/mock-first. O próximo bloco deve ser decidido entre deploy real mock-first e planejamento da v0.1-beta.
+
+---
+
+### DEC-028 — v0.1-alpha publicada em modo mock-first
+
+TASK 018 executou o deploy real mock-first na Vercel.
+
+Motivo:
+Depois do handoff de portfólio, a alpha precisava sair do ambiente local para se tornar um ativo demonstrável.
+
+Impacto:
+O projeto foi linkado na Vercel como `adrianogssouzas-projects/sensei-data-engineer-mentor`, conectado ao GitHub e publicado em `https://sensei-data-engineer-mentor.vercel.app`. O deploy foi validado com provider mock e sem chamada externa de IA. Supabase remoto e migrations continuam para um próximo bloco.

@@ -4,6 +4,8 @@
 
 Preparar o SENSEI para deploy de v0.1-alpha sem depender de Gemini real. O fluxo oficial enquanto houver bloqueio de quota/billing do Gemini é usar `AI_PROVIDER=mock`.
 
+Status: deploy executado na TASK 018. Relatório em `docs/deploy-v0.1-alpha.md`.
+
 ## Escopo
 
 Esta etapa prepara documentação e validação de build. Ela não executa deploy, não cria projeto Vercel, não aplica migrations remotas e não adiciona RAG, embeddings, upload, pgvector, multi-user/RLS ou novos providers.
