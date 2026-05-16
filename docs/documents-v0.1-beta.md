@@ -19,6 +19,7 @@ Status: iniciado na TASK 021.
 - Uso dos chunks recuperados no chat mock.
 - Ranking lexical/local v2 com termos encontrados e score simples.
 - Fundação de embeddings nos chunks com status `pending`.
+- Geração mock de embeddings para chunks pendentes.
 
 ## Banco usado
 
@@ -87,6 +88,7 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - Na TASK 025, uma fonte temporária sobre `window functions` foi criada; o chat mock recuperou o chunk e respondeu citando a fonte; a fonte foi removida ao final.
 - Na TASK 026, a recuperação foi validada com múltiplos termos, score lexical e termos encontrados visíveis na resposta do chat mock.
 - Na TASK 027, a migration de embeddings foi aplicada; uma fonte temporária continuou criando `chunkCount = 1`; a fonte foi removida ao final.
+- Na TASK 028, uma fonte temporária teve 1 embedding gerado com provider mock e foi removida ao final.
 
 ## Fora do escopo
 
@@ -94,7 +96,7 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - Storage de arquivos.
 - Parsing de PDF/HTML/Markdown.
 - pgvector.
-- Geração de embeddings.
+- Embeddings reais via provider externo.
 - RAG.
 - Busca semântica.
 - Ranking semântico ou resposta generativa real sobre fontes.

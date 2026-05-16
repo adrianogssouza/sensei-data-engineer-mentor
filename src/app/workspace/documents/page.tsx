@@ -44,6 +44,16 @@ type ChunkSearchApiResponse = {
   results?: ChunkSearchResult[];
 };
 
+type EmbeddingsApiResponse = {
+  available?: boolean;
+  error?: string;
+  provider?: string;
+  model?: string;
+  processedCount?: number;
+  embeddedCount?: number;
+  failedCount?: number;
+};
+
 const SOURCE_TYPE_OPTIONS = [
   { label: "Manual", value: "manual" },
   { label: "URL", value: "url" },
@@ -80,6 +90,8 @@ export default function WorkspaceDocumentsPage() {
   const [searchResults, setSearchResults] = useState<ChunkSearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchMessage, setSearchMessage] = useState<string | null>(null);
+  const [isEmbedding, setIsEmbedding] = useState(false);
+  const [embeddingMessage, setEmbeddingMessage] = useState<string | null>(null);
   const [removingDocumentId, setRemovingDocumentId] = useState<string | null>(
     null,
   );
@@ -229,6 +241,39 @@ export default function WorkspaceDocumentsPage() {
     }
   }
 
+  async function handleGenerateEmbeddings() {
+    setIsEmbedding(true);
+    setEmbeddingMessage(null);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch("/api/documents/embeddings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ limit: 10 }),
+      });
+      const payload = (await response.json()) as EmbeddingsApiResponse;
+
+      if (!response.ok || !payload.available) {
+        setEmbeddingMessage(payload.error ?? "Embeddings indisponiveis.");
+        return;
+      }
+
+      setEmbeddingMessage(
+        `${payload.embeddedCount ?? 0} chunk(s) com embedding gerado. ` +
+          `${payload.failedCount ?? 0} falha(s). Modelo: ${
+            payload.model ?? "mock"
+          }.`,
+      );
+    } catch {
+      setEmbeddingMessage("Embeddings indisponiveis.");
+    } finally {
+      setIsEmbedding(false);
+    }
+  }
+
   return (
     <div className="space-y-8">
       <div>
@@ -336,13 +381,24 @@ export default function WorkspaceDocumentsPage() {
       </form>
 
       <section className="border border-zinc-200 p-5 dark:border-zinc-800">
-        <div>
-          <h3 className="text-base font-medium text-zinc-950 dark:text-zinc-50">
-            Buscar nos chunks
-          </h3>
-          <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-            Encontre trechos já segmentados antes de ligar embeddings ou RAG.
-          </p>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h3 className="text-base font-medium text-zinc-950 dark:text-zinc-50">
+              Buscar nos chunks
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+              Encontre trechos já segmentados enquanto a busca semântica ainda
+              não substitui o fallback lexical.
+            </p>
+          </div>
+          <button
+            className="border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+            disabled={isEmbedding}
+            onClick={() => void handleGenerateEmbeddings()}
+            type="button"
+          >
+            {isEmbedding ? "Gerando..." : "Gerar embeddings"}
+          </button>
         </div>
 
         <form className="mt-4 flex flex-col gap-3 sm:flex-row" onSubmit={handleSearch}>
@@ -365,6 +421,12 @@ export default function WorkspaceDocumentsPage() {
         {searchMessage ? (
           <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
             {searchMessage}
+          </p>
+        ) : null}
+
+        {embeddingMessage ? (
+          <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+            {embeddingMessage}
           </p>
         ) : null}
 

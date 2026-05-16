@@ -432,3 +432,15 @@ Antes de gerar embeddings ou alterar o chat para busca semântica, o banco preci
 
 Impacto:
 A migration `20260516120500` habilitou a extensão `vector` e adicionou campos de embedding em `document_chunks`: vetor de dimensão 1536, provider, modelo, status, erro e timestamp. Chunks novos ficam com `embedding_status = pending`. Os tipos TypeScript foram atualizados. A migration foi aplicada no Supabase remoto e validada com criação/remocão de fonte temporária. Geração de embeddings, busca vetorial e RAG semântico permanecem para tasks futuras.
+
+---
+
+### DEC-038 — Embeddings mock antes de embeddings pagos
+
+TASK 028 implementou geração local determinística de embeddings.
+
+Motivo:
+Antes de usar OpenAI Embeddings ou outro provider pago, o projeto precisa validar persistência de vetores no pgvector, atualização de status e fluxo operacional de geração. Um provider mock determinístico evita custo, segredo e bloqueios de quota, mantendo a arquitetura preparada para trocar o backend depois.
+
+Impacto:
+Foi criado o provider `mock-hash-embedding-v1`, que gera vetores de 1536 dimensões a partir do texto do chunk. A rota protegida `/api/documents/embeddings` processa chunks pendentes e salva `embedding`, provider, modelo, status e timestamp. A tela de documentos ganhou botão para gerar embeddings. A produção foi validada com criação de fonte temporária, geração de 1 embedding e remoção da fonte. Busca vetorial e RAG semântico permanecem para tasks futuras.

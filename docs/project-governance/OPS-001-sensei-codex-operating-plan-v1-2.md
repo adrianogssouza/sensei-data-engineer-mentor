@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 027
-- Checkpoint: fundação pgvector/embeddings aplicada no Supabase remoto
+- Task atual concluída: TASK 028
+- Checkpoint: embeddings mock gerados em pgvector para chunks pendentes
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: gerar embeddings dos chunks sem substituir a busca lexical
+- Próxima implementação definida: combinar busca lexical com busca vetorial sem remover fallback
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- gerar embeddings dos chunks com escopo pequeno e validável
+- combinar recuperação lexical e vetorial com escopo pequeno e validável
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex

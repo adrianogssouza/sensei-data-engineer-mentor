@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-16
-- Fase: v0.1-beta com fundação pgvector/embeddings preparada
-- Última task concluída: TASK 027
-- Checkpoint atual: `document_chunks` possui colunas de embedding e status `pending`
-- Próxima task: gerar embeddings dos chunks sem substituir a busca lexical
+- Fase: v0.1-beta com embeddings mock gerados em pgvector
+- Última task concluída: TASK 028
+- Checkpoint atual: chunks pendentes podem receber embeddings locais determinísticos
+- Próxima task: combinar busca lexical com busca vetorial sem remover fallback
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -57,6 +57,7 @@
 - TASK 025 — Busca lexical/local no chat mock
 - TASK 026 — Ranking lexical/local v2
 - TASK 027 — Fundação pgvector/embeddings
+- TASK 028 — Geração mock de embeddings
 
 ## Bloqueios
 
@@ -106,7 +107,7 @@
 - Tipos TypeScript do banco atualizados manualmente.
 - Schema atual é single-user/private, sem `user_id`, RLS multi-user ou policies com `auth.uid()`.
 - pgvector está habilitado e colunas de embedding existem em `document_chunks`.
-- Geração de embeddings, upload, RAG semântico e ownership multi-user ainda não foram implementados.
+- Geração mock de embeddings foi implementada; embeddings reais via OpenAI, upload, RAG semântico e ownership multi-user ainda não foram implementados.
 - Nenhuma migration foi aplicada a banco remoto nesta task.
 
 ## Shell do Workspace
@@ -116,7 +117,7 @@
 - Rotas placeholder criadas para `/workspace/chat`, `/workspace/usage` e `/workspace/settings`.
 - `/workspace/documents` agora possui cadastro manual, listagem e remoção de fontes/documentos.
 - Chat agora possui rotas internas para persistência Supabase quando configurado.
-- RAG, upload, geração de embeddings e usage UI persistente ainda não foram implementados.
+- RAG, upload, embeddings reais e usage UI persistente ainda não foram implementados.
 
 ## Chat Local com Mock
 
@@ -157,7 +158,7 @@
 - Nenhum SDK de Anthropic/OpenAI foi instalado.
 - O provider mock recebe trechos recuperados por `document_chunks` via metadados da rota `/api/ai/chat`.
 - Os metadados de recuperação incluem termos buscados, ranking usado e quantidade de resultados.
-- Não há RAG, geração de embeddings, upload, streaming ou persistência de uso.
+- Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
 
@@ -354,11 +355,29 @@
 - Validação em produção: migration aplicada, `supabase migration list` confirmou local/remoto, e uma fonte temporária foi criada com `chunkCount = 1` após a migration e removida ao final.
 - Geração de embeddings, busca vetorial, RAG semântico e provider de embeddings continuam fora do escopo desta task.
 
+## Geração Mock de Embeddings
+
+- TASK 028 criou geração local determinística de embeddings para chunks pendentes.
+- Provider atual: `mock`.
+- Modelo atual: `mock-hash-embedding-v1`.
+- Dimensão: 1536.
+- A rota protegida `/api/documents/embeddings` processa batches pequenos de chunks com `embedding_status = pending`.
+- A tela `/workspace/documents` ganhou botão "Gerar embeddings".
+- Chunks processados recebem:
+  - `embedding`;
+  - `embedding_provider = mock`;
+  - `embedding_model = mock-hash-embedding-v1`;
+  - `embedding_status = ready`;
+  - `embedded_at`.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção: uma fonte temporária foi criada, a rota gerou 1 embedding, retornou `embeddedCount = 1` e `failedCount = 0`, e a fonte foi removida.
+- Embeddings reais via OpenAI, busca vetorial no chat e RAG semântico continuam fora do escopo desta task.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: gerar embeddings dos chunks mantendo fallback lexical.
+- Próxima implementação planejada: combinar busca lexical com busca vetorial mantendo fallback.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -369,8 +388,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão gerando embeddings dos chunks.
+- Retomar na próxima sessão combinando busca lexical e vetorial.
 
 ## Próxima ação recomendada
 
-Implementar geração controlada de embeddings dos chunks.
+Implementar recuperação híbrida lexical + vetorial.

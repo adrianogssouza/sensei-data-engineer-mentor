@@ -42,7 +42,7 @@ A fundação de Supabase Auth existe, mas o modo operacional atual é single-use
 
 A fundação local de dados foi implementada apenas como schema/migration/types. Nenhum serviço local do Supabase foi iniciado e nenhum banco remoto foi modificado.
 
-O shell do workspace foi implementado como navegação e páginas funcionais para chat, documentos e uso. O chat foi implementado como UI/estado com persistência em `localStorage`, persistência Supabase quando configurada e UI mínima de histórico. A TASK 009 adicionou o skeleton de provider de IA e a TASK 010 adicionou Gemini como primeiro provider real. O registry de providers suporta mock e Gemini, com mock sempre disponível e Gemini selecionado apenas quando configurado explicitamente via variáveis de ambiente. `/workspace/chat` chama `/api/ai/chat`, que valida um payload mínimo de mensagens, usa a abstração de provider e consulta `document_chunks` por busca lexical/local ranqueada para passar trechos recuperados ao provider mock. A TASK 027 habilitou pgvector e preparou colunas de embedding nos chunks. A TASK 013 adicionou rotas internas para threads e mensagens do histórico. Não há SDKs Anthropic/OpenAI instalados, RAG semântico, geração de embeddings, upload, streaming ou persistência de uso em banco.
+O shell do workspace foi implementado como navegação e páginas funcionais para chat, documentos e uso. O chat foi implementado como UI/estado com persistência em `localStorage`, persistência Supabase quando configurada e UI mínima de histórico. A TASK 009 adicionou o skeleton de provider de IA e a TASK 010 adicionou Gemini como primeiro provider real. O registry de providers suporta mock e Gemini, com mock sempre disponível e Gemini selecionado apenas quando configurado explicitamente via variáveis de ambiente. `/workspace/chat` chama `/api/ai/chat`, que valida um payload mínimo de mensagens, usa a abstração de provider e consulta `document_chunks` por busca lexical/local ranqueada para passar trechos recuperados ao provider mock. A TASK 027 habilitou pgvector e preparou colunas de embedding nos chunks. A TASK 028 adicionou geração local determinística de embeddings mock. A TASK 013 adicionou rotas internas para threads e mensagens do histórico. Não há SDKs Anthropic/OpenAI instalados, RAG semântico, embeddings reais por provider externo, upload, streaming ou persistência de uso em banco.
 
 A TASK 010.1 adicionou comportamento diagnóstico de fallback para falhas do provider Gemini. Testes de runtime confirmaram que a integração alcança a API Gemini e recebe uma resposta real da API. A TASK 010.2 documentou o bloqueio atual: quota/billing do Google. Gemini retorna `429 RESOURCE_EXHAUSTED`, e a quota free tier parece estar em `0` para o modelo Gemini testado. Não há bloqueio de código conhecido. O fallback mock permanece operacional enquanto a quota não estiver disponível. A documentação de fim do dia está sincronizada com TASK 011 como próxima task planejada.
 
@@ -63,7 +63,7 @@ A TASK 017 fechou o handoff de portfólio da v0.1-alpha. A descrição de aprese
 A arquitetura planejada do SENSEI inclui:
 
 - Ingestão de documentos para materiais de estudo.
-- Geração de embeddings para indexação e recuperação por chunks.
+- Embeddings reais por provider externo para indexação e recuperação por chunks.
 - RAG para respostas do tutor baseadas em fontes.
 - Providers Anthropic e OpenAI por trás da abstração de provider.
 - Logging persistente de custo e tokens para chamadas de modelo.
@@ -71,4 +71,4 @@ A arquitetura planejada do SENSEI inclui:
 
 ## Ainda Não Implementado
 
-Os componentes planejados acima ainda não foram implementados. O estado atual do repositório já possui documentos manuais, `raw_content`, `document_chunks`, busca lexical/local ranqueada, extensão pgvector e colunas de embedding nos chunks, mas ainda não possui geração de embeddings, SDK Anthropic, SDK OpenAI, upload/parsing de arquivos, pipeline RAG semântico, eval runner, ownership multi-user com `user_id`, política RLS final, persistência de uso em banco ou streaming.
+Os componentes planejados acima ainda não foram implementados. O estado atual do repositório já possui documentos manuais, `raw_content`, `document_chunks`, busca lexical/local ranqueada, extensão pgvector, colunas de embedding e geração mock de embeddings, mas ainda não possui embeddings reais por provider externo, SDK Anthropic, SDK OpenAI, upload/parsing de arquivos, pipeline RAG semântico, eval runner, ownership multi-user com `user_id`, política RLS final, persistência de uso em banco ou streaming.
