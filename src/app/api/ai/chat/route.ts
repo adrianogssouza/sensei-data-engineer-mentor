@@ -8,20 +8,14 @@ import {
   recordExternalAiUsage,
 } from "@/lib/ai/usage-guardrails";
 import {
-  extractChunkSearchTerms,
-  searchDocumentChunks,
-  type ChunkSearchResult,
-} from "@/lib/documents/chunk-search";
-import {
-  searchVectorDocumentChunks,
-  type VectorChunkSearchResult,
-} from "@/lib/documents/vector-search";
+  searchHybridDocumentChunks,
+  type HybridChunkSearchResult,
+} from "@/lib/documents/hybrid-search";
 import type { AiGenerateRequest, AiMessage } from "@/types/ai";
 
 const MAX_MESSAGES = 20;
 const MAX_MESSAGE_LENGTH = 4000;
 const MAX_CHAT_RETRIEVAL_RESULTS = 3;
-const VECTOR_SCORE_WEIGHT = 20;
 
 export const runtime = "nodejs";
 
@@ -85,20 +79,6 @@ function getLastUserMessage(messages: AiMessage[]): string {
   return messages.findLast((message) => message.role === "user")?.content ?? "";
 }
 
-type HybridChunkSearchResult = {
-  chunkId: string;
-  documentId: string;
-  documentTitle: string;
-  chunkIndex: number;
-  content: string;
-  score: number;
-  matchedTerms: string[];
-  phraseMatches: number;
-  termMatches: number;
-  vectorSimilarity: number | null;
-  hybridScore: number;
-};
-
 function toRetrievedChunkMetadata(result: HybridChunkSearchResult) {
   return {
     chunkId: result.chunkId,
@@ -115,102 +95,16 @@ function toRetrievedChunkMetadata(result: HybridChunkSearchResult) {
   };
 }
 
-function toHybridChunkFromLexical(result: ChunkSearchResult): HybridChunkSearchResult {
-  return {
-    chunkId: result.chunkId,
-    documentId: result.documentId,
-    documentTitle: result.documentTitle,
-    chunkIndex: result.chunkIndex,
-    content: result.content,
-    score: result.score,
-    matchedTerms: result.matchedTerms,
-    phraseMatches: result.phraseMatches,
-    termMatches: result.termMatches,
-    vectorSimilarity: null,
-    hybridScore: result.score,
-  };
-}
-
-function mergeVectorChunk(
-  current: HybridChunkSearchResult | undefined,
-  result: VectorChunkSearchResult,
-): HybridChunkSearchResult {
-  const vectorScore = result.similarity * VECTOR_SCORE_WEIGHT;
-
-  if (!current) {
-    return {
-      chunkId: result.chunkId,
-      documentId: result.documentId,
-      documentTitle: result.documentTitle,
-      chunkIndex: result.chunkIndex,
-      content: result.content,
-      score: 0,
-      matchedTerms: [],
-      phraseMatches: 0,
-      termMatches: 0,
-      vectorSimilarity: result.similarity,
-      hybridScore: vectorScore,
-    };
-  }
-
-  return {
-    ...current,
-    vectorSimilarity: result.similarity,
-    hybridScore: current.score + vectorScore,
-  };
-}
-
 async function getChatRetrievalMetadata(messages: AiMessage[]) {
   const lastUserMessage = getLastUserMessage(messages);
-  const searchTerms = extractChunkSearchTerms(lastUserMessage);
-
-  if (searchTerms.length === 0) {
-    return {
-      retrieval: {
-        mode: "lexical-local",
-        queryTerms: searchTerms,
-        resultCount: 0,
-      },
-      retrievedChunks: [],
-    };
-  }
-
-  const [lexicalResults, vectorResults] = await Promise.all([
-    searchDocumentChunks(lastUserMessage, {
-      maxResults: MAX_CHAT_RETRIEVAL_RESULTS,
-    }),
-    searchVectorDocumentChunks(lastUserMessage, {
-      maxResults: MAX_CHAT_RETRIEVAL_RESULTS,
-    }).catch(() => []),
-  ]);
-  const resultsByChunkId = new Map<string, HybridChunkSearchResult>();
-
-  for (const result of lexicalResults) {
-    resultsByChunkId.set(result.chunkId, toHybridChunkFromLexical(result));
-  }
-
-  for (const result of vectorResults) {
-    resultsByChunkId.set(
-      result.chunkId,
-      mergeVectorChunk(resultsByChunkId.get(result.chunkId), result),
-    );
-  }
-
-  const retrievedChunks = Array.from(resultsByChunkId.values())
-    .sort((a, b) => b.hybridScore - a.hybridScore || a.chunkIndex - b.chunkIndex)
-    .slice(0, MAX_CHAT_RETRIEVAL_RESULTS)
-    .map(toRetrievedChunkMetadata);
+  const { retrieval, retrievedChunks } = await searchHybridDocumentChunks(
+    lastUserMessage,
+    { maxResults: MAX_CHAT_RETRIEVAL_RESULTS },
+  );
 
   return {
-    retrieval: {
-      mode: "hybrid-local",
-      queryTerms: searchTerms,
-      ranking: "hybrid-lexical-vector-v1",
-      lexicalResultCount: lexicalResults.length,
-      vectorResultCount: vectorResults.length,
-      resultCount: retrievedChunks.length,
-    },
-    retrievedChunks,
+    retrieval,
+    retrievedChunks: retrievedChunks.map(toRetrievedChunkMetadata),
   };
 }
 

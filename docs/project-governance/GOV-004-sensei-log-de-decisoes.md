@@ -468,3 +468,15 @@ Antes de trocar embeddings mock por embeddings reais ou avançar para upload/par
 
 Impacto:
 `ChatMessage` passou a aceitar `metadata`; `/api/chat/messages` persiste e lê esses metadados; o fallback local preserva mensagens com metadata seguro; e a lista de mensagens exibe um bloco de diagnóstico quando há recuperação. A produção foi validada com resposta `hybrid-local · hybrid-lexical-vector-v1`, contagens lexical/vetorial e termos usados. Embeddings reais, upload/parsing, evals e RAG semântico completo continuam para próximas tasks.
+
+---
+
+### DEC-041 — Eval manual antes de dataset versionado
+
+TASK 031 criou avaliação manual de recuperação.
+
+Motivo:
+Antes de criar dataset versionado, embeddings reais ou upload/parsing, o projeto precisa de uma forma simples de checar se a recuperação híbrida retorna a fonte esperada no topo. Isso transforma QA manual em um fluxo repetível sem criar novas tabelas.
+
+Impacto:
+A lógica híbrida foi extraída para `src/lib/documents/hybrid-search.ts` e reutilizada pelo chat. A rota protegida `/api/documents/retrieval-evals` aceita casos manuais com pergunta, título esperado e trecho esperado, retornando passou/falhou e o resultado do topo. A tela `/workspace/documents` ganhou seção para rodar um eval manual. A produção foi validada com fonte temporária, embedding mock, eval aprovado e limpeza final.

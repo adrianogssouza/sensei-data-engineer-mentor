@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-16
-- Fase: v0.1-beta com recuperação híbrida lexical + vetorial observável no chat
-- Última task concluída: TASK 030
-- Checkpoint atual: chat mock combina ranking lexical com similaridade vetorial e mostra diagnóstico de recuperação por resposta
-- Próxima task: decidir entre embeddings reais, upload/parsing ou evals de recuperação
+- Fase: v0.1-beta com recuperação híbrida lexical + vetorial observável e avaliável
+- Última task concluída: TASK 031
+- Checkpoint atual: recuperação híbrida pode ser inspecionada no chat e validada por eval manual
+- Próxima task: decidir entre embeddings reais, upload/parsing ou dataset versionado de evals
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -60,6 +60,7 @@
 - TASK 028 — Geração mock de embeddings
 - TASK 029 — Recuperação híbrida lexical + vetorial
 - TASK 030 — Observabilidade da recuperação no chat
+- TASK 031 — Eval manual de recuperação
 
 ## Bloqueios
 
@@ -162,6 +163,7 @@
 - Os metadados de recuperação incluem termos buscados, ranking usado e quantidade de resultados.
 - A recuperação do chat combina resultados lexicais e vetoriais quando há embeddings prontos.
 - A UI do chat exibe o diagnóstico da recuperação por mensagem do assistente quando os metadados estão disponíveis.
+- A UI de documentos possui eval manual para validar se uma pergunta recupera a fonte esperada no topo.
 - Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -414,11 +416,24 @@
 - Validação em produção: uma conversa temporária exibiu `hybrid-local · hybrid-lexical-vector-v1`, `resultados 1 · lexical 1 · vetorial 1` e termos da consulta; a conversa foi limpa via UI e a fonte temporária foi removida.
 - Embeddings reais via OpenAI, upload/parsing, evals de recuperação e RAG semântico completo continuam fora do escopo.
 
+## Eval Manual de Recuperação
+
+- TASK 031 extraiu a recuperação híbrida para `src/lib/documents/hybrid-search.ts`.
+- `/api/ai/chat` passou a reutilizar o helper compartilhado, preservando comportamento de chat.
+- Rota protegida `/api/documents/retrieval-evals` criada para validar casos manuais de recuperação.
+- Cada caso de eval aceita pergunta, título esperado, trecho esperado e índice esperado do chunk.
+- O eval passa quando o topo do ranking híbrido bate com os critérios informados.
+- `/workspace/documents` ganhou seção "Avaliar recuperação" para rodar um caso manual pela UI.
+- Documento criado em `docs/retrieval-evals-v0.1-beta.md`.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção: uma fonte temporária foi criada, recebeu embedding mock, passou no eval manual e foi removida ao final.
+- Dataset versionado de evals, thresholds avançados, avaliação por LLM, embeddings reais e upload/parsing continuam fora do escopo.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: decidir próximo incremento após observabilidade da recuperação.
+- Próxima implementação planejada: decidir próximo incremento após eval manual de recuperação.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -433,4 +448,4 @@
 
 ## Próxima ação recomendada
 
-Escolher entre embeddings reais, upload/parsing ou evals de recuperação.
+Escolher entre embeddings reais, upload/parsing ou dataset versionado de evals.

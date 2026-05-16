@@ -54,6 +54,45 @@ type EmbeddingsApiResponse = {
   failedCount?: number;
 };
 
+type RetrievalEvalResult = {
+  name: string;
+  query: string;
+  passed: boolean;
+  expected: {
+    documentTitle: string | null;
+    contentIncludes: string | null;
+    chunkIndex: number | null;
+  };
+  actualTopResult: {
+    documentTitle: string;
+    chunkIndex: number;
+    hybridScore: number;
+    lexicalScore: number;
+    vectorSimilarity: number | null;
+    matchedTerms: string[];
+    contentPreview: string;
+  } | null;
+  retrieval: {
+    mode: string;
+    ranking?: string;
+    resultCount: number;
+    lexicalResultCount?: number;
+    vectorResultCount?: number;
+    queryTerms?: string[];
+  };
+};
+
+type RetrievalEvalApiResponse = {
+  available?: boolean;
+  error?: string;
+  summary?: {
+    total: number;
+    passed: number;
+    failed: number;
+  };
+  results?: RetrievalEvalResult[];
+};
+
 const SOURCE_TYPE_OPTIONS = [
   { label: "Manual", value: "manual" },
   { label: "URL", value: "url" },
@@ -92,6 +131,12 @@ export default function WorkspaceDocumentsPage() {
   const [searchMessage, setSearchMessage] = useState<string | null>(null);
   const [isEmbedding, setIsEmbedding] = useState(false);
   const [embeddingMessage, setEmbeddingMessage] = useState<string | null>(null);
+  const [evalQuery, setEvalQuery] = useState("");
+  const [evalExpectedTitle, setEvalExpectedTitle] = useState("");
+  const [evalExpectedContent, setEvalExpectedContent] = useState("");
+  const [evalResult, setEvalResult] = useState<RetrievalEvalResult | null>(null);
+  const [isRunningEval, setIsRunningEval] = useState(false);
+  const [evalMessage, setEvalMessage] = useState<string | null>(null);
   const [removingDocumentId, setRemovingDocumentId] = useState<string | null>(
     null,
   );
@@ -274,6 +319,61 @@ export default function WorkspaceDocumentsPage() {
     }
   }
 
+  async function handleRunRetrievalEval(
+    event: React.FormEvent<HTMLFormElement>,
+  ) {
+    event.preventDefault();
+    const normalizedQuery = evalQuery.trim();
+
+    if (!normalizedQuery) {
+      setEvalResult(null);
+      setEvalMessage("Digite uma pergunta para avaliar.");
+      return;
+    }
+
+    setIsRunningEval(true);
+    setEvalMessage(null);
+    setEvalResult(null);
+
+    try {
+      const response = await fetch("/api/documents/retrieval-evals", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cases: [
+            {
+              name: "Avaliação manual",
+              query: normalizedQuery,
+              expectedDocumentTitle: evalExpectedTitle,
+              expectedContentIncludes: evalExpectedContent,
+            },
+          ],
+          maxResults: 3,
+        }),
+      });
+      const payload = (await response.json()) as RetrievalEvalApiResponse;
+      const firstResult = payload.results?.[0];
+
+      if (!response.ok || !payload.available || !firstResult) {
+        setEvalMessage(payload.error ?? "Eval indisponivel.");
+        return;
+      }
+
+      setEvalResult(firstResult);
+      setEvalMessage(
+        firstResult.passed
+          ? "Eval passou: o topo da recuperação bateu com o esperado."
+          : "Eval falhou: o topo da recuperação não bateu com o esperado.",
+      );
+    } catch {
+      setEvalMessage("Eval indisponivel.");
+    } finally {
+      setIsRunningEval(false);
+    }
+  }
+
   return (
     <div className="space-y-8">
       <div>
@@ -449,6 +549,121 @@ export default function WorkspaceDocumentsPage() {
               </article>
             ))}
           </div>
+        ) : null}
+      </section>
+
+      <section className="border border-zinc-200 p-5 dark:border-zinc-800">
+        <div>
+          <h3 className="text-base font-medium text-zinc-950 dark:text-zinc-50">
+            Avaliar recuperação
+          </h3>
+          <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+            Rode uma checagem rápida para confirmar se a pergunta recupera a
+            fonte esperada no topo do ranking híbrido.
+          </p>
+        </div>
+
+        <form
+          className="mt-4 grid gap-4"
+          onSubmit={handleRunRetrievalEval}
+        >
+          <label className="grid gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+            Pergunta
+            <input
+              className="border border-zinc-300 bg-transparent px-3 py-2 text-base text-zinc-950 outline-none transition-colors focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+              maxLength={120}
+              onChange={(event) => setEvalQuery(event.target.value)}
+              placeholder="Ex.: explique window functions"
+              value={evalQuery}
+            />
+          </label>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="grid gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+              Título esperado
+              <input
+                className="border border-zinc-300 bg-transparent px-3 py-2 text-base text-zinc-950 outline-none transition-colors focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+                maxLength={120}
+                onChange={(event) => setEvalExpectedTitle(event.target.value)}
+                placeholder="Parte do título da fonte"
+                value={evalExpectedTitle}
+              />
+            </label>
+
+            <label className="grid gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+              Trecho esperado
+              <input
+                className="border border-zinc-300 bg-transparent px-3 py-2 text-base text-zinc-950 outline-none transition-colors focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+                maxLength={240}
+                onChange={(event) =>
+                  setEvalExpectedContent(event.target.value)
+                }
+                placeholder="Palavra ou frase que deve aparecer"
+                value={evalExpectedContent}
+              />
+            </label>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              className="border border-zinc-950 px-4 py-2 text-sm font-medium text-zinc-950 transition-colors hover:bg-zinc-950 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-50 dark:text-zinc-50 dark:hover:bg-zinc-50 dark:hover:text-zinc-950"
+              disabled={isRunningEval}
+              type="submit"
+            >
+              {isRunningEval ? "Avaliando..." : "Rodar eval"}
+            </button>
+
+            {evalMessage ? (
+              <p
+                className={`text-sm ${
+                  evalResult?.passed
+                    ? "text-emerald-700 dark:text-emerald-400"
+                    : "text-zinc-600 dark:text-zinc-400"
+                }`}
+              >
+                {evalMessage}
+              </p>
+            ) : null}
+          </div>
+        </form>
+
+        {evalResult ? (
+          <article className="mt-4 border border-zinc-200 p-4 dark:border-zinc-800">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h4 className="text-sm font-medium text-zinc-950 dark:text-zinc-50">
+                {evalResult.passed ? "Passou" : "Falhou"}
+              </h4>
+              <p className="text-xs text-zinc-500">
+                {evalResult.retrieval.mode}
+                {evalResult.retrieval.ranking
+                  ? ` · ${evalResult.retrieval.ranking}`
+                  : ""}
+              </p>
+            </div>
+            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+              resultados {evalResult.retrieval.resultCount} · lexical{" "}
+              {evalResult.retrieval.lexicalResultCount ?? 0} · vetorial{" "}
+              {evalResult.retrieval.vectorResultCount ?? 0}
+            </p>
+            {evalResult.actualTopResult ? (
+              <div className="mt-3 text-sm leading-6 text-zinc-700 dark:text-zinc-300">
+                <p className="font-medium text-zinc-950 dark:text-zinc-50">
+                  {evalResult.actualTopResult.documentTitle}
+                </p>
+                <p className="text-xs text-zinc-500">
+                  chunk {evalResult.actualTopResult.chunkIndex + 1} · score{" "}
+                  {evalResult.actualTopResult.hybridScore.toFixed(2)}
+                </p>
+                <p className="mt-2 whitespace-pre-wrap">
+                  {evalResult.actualTopResult.contentPreview}
+                </p>
+              </div>
+            ) : (
+              <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+                Nenhum resultado recuperado.
+              </p>
+            )}
+          </article>
         ) : null}
       </section>
 
