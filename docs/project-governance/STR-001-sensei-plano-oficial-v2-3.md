@@ -81,6 +81,7 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 026 concluída
 - TASK 027 concluída
 - TASK 028 concluída
+- TASK 029 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Fundação Next.js criada
@@ -104,10 +105,11 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - Ranking lexical/local v2 implementado com termos relevantes, score simples e rastreabilidade básica, sem embeddings/RAG.
 - Fundação pgvector/embeddings criada em `document_chunks`, ainda sem geração de embeddings/RAG.
 - Geração local determinística de embeddings implementada para chunks pendentes, ainda sem RAG semântico.
+- Recuperação híbrida lexical + vetorial implementada no chat mock, ainda sem RAG semântico.
 
 ## Próximo passo
 
-Combinar busca lexical com busca vetorial mantendo fallback lexical e sem pular validações.
+Decidir próximo incremento após recuperação híbrida: UX/observabilidade, embeddings reais ou upload/parsing.
 
 ## Regra central
 

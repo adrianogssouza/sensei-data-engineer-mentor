@@ -4,6 +4,8 @@ export type MockRetrievedChunk = {
   content: string;
   matchedTerms?: string[];
   score?: number;
+  vectorSimilarity?: number | null;
+  hybridScore?: number;
 };
 
 function createSnippet(content: string): string {
@@ -27,12 +29,18 @@ function createRetrievalResponse(retrievedChunks: MockRetrievedChunk[]): string 
     firstChunk.matchedTerms && firstChunk.matchedTerms.length > 0
       ? ` Termos encontrados: ${firstChunk.matchedTerms.join(", ")}.`
       : "";
+  const vectorText =
+    typeof firstChunk.vectorSimilarity === "number"
+      ? ` Similaridade vetorial: ${firstChunk.vectorSimilarity.toFixed(3)}.`
+      : "";
 
   return [
     "Local mock com fontes: encontrei um trecho relevante nas suas fontes cadastradas.",
     "",
     `Fonte: ${firstChunk.documentTitle} (chunk ${firstChunk.chunkIndex}).`,
-    `Score lexical: ${firstChunk.score ?? 0}.${termsText}`,
+    `Score híbrido: ${firstChunk.hybridScore ?? firstChunk.score ?? 0}. Score lexical: ${
+      firstChunk.score ?? 0
+    }.${termsText}${vectorText}`,
     `Trecho: "${createSnippet(firstChunk.content)}"`,
     "",
     `Use esse trecho como base de estudo: destaque o conceito principal, transforme em uma pergunta pratica e depois valide com um exercicio pequeno.${extraText}`,

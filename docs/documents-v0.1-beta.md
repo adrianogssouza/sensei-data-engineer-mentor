@@ -20,6 +20,7 @@ Status: iniciado na TASK 021.
 - Ranking lexical/local v2 com termos encontrados e score simples.
 - Fundação de embeddings nos chunks com status `pending`.
 - Geração mock de embeddings para chunks pendentes.
+- Busca vetorial direta e recuperação híbrida no chat mock.
 
 ## Banco usado
 
@@ -89,6 +90,7 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - Na TASK 026, a recuperação foi validada com múltiplos termos, score lexical e termos encontrados visíveis na resposta do chat mock.
 - Na TASK 027, a migration de embeddings foi aplicada; uma fonte temporária continuou criando `chunkCount = 1`; a fonte foi removida ao final.
 - Na TASK 028, uma fonte temporária teve 1 embedding gerado com provider mock e foi removida ao final.
+- Na TASK 029, uma fonte temporária com embedding foi recuperada por busca vetorial e usada pelo chat em modo híbrido; a fonte foi removida ao final.
 
 ## Fora do escopo
 
@@ -98,5 +100,5 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - pgvector.
 - Embeddings reais via provider externo.
 - RAG.
-- Busca semântica.
+- RAG semântico com resposta generativa real sobre fontes.
 - Ranking semântico ou resposta generativa real sobre fontes.

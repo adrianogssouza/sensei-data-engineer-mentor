@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 028
-- Checkpoint: embeddings mock gerados em pgvector para chunks pendentes
+- Task atual concluída: TASK 029
+- Checkpoint: recuperação híbrida lexical + vetorial validada em produção
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: combinar busca lexical com busca vetorial sem remover fallback
+- Próxima implementação definida: decidir próximo incremento após recuperação híbrida
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- combinar recuperação lexical e vetorial com escopo pequeno e validável
+- escolher entre UX/observabilidade da recuperação, embeddings reais ou upload/parsing
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex

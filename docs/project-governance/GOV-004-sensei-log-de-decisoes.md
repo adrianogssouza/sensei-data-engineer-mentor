@@ -444,3 +444,15 @@ Antes de usar OpenAI Embeddings ou outro provider pago, o projeto precisa valida
 
 Impacto:
 Foi criado o provider `mock-hash-embedding-v1`, que gera vetores de 1536 dimensões a partir do texto do chunk. A rota protegida `/api/documents/embeddings` processa chunks pendentes e salva `embedding`, provider, modelo, status e timestamp. A tela de documentos ganhou botão para gerar embeddings. A produção foi validada com criação de fonte temporária, geração de 1 embedding e remoção da fonte. Busca vetorial e RAG semântico permanecem para tasks futuras.
+
+---
+
+### DEC-039 — Recuperação híbrida antes de RAG semântico
+
+TASK 029 combinou busca lexical e vetorial no chat mock.
+
+Motivo:
+Antes de transformar o chat em RAG semântico, o projeto precisa validar que consegue recuperar fontes por dois sinais complementares: termos lexicais e similaridade vetorial. Manter fallback lexical reduz risco enquanto os embeddings ainda são mock/determinísticos.
+
+Impacto:
+A migration `20260516123000` criou a função SQL `match_document_chunks` para busca vetorial em pgvector. A rota protegida `/api/documents/vector-search` permite validar similaridade diretamente. A rota `/api/ai/chat` passou a combinar ranking lexical v2 com resultados vetoriais, gerando score híbrido e preservando fallback lexical. A produção foi validada com fonte temporária, geração de embedding, busca vetorial, resposta híbrida no chat e limpeza final.

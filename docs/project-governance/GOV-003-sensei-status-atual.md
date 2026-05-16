@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-16
-- Fase: v0.1-beta com embeddings mock gerados em pgvector
-- Última task concluída: TASK 028
-- Checkpoint atual: chunks pendentes podem receber embeddings locais determinísticos
-- Próxima task: combinar busca lexical com busca vetorial sem remover fallback
+- Fase: v0.1-beta com recuperação híbrida lexical + vetorial
+- Última task concluída: TASK 029
+- Checkpoint atual: chat mock combina ranking lexical com similaridade vetorial quando há embeddings prontos
+- Próxima task: decidir entre UX/observabilidade da recuperação, embeddings reais ou upload/parsing
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -58,6 +58,7 @@
 - TASK 026 — Ranking lexical/local v2
 - TASK 027 — Fundação pgvector/embeddings
 - TASK 028 — Geração mock de embeddings
+- TASK 029 — Recuperação híbrida lexical + vetorial
 
 ## Bloqueios
 
@@ -158,6 +159,7 @@
 - Nenhum SDK de Anthropic/OpenAI foi instalado.
 - O provider mock recebe trechos recuperados por `document_chunks` via metadados da rota `/api/ai/chat`.
 - Os metadados de recuperação incluem termos buscados, ranking usado e quantidade de resultados.
+- A recuperação do chat combina resultados lexicais e vetoriais quando há embeddings prontos.
 - Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -373,11 +375,31 @@
 - Validação em produção: uma fonte temporária foi criada, a rota gerou 1 embedding, retornou `embeddedCount = 1` e `failedCount = 0`, e a fonte foi removida.
 - Embeddings reais via OpenAI, busca vetorial no chat e RAG semântico continuam fora do escopo desta task.
 
+## Recuperação Híbrida Lexical + Vetorial
+
+- TASK 029 criou a migration `20260516123000_add_document_chunk_vector_match.sql`.
+- A função SQL `match_document_chunks` consulta chunks com embeddings prontos usando distância vetorial.
+- Rota protegida `/api/documents/vector-search?q=...` criada para validação vetorial direta.
+- `/api/ai/chat` passou a combinar:
+  - resultados lexicais do ranking v2;
+  - resultados vetoriais via pgvector;
+  - score híbrido simples.
+- Se não houver embedding pronto ou se a busca vetorial falhar, o chat preserva fallback lexical.
+- O mock mostra score híbrido, score lexical, termos encontrados e similaridade vetorial quando disponíveis.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção:
+  - uma fonte temporária foi criada;
+  - 1 embedding mock foi gerado;
+  - `/api/documents/vector-search` retornou o chunk com similaridade;
+  - `/api/ai/chat` respondeu com `mode = hybrid-local`, `lexicalResultCount = 1`, `vectorResultCount = 1` e citou score híbrido/similaridade;
+  - a fonte temporária foi removida e a busca vetorial voltou vazia.
+- RAG semântico, embeddings reais via OpenAI e upload/parsing continuam fora do escopo.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: combinar busca lexical com busca vetorial mantendo fallback.
+- Próxima implementação planejada: decidir próximo incremento após recuperação híbrida.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -388,8 +410,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão combinando busca lexical e vetorial.
+- Retomar na próxima sessão decidindo o próximo incremento da v0.1-beta.
 
 ## Próxima ação recomendada
 
-Implementar recuperação híbrida lexical + vetorial.
+Escolher entre UX/observabilidade da recuperação, embeddings reais ou upload/parsing.

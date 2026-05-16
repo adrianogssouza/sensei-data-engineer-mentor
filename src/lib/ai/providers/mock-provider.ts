@@ -44,7 +44,12 @@ function getRetrievedChunks(metadata: Record<string, unknown> | undefined) {
       ((chunk as MockRetrievedChunk).matchedTerms === undefined ||
         Array.isArray((chunk as MockRetrievedChunk).matchedTerms)) &&
       ((chunk as MockRetrievedChunk).score === undefined ||
-        typeof (chunk as MockRetrievedChunk).score === "number"),
+        typeof (chunk as MockRetrievedChunk).score === "number") &&
+      ((chunk as MockRetrievedChunk).vectorSimilarity === undefined ||
+        typeof (chunk as MockRetrievedChunk).vectorSimilarity === "number" ||
+        (chunk as MockRetrievedChunk).vectorSimilarity === null) &&
+      ((chunk as MockRetrievedChunk).hybridScore === undefined ||
+        typeof (chunk as MockRetrievedChunk).hybridScore === "number"),
   );
 }
 

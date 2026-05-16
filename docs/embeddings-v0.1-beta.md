@@ -1,6 +1,6 @@
 # Embeddings v0.1-beta
 
-Status: geração mock iniciada na TASK 028.
+Status: recuperação híbrida iniciada na TASK 029.
 
 ## O que existe
 
@@ -9,6 +9,8 @@ Status: geração mock iniciada na TASK 028.
 - Tipos TypeScript atualizados para refletir o schema.
 - Provider local determinístico `mock-hash-embedding-v1`.
 - Rota protegida `/api/documents/embeddings`.
+- Rota protegida `/api/documents/vector-search`.
+- Função SQL `match_document_chunks`.
 - Botão "Gerar embeddings" em `/workspace/documents`.
 
 ## Banco usado
@@ -47,7 +49,6 @@ Ela ainda não substitui embeddings reais de OpenAI ou outro provider.
 ## Fora do escopo
 
 - Chamar OpenAI ou outro provider de embeddings.
-- Criar busca vetorial.
 - Criar RAG semantico.
 - Substituir a busca lexical atual.
 
@@ -58,3 +59,4 @@ Ela ainda não substitui embeddings reais de OpenAI ou outro provider.
 - `pnpm lint`, `pnpm build` e `git diff --check` passaram.
 - Em produção, uma fonte temporária foi criada com `chunkCount = 1` após a migration e removida ao final.
 - Na TASK 028, uma fonte temporária foi criada, `/api/documents/embeddings` gerou 1 embedding com `embeddedCount = 1` e `failedCount = 0`, e a fonte foi removida ao final.
+- Na TASK 029, uma fonte temporária com embedding foi recuperada por `/api/documents/vector-search`; o chat respondeu em modo híbrido com score lexical e similaridade vetorial; a fonte foi removida ao final.

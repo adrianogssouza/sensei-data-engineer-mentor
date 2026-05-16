@@ -241,6 +241,22 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      match_document_chunks: {
+        Args: {
+          query_embedding: string;
+          match_count?: number;
+        };
+        Returns: {
+          chunk_id: string;
+          document_id: string;
+          document_title: string;
+          chunk_index: number;
+          content: string;
+          char_count: number;
+          similarity: number;
+          created_at: string;
+        }[];
+      };
       set_updated_at: {
         Args: Record<PropertyKey, never>;
         Returns: unknown;
