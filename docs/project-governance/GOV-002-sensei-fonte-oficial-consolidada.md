@@ -16,10 +16,10 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta com chunks simples de conteúdo
-- Última task concluída: TASK 023
-- Checkpoint atual: fontes com conteúdo bruto geram chunks persistidos no Supabase
-- Próxima task: planejar busca lexical/local antes de embeddings/RAG
+- Fase atual: v0.1-beta com busca lexical/local sobre chunks
+- Última task concluída: TASK 024
+- Checkpoint atual: chunks podem ser consultados por termo antes de embeddings/RAG
+- Próxima task: planejar uso dos resultados de busca no chat mock
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
@@ -29,7 +29,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Fontes/documentos: cadastro manual implementado em `/workspace/documents`
 - Ingestão inicial: `raw_content`, contagem de caracteres, hash e `ingested_at` implementados em `documents`
 - Chunks: tabela `document_chunks` criada e preenchida automaticamente a partir de `raw_content`
-- Próxima implementação planejada: busca lexical/local sobre chunks antes de embeddings/RAG
+- Busca: rota `/api/documents/search` e UI em `/workspace/documents` implementadas sobre chunks
+- Próxima implementação planejada: conectar resultados da busca lexical ao chat mock
 
 ## Objetivo principal 2026
 

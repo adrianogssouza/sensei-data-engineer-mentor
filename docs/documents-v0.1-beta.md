@@ -15,6 +15,7 @@ Status: iniciado na TASK 021.
 - Listagem de fontes cadastradas.
 - Remoção de fontes cadastradas.
 - Geração automática de chunks simples quando há conteúdo bruto.
+- Busca lexical/local sobre chunks.
 
 ## Banco usado
 
@@ -66,6 +67,7 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - A lista final ficou vazia após a limpeza.
 - Na TASK 022, uma fonte manual com conteúdo bruto foi criada, listada com `ready`, `contentCharCount` e `contentHash`, removida, e a lista final voltou a ficar vazia.
 - Na TASK 023, uma fonte manual com conteúdo bruto foi criada com `chunkCount = 1`; a tabela `document_chunks` confirmou o chunk; a fonte foi removida e os chunks foram removidos por cascade.
+- Na TASK 024, uma fonte temporária foi criada, buscas por `window` e `cliente` retornaram o chunk esperado, e a limpeza final deixou documentos e resultados vazios.
 
 ## Fora do escopo
 
@@ -76,3 +78,4 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - pgvector.
 - RAG.
 - Busca semântica.
+- Integração da busca com o chat.

@@ -26,6 +26,24 @@ type DocumentsApiResponse = {
   document?: DocumentSource;
 };
 
+type ChunkSearchResult = {
+  chunkId: string;
+  documentId: string;
+  documentTitle: string;
+  chunkIndex: number;
+  content: string;
+  charCount: number;
+  score: number;
+  createdAt: string;
+};
+
+type ChunkSearchApiResponse = {
+  available?: boolean;
+  error?: string;
+  query?: string;
+  results?: ChunkSearchResult[];
+};
+
 const SOURCE_TYPE_OPTIONS = [
   { label: "Manual", value: "manual" },
   { label: "URL", value: "url" },
@@ -58,6 +76,10 @@ export default function WorkspaceDocumentsPage() {
   const [rawContent, setRawContent] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<ChunkSearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchMessage, setSearchMessage] = useState<string | null>(null);
   const [removingDocumentId, setRemovingDocumentId] = useState<string | null>(
     null,
   );
@@ -167,6 +189,46 @@ export default function WorkspaceDocumentsPage() {
     }
   }
 
+  async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const normalizedQuery = searchQuery.trim();
+
+    if (!normalizedQuery) {
+      setSearchResults([]);
+      setSearchMessage("Digite um termo para buscar.");
+      return;
+    }
+
+    setIsSearching(true);
+    setSearchMessage(null);
+
+    try {
+      const response = await fetch(
+        `/api/documents/search?q=${encodeURIComponent(normalizedQuery)}`,
+        { cache: "no-store" },
+      );
+      const payload = (await response.json()) as ChunkSearchApiResponse;
+
+      if (!response.ok || !payload.available || !payload.results) {
+        setSearchResults([]);
+        setSearchMessage(payload.error ?? "Busca indisponivel.");
+        return;
+      }
+
+      setSearchResults(payload.results);
+      setSearchMessage(
+        payload.results.length > 0
+          ? `${payload.results.length} resultado(s) encontrado(s).`
+          : "Nenhum chunk encontrado.",
+      );
+    } catch {
+      setSearchResults([]);
+      setSearchMessage("Busca indisponivel.");
+    } finally {
+      setIsSearching(false);
+    }
+  }
+
   return (
     <div className="space-y-8">
       <div>
@@ -272,6 +334,61 @@ export default function WorkspaceDocumentsPage() {
           ) : null}
         </div>
       </form>
+
+      <section className="border border-zinc-200 p-5 dark:border-zinc-800">
+        <div>
+          <h3 className="text-base font-medium text-zinc-950 dark:text-zinc-50">
+            Buscar nos chunks
+          </h3>
+          <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+            Encontre trechos já segmentados antes de ligar embeddings ou RAG.
+          </p>
+        </div>
+
+        <form className="mt-4 flex flex-col gap-3 sm:flex-row" onSubmit={handleSearch}>
+          <input
+            className="min-w-0 flex-1 border border-zinc-300 bg-transparent px-3 py-2 text-base text-zinc-950 outline-none transition-colors focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+            maxLength={120}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Ex.: window functions"
+            value={searchQuery}
+          />
+          <button
+            className="border border-zinc-950 px-4 py-2 text-sm font-medium text-zinc-950 transition-colors hover:bg-zinc-950 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-50 dark:text-zinc-50 dark:hover:bg-zinc-50 dark:hover:text-zinc-950"
+            disabled={isSearching}
+            type="submit"
+          >
+            {isSearching ? "Buscando..." : "Buscar"}
+          </button>
+        </form>
+
+        {searchMessage ? (
+          <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+            {searchMessage}
+          </p>
+        ) : null}
+
+        {searchResults.length > 0 ? (
+          <div className="mt-4 divide-y divide-zinc-200 dark:divide-zinc-800">
+            {searchResults.map((result) => (
+              <article className="py-4" key={result.chunkId}>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h4 className="text-sm font-medium text-zinc-950 dark:text-zinc-50">
+                    {result.documentTitle}
+                  </h4>
+                  <p className="text-xs text-zinc-500">
+                    chunk {result.chunkIndex + 1} · score {result.score} ·{" "}
+                    {result.charCount} caracteres
+                  </p>
+                </div>
+                <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-700 dark:text-zinc-300">
+                  {result.content}
+                </p>
+              </article>
+            ))}
+          </div>
+        ) : null}
+      </section>
 
       <section>
         <div className="flex items-center justify-between gap-4 border-b border-zinc-200 pb-3 dark:border-zinc-800">

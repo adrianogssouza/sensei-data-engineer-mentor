@@ -34,4 +34,5 @@
 - TASK 021 - Concluída: cadastro manual de fontes/documentos implementado com API protegida, tela em `/workspace/documents`, deploy e validação em produção.
 - TASK 022 - Concluída: ingestão manual inicial de conteúdo implementada com `raw_content`, contagem, hash, status `ready`, migration remota e validação em produção.
 - TASK 023 - Concluída: chunks simples implementados com tabela `document_chunks`, `chunk_count`, geração automática a partir de `raw_content`, migration remota e validação em produção.
-- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto e chunks; busca sobre chunks ainda precisa ser implementada.
+- TASK 024 - Concluída: busca lexical/local sobre chunks implementada com rota protegida, UI em documentos, deploy e validação em produção.
+- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto, chunks e busca lexical; integração com chat ainda precisa ser implementada.

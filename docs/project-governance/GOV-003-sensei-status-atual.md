@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-15
-- Fase: v0.1-beta com chunks simples de conteúdo
-- Última task concluída: TASK 023
-- Checkpoint atual: fontes com conteúdo bruto geram chunks persistidos no Supabase
-- Próxima task: planejar busca lexical/local antes de embeddings/RAG
+- Fase: v0.1-beta com busca lexical/local sobre chunks
+- Última task concluída: TASK 024
+- Checkpoint atual: chunks podem ser consultados por termo antes de embeddings/RAG
+- Próxima task: planejar uso dos resultados de busca no chat mock
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -53,6 +53,7 @@
 - TASK 021 — Cadastro manual de fontes/documentos
 - TASK 022 — Ingestão manual inicial de conteúdo
 - TASK 023 — Chunks simples de conteúdo
+- TASK 024 — Busca lexical/local sobre chunks
 
 ## Bloqueios
 
@@ -285,11 +286,26 @@
 - Validação em produção: uma fonte manual com conteúdo foi criada com `chunkCount = 1`, a tabela `document_chunks` confirmou 1 chunk, a fonte foi removida e os chunks foram removidos por cascade.
 - Embeddings, pgvector, RAG, busca semântica, parsing de PDF/HTML e upload físico continuam fora do escopo.
 
+## Busca Lexical/Local Sobre Chunks
+
+- Rota protegida `/api/documents/search?q=...` criada.
+- Busca usa `ilike` em `document_chunks.content`, sem embeddings e sem pgvector.
+- Resultados retornam título da fonte, índice do chunk, conteúdo, contagem de caracteres e score simples por ocorrência do termo.
+- `/workspace/documents` ganhou seção "Buscar nos chunks" com campo de busca e listagem de trechos encontrados.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção:
+  - `/api/documents/search?q=window` retornou `401` sem senha;
+  - com credencial válida e sem documentos, retornou lista vazia;
+  - uma fonte temporária foi criada com conteúdo e chunk;
+  - buscas por `window` e `cliente` retornaram o chunk esperado;
+  - a fonte foi removida e a busca voltou a retornar lista vazia.
+- Embeddings, pgvector, RAG, busca semântica e integração da busca com o chat continuam fora do escopo.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: busca lexical/local sobre chunks antes de embeddings/RAG.
+- Próxima implementação planejada: conectar busca lexical ao chat mock antes de embeddings/RAG.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -300,8 +316,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão criando busca lexical/local sobre chunks.
+- Retomar na próxima sessão conectando busca lexical ao chat mock.
 
 ## Próxima ação recomendada
 
-Planejar busca lexical/local sobre chunks.
+Planejar uso da busca lexical no chat mock.

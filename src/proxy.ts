@@ -125,5 +125,6 @@ export const config = {
     "/api/ai/:path*",
     "/api/documents",
     "/api/documents/:path*",
+    "/api/documents/search",
   ],
 };

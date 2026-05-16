@@ -6,7 +6,7 @@ SENSEI Data Engineer Mentor é um mentor pessoal de estudos com IA focado em Eng
 
 O SENSEI demonstra a construção incremental de um produto de IA com base real de aplicação: workspace, chat, abstração de providers, fallback seguro, persistência de histórico, fundação Supabase/Auth, guardrails de custo e documentação operacional.
 
-A v0.1-beta roda em modo privado com Supabase remoto. A aplicação prova o fluxo principal sem depender de quota/billing de IA real, grava histórico de chat no banco remoto, protege o workspace por senha em produção e já permite cadastrar fontes/documentos com conteúdo bruto manual e chunks persistidos para a futura base de conhecimento.
+A v0.1-beta roda em modo privado com Supabase remoto. A aplicação prova o fluxo principal sem depender de quota/billing de IA real, grava histórico de chat no banco remoto, protege o workspace por senha em produção e já permite cadastrar fontes/documentos com conteúdo bruto manual, chunks persistidos e busca lexical/local sobre os chunks.
 
 URL pública:
 
@@ -275,10 +275,11 @@ src/
 - TASK 021 - Cadastro manual de fontes/documentos
 - TASK 022 - Ingestão manual inicial de conteúdo
 - TASK 023 - Chunks simples de conteúdo
+- TASK 024 - Busca lexical/local sobre chunks
 
 ## Próximo Marco
 
-Planejar busca lexical/local sobre chunks antes de embeddings/RAG.
+Planejar uso dos resultados de busca lexical no chat mock antes de embeddings/RAG.
 
 ## Status do Provider de IA
 
@@ -310,7 +311,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 023. A v0.1-beta já permite cadastrar fontes com conteúdo bruto manual e chunks no Supabase remoto.
+Checkpoint atual: o trabalho está sincronizado até TASK 024. A v0.1-beta já permite cadastrar fontes com conteúdo bruto, gerar chunks e buscar trechos por termo no Supabase remoto.
 
 ## Segredos
 

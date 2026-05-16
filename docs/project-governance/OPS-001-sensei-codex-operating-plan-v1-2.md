@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 023
-- Checkpoint: chunks simples de conteúdo validados em produção
+- Task atual concluída: TASK 024
+- Checkpoint: busca lexical/local sobre chunks validada em produção
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: planejar busca lexical/local sobre chunks
+- Próxima implementação definida: planejar uso da busca lexical no chat mock
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- criar a primeira fatia de busca sobre chunks sem embeddings/RAG
+- conectar resultados de busca lexical ao fluxo de chat mock sem embeddings/RAG
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex

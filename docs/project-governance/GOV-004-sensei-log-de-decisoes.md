@@ -384,3 +384,15 @@ Antes de embeddings, pgvector ou RAG, o sistema precisa ter uma etapa auditável
 
 Impacto:
 A migration `20260516014500` criou `document_chunks` e adicionou `chunk_count` em `documents`. A API `/api/documents` agora divide `rawContent` em chunks determinísticos com tamanho base de 1200 caracteres e sobreposição de 160 caracteres. A tela de documentos mostra a contagem de chunks. A produção foi redeployada e validada com criação, consulta no banco e remoção em cascade de chunks.
+
+---
+
+### DEC-034 — Busca lexical antes de busca semântica
+
+TASK 024 implementou busca lexical/local sobre chunks.
+
+Motivo:
+Antes de embeddings e RAG, o projeto precisa provar que consegue recuperar trechos relevantes das fontes já cadastradas usando uma estratégia simples, auditável e barata.
+
+Impacto:
+Foi criada a rota protegida `/api/documents/search?q=...`, que consulta `document_chunks.content` com `ilike`, calcula um score simples por ocorrência do termo e retorna trechos ranqueados. A tela `/workspace/documents` ganhou a seção "Buscar nos chunks". A produção foi validada com criação de fonte temporária, busca por termos, retorno do chunk esperado e limpeza final.

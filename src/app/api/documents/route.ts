@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-import { getPrivateAccessEnv } from "@/lib/env";
+import { hasPrivateAccess, getPrivateAccessResponse } from "@/lib/private-access";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/types";
 
@@ -10,7 +10,6 @@ const MAX_NOTES_LENGTH = 2000;
 const MAX_RAW_CONTENT_LENGTH = 20000;
 const CHUNK_SIZE = 1200;
 const CHUNK_OVERLAP = 160;
-const PRIVATE_ACCESS_USERNAME = "sensei";
 const SOURCE_TYPES = ["manual", "url", "file_reference"] as const;
 
 type SourceType = (typeof SOURCE_TYPES)[number];
@@ -156,51 +155,6 @@ function getUnavailableResponse(error: unknown) {
     error: message,
     documents: [],
   });
-}
-
-function hasPrivateAccess(request: Request): boolean {
-  const { SENSEI_PRIVATE_ACCESS_PASSWORD } = getPrivateAccessEnv();
-
-  if (!SENSEI_PRIVATE_ACCESS_PASSWORD) {
-    return true;
-  }
-
-  const authorization = request.headers.get("authorization");
-
-  if (!authorization?.startsWith("Basic ")) {
-    return false;
-  }
-
-  try {
-    const decoded = atob(authorization.slice("Basic ".length));
-    const separatorIndex = decoded.indexOf(":");
-
-    if (separatorIndex === -1) {
-      return false;
-    }
-
-    const username = decoded.slice(0, separatorIndex);
-    const password = decoded.slice(separatorIndex + 1);
-
-    return (
-      username === PRIVATE_ACCESS_USERNAME &&
-      password === SENSEI_PRIVATE_ACCESS_PASSWORD
-    );
-  } catch {
-    return false;
-  }
-}
-
-function getPrivateAccessResponse() {
-  return Response.json(
-    { available: false, error: "Private access required.", documents: [] },
-    {
-      status: 401,
-      headers: {
-        "WWW-Authenticate": 'Basic realm="SENSEI"',
-      },
-    },
-  );
 }
 
 export async function GET(request: Request) {
