@@ -189,6 +189,12 @@ export type Database = {
           chunk_index: number;
           content: string;
           char_count: number;
+          embedding: string | null;
+          embedding_provider: string | null;
+          embedding_model: string | null;
+          embedding_status: string;
+          embedding_error: string | null;
+          embedded_at: string | null;
           metadata: Json;
           created_at: string;
         };
@@ -198,6 +204,12 @@ export type Database = {
           chunk_index: number;
           content: string;
           char_count: number;
+          embedding?: string | null;
+          embedding_provider?: string | null;
+          embedding_model?: string | null;
+          embedding_status?: string;
+          embedding_error?: string | null;
+          embedded_at?: string | null;
           metadata?: Json;
           created_at?: string;
         };
@@ -207,6 +219,12 @@ export type Database = {
           chunk_index?: number;
           content?: string;
           char_count?: number;
+          embedding?: string | null;
+          embedding_provider?: string | null;
+          embedding_model?: string | null;
+          embedding_status?: string;
+          embedding_error?: string | null;
+          embedded_at?: string | null;
           metadata?: Json;
           created_at?: string;
         };

@@ -37,4 +37,5 @@
 - TASK 024 - Concluída: busca lexical/local sobre chunks implementada com rota protegida, UI em documentos, deploy e validação em produção.
 - TASK 025 - Concluída: busca lexical/local conectada ao chat mock com trechos de fontes enviados ao provider mock sem embeddings/RAG.
 - TASK 026 - Concluída: ranking lexical/local v2 implementado com extração de termos, score simples, metadados de match e validação no chat mock.
-- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto, chunks, busca lexical ranqueada e usa trechos recuperados no chat mock.
+- TASK 027 - Concluída: fundação pgvector/embeddings criada com extensão `vector`, colunas de embedding em `document_chunks`, migration remota e validação pós-schema.
+- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto, chunks, busca lexical ranqueada, usa trechos no chat mock e tem schema pronto para embeddings.

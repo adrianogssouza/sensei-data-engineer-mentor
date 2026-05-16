@@ -420,3 +420,15 @@ Antes de introduzir embeddings ou pgvector, o projeto precisa tornar a recupera�
 
 Impacto:
 O helper de busca em chunks agora extrai termos relevantes, consulta frase e termos, consolida candidatos por chunk e calcula um score simples com `phraseMatches`, `termMatches` e `matchedTerms`. A rota de documentos e a rota de chat compartilham a mesma estratégia. O chat mock exibe score lexical e termos encontrados quando responde com fonte. Embeddings, pgvector e RAG semântico continuam fora do escopo.
+
+---
+
+### DEC-037 — Fundação pgvector antes de gerar embeddings
+
+TASK 027 preparou o schema para embeddings.
+
+Motivo:
+Antes de gerar embeddings ou alterar o chat para busca semântica, o banco precisa ter uma estrutura explícita, versionada e validada para armazenar vetores por chunk. Isso mantém a evolução auditável e evita misturar schema, geração e ranking semântico em uma única task.
+
+Impacto:
+A migration `20260516120500` habilitou a extensão `vector` e adicionou campos de embedding em `document_chunks`: vetor de dimensão 1536, provider, modelo, status, erro e timestamp. Chunks novos ficam com `embedding_status = pending`. Os tipos TypeScript foram atualizados. A migration foi aplicada no Supabase remoto e validada com criação/remocão de fonte temporária. Geração de embeddings, busca vetorial e RAG semântico permanecem para tasks futuras.

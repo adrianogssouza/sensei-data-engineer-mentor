@@ -18,6 +18,7 @@ Status: iniciado na TASK 021.
 - Busca lexical/local sobre chunks.
 - Uso dos chunks recuperados no chat mock.
 - Ranking lexical/local v2 com termos encontrados e score simples.
+- Fundação de embeddings nos chunks com status `pending`.
 
 ## Banco usado
 
@@ -43,6 +44,12 @@ Chunks são armazenados em `document_chunks` com:
 - `content`
 - `char_count`
 - `metadata`
+- `embedding`
+- `embedding_provider`
+- `embedding_model`
+- `embedding_status`
+- `embedding_error`
+- `embedded_at`
 
 Resultados de busca retornam metadados calculados em runtime:
 
@@ -79,14 +86,15 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - Na TASK 024, uma fonte temporária foi criada, buscas por `window` e `cliente` retornaram o chunk esperado, e a limpeza final deixou documentos e resultados vazios.
 - Na TASK 025, uma fonte temporária sobre `window functions` foi criada; o chat mock recuperou o chunk e respondeu citando a fonte; a fonte foi removida ao final.
 - Na TASK 026, a recuperação foi validada com múltiplos termos, score lexical e termos encontrados visíveis na resposta do chat mock.
+- Na TASK 027, a migration de embeddings foi aplicada; uma fonte temporária continuou criando `chunkCount = 1`; a fonte foi removida ao final.
 
 ## Fora do escopo
 
 - Upload físico de arquivos.
 - Storage de arquivos.
 - Parsing de PDF/HTML/Markdown.
-- Embeddings.
 - pgvector.
+- Geração de embeddings.
 - RAG.
 - Busca semântica.
 - Ranking semântico ou resposta generativa real sobre fontes.

@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 026
-- Checkpoint: ranking lexical/local v2 validado no chat mock
+- Task atual concluída: TASK 027
+- Checkpoint: fundação pgvector/embeddings aplicada no Supabase remoto
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: preparar próximo incremento da v0.1-beta sem pular validações
+- Próxima implementação definida: gerar embeddings dos chunks sem substituir a busca lexical
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher entre fundação de embeddings/pgvector ou início de upload/parsing
+- gerar embeddings dos chunks com escopo pequeno e validável
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex

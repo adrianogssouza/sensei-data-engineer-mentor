@@ -16,10 +16,10 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta com busca lexical/local ranqueada no chat mock
-- Última task concluída: TASK 026
-- Checkpoint atual: chat mock usa ranking lexical v2 com termos encontrados e score simples
-- Próxima task: preparar fundação de embeddings/pgvector ou iniciar upload/parsing
+- Fase atual: v0.1-beta com fundação pgvector/embeddings preparada
+- Última task concluída: TASK 027
+- Checkpoint atual: `document_chunks` possui colunas de embedding e status `pending`
+- Próxima task: gerar embeddings dos chunks sem substituir a busca lexical
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
@@ -32,7 +32,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Busca: rota `/api/documents/search` e UI em `/workspace/documents` implementadas sobre chunks
 - Chat com fontes: `/api/ai/chat` consulta chunks por termos da pergunta e passa trechos ao provider mock
 - Ranking lexical: busca por frase e termos relevantes, com `matchedTerms`, contagens e score simples
-- Próxima implementação planejada: preparar fundação de embeddings/pgvector ou iniciar upload/parsing
+- Embeddings: extensão `vector` habilitada e colunas de embedding preparadas em `document_chunks`
+- Próxima implementação planejada: gerar embeddings dos chunks mantendo fallback lexical
 
 ## Objetivo principal 2026
 

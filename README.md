@@ -6,7 +6,7 @@ SENSEI Data Engineer Mentor é um mentor pessoal de estudos com IA focado em Eng
 
 O SENSEI demonstra a construção incremental de um produto de IA com base real de aplicação: workspace, chat, abstração de providers, fallback seguro, persistência de histórico, fundação Supabase/Auth, guardrails de custo e documentação operacional.
 
-A v0.1-beta roda em modo privado com Supabase remoto. A aplicação prova o fluxo principal sem depender de quota/billing de IA real, grava histórico de chat no banco remoto, protege o workspace por senha em produção e já permite cadastrar fontes/documentos com conteúdo bruto manual, chunks persistidos, busca lexical/local ranqueada e uso desses trechos no chat mock.
+A v0.1-beta roda em modo privado com Supabase remoto. A aplicação prova o fluxo principal sem depender de quota/billing de IA real, grava histórico de chat no banco remoto, protege o workspace por senha em produção e já permite cadastrar fontes/documentos com conteúdo bruto manual, chunks persistidos, busca lexical/local ranqueada, uso desses trechos no chat mock e schema preparado para embeddings com pgvector.
 
 URL pública:
 
@@ -16,9 +16,9 @@ https://sensei-data-engineer-mentor.vercel.app
 
 ## Fase Atual
 
-Fase atual: v0.1-beta privada com busca lexical ranqueada no chat mock.
+Fase atual: v0.1-beta privada com fundação pgvector/embeddings preparada.
 
-O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema Supabase remoto, shell de workspace, UI de chat com persistência local/remota, UI mínima de histórico, skeleton interno de provider de IA, integração Gemini preparada, documentos manuais, chunks e busca lexical ranqueada conectada ao chat mock. O modo operacional atual é single-user/private. RAG semântico, embeddings, upload, pgvector e shadcn/ui ainda não foram implementados.
+O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema Supabase remoto, shell de workspace, UI de chat com persistência local/remota, UI mínima de histórico, skeleton interno de provider de IA, integração Gemini preparada, documentos manuais, chunks, busca lexical ranqueada conectada ao chat mock e colunas de embedding em `document_chunks`. O modo operacional atual é single-user/private. RAG semântico, geração de embeddings, upload e shadcn/ui ainda não foram implementados.
 
 Handoff de portfólio: `docs/handoff-portfolio-v0.1-alpha.md`.
 
@@ -99,8 +99,7 @@ A página de chat chama `/api/ai/chat`, que usa o registry interno de providers.
 
 ## Stack Planejada Ainda Não Instalada
 
-- pgvector
-- OpenAI embeddings
+- Geracao de embeddings
 - Anthropic Claude
 - Providers reais de geração de texto com OpenAI/Anthropic
 - Ingestão RAG e ferramentas de avaliação
@@ -278,10 +277,11 @@ src/
 - TASK 024 - Busca lexical/local sobre chunks
 - TASK 025 - Busca lexical/local no chat mock
 - TASK 026 - Ranking lexical/local v2
+- TASK 027 - Fundação pgvector/embeddings
 
 ## Próximo Marco
 
-Escolher o próximo incremento: preparar embeddings/pgvector ou iniciar upload/parsing.
+Gerar embeddings dos chunks mantendo fallback lexical.
 
 ## Status do Provider de IA
 
@@ -291,7 +291,7 @@ Provider padrão atual: `mock`.
 
 Gemini está disponível pela rota server quando explicitamente habilitado com `AI_PROVIDER=gemini` e `GEMINI_API_KEY`. O modelo padrão é `gemini-2.0-flash-lite`, escolhido para experimentação com controle de custo. Se Gemini não estiver configurado ou falhar, o provider mock permanece como fallback.
 
-Anthropic e OpenAI estão planejados como ids de provider, mas nenhum SDK Anthropic/OpenAI foi instalado. Ainda não há RAG semântico, embeddings, upload, pgvector, streaming ou persistência de uso em banco.
+Anthropic e OpenAI estão planejados como ids de provider, mas nenhum SDK Anthropic/OpenAI foi instalado. Ainda não há RAG semântico, geração de embeddings, upload, streaming ou persistência de uso em banco.
 
 ## Guardrails de Uso / Custo
 
@@ -313,7 +313,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 026. A v0.1-beta já permite cadastrar fontes com conteúdo bruto, gerar chunks, buscar trechos com ranking lexical/local e usar trechos recuperados no chat mock.
+Checkpoint atual: o trabalho está sincronizado até TASK 027. A v0.1-beta já permite cadastrar fontes com conteúdo bruto, gerar chunks, buscar trechos com ranking lexical/local, usar trechos recuperados no chat mock e armazenar embeddings futuros por chunk.
 
 ## Segredos
 
