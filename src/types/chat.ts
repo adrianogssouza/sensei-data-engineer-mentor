@@ -5,4 +5,5 @@ export type ChatMessage = {
   role: ChatRole;
   content: string;
   createdAt: string;
+  metadata?: Record<string, unknown>;
 };

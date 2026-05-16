@@ -44,12 +44,17 @@ type ChatMessagesApiResponse = {
   messages?: ChatMessage[];
 };
 
-function createMessage(role: ChatRole, content: string): ChatMessage {
+function createMessage(
+  role: ChatRole,
+  content: string,
+  metadata?: Record<string, unknown>,
+): ChatMessage {
   return {
     id: crypto.randomUUID(),
     role,
     content,
     createdAt: new Date().toISOString(),
+    ...(metadata ? { metadata } : {}),
   };
 }
 
@@ -322,7 +327,13 @@ export default function WorkspaceChatPage() {
     window.setTimeout(() => {
       void requestAssistantResponse(conversationMessages)
         .then((response) => {
-          const assistantMessage = createMessage("assistant", response.content);
+          const assistantMessage = createMessage("assistant", response.content, {
+            provider: response.provider,
+            model: response.model,
+            ...(response.metadata?.retrieval
+              ? { retrieval: response.metadata.retrieval }
+              : {}),
+          });
           const persistedMessages = [userMessage, assistantMessage];
           const fallbackReason = response.metadata?.fallbackReason;
           const selectionNote = response.metadata?.selectionNote;
@@ -385,7 +396,8 @@ export default function WorkspaceChatPage() {
         é usado quando configurado explicitamente; caso contrário, o provider
         mock local mantém o chat disponível. Quando Supabase está configurado,
         o histórico é salvo no banco; caso contrário, as mensagens ficam apenas
-        neste navegador. Ainda não há streaming ou RAG.
+        neste navegador. Quando há fontes e embeddings, o chat mostra o modo de
+        recuperação usado na resposta.
       </p>
       <p className="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
         Modo do provider: {providerMode} · Histórico: {historyMode}

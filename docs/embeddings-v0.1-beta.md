@@ -1,6 +1,6 @@
 # Embeddings v0.1-beta
 
-Status: recuperação híbrida iniciada na TASK 029.
+Status: recuperação híbrida observável no chat após TASK 030.
 
 ## O que existe
 
@@ -12,6 +12,7 @@ Status: recuperação híbrida iniciada na TASK 029.
 - Rota protegida `/api/documents/vector-search`.
 - Função SQL `match_document_chunks`.
 - Botão "Gerar embeddings" em `/workspace/documents`.
+- Bloco de diagnóstico no chat para respostas com metadados de recuperação.
 
 ## Banco usado
 
@@ -51,6 +52,7 @@ Ela ainda não substitui embeddings reais de OpenAI ou outro provider.
 - Chamar OpenAI ou outro provider de embeddings.
 - Criar RAG semantico.
 - Substituir a busca lexical atual.
+- Criar RAG semantico completo.
 
 ## Validação feita
 
@@ -60,3 +62,4 @@ Ela ainda não substitui embeddings reais de OpenAI ou outro provider.
 - Em produção, uma fonte temporária foi criada com `chunkCount = 1` após a migration e removida ao final.
 - Na TASK 028, uma fonte temporária foi criada, `/api/documents/embeddings` gerou 1 embedding com `embeddedCount = 1` e `failedCount = 0`, e a fonte foi removida ao final.
 - Na TASK 029, uma fonte temporária com embedding foi recuperada por `/api/documents/vector-search`; o chat respondeu em modo híbrido com score lexical e similaridade vetorial; a fonte foi removida ao final.
+- Na TASK 030, a UI de chat exibiu `hybrid-local · hybrid-lexical-vector-v1`, contagens lexical/vetorial e termos usados em uma resposta temporária; a conversa e a fonte temporária foram limpas ao final.

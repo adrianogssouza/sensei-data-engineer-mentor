@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-16
-- Fase: v0.1-beta com recuperação híbrida lexical + vetorial
-- Última task concluída: TASK 029
-- Checkpoint atual: chat mock combina ranking lexical com similaridade vetorial quando há embeddings prontos
-- Próxima task: decidir entre UX/observabilidade da recuperação, embeddings reais ou upload/parsing
+- Fase: v0.1-beta com recuperação híbrida lexical + vetorial observável no chat
+- Última task concluída: TASK 030
+- Checkpoint atual: chat mock combina ranking lexical com similaridade vetorial e mostra diagnóstico de recuperação por resposta
+- Próxima task: decidir entre embeddings reais, upload/parsing ou evals de recuperação
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -59,6 +59,7 @@
 - TASK 027 — Fundação pgvector/embeddings
 - TASK 028 — Geração mock de embeddings
 - TASK 029 — Recuperação híbrida lexical + vetorial
+- TASK 030 — Observabilidade da recuperação no chat
 
 ## Bloqueios
 
@@ -160,6 +161,7 @@
 - O provider mock recebe trechos recuperados por `document_chunks` via metadados da rota `/api/ai/chat`.
 - Os metadados de recuperação incluem termos buscados, ranking usado e quantidade de resultados.
 - A recuperação do chat combina resultados lexicais e vetoriais quando há embeddings prontos.
+- A UI do chat exibe o diagnóstico da recuperação por mensagem do assistente quando os metadados estão disponíveis.
 - Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -395,11 +397,28 @@
   - a fonte temporária foi removida e a busca vetorial voltou vazia.
 - RAG semântico, embeddings reais via OpenAI e upload/parsing continuam fora do escopo.
 
+## Observabilidade da Recuperação no Chat
+
+- TASK 030 adicionou persistência e renderização dos metadados de recuperação nas mensagens do chat.
+- `ChatMessage` agora aceita `metadata` seguro para carregar dados de provider/modelo e recuperação.
+- `/api/chat/messages` persiste e lê `metadata` em `chat_messages`.
+- `localStorage` preserva mensagens com metadados válidos sem quebrar mensagens antigas.
+- A UI do chat mostra, por resposta do assistente:
+  - modo de recuperação;
+  - ranking usado;
+  - quantidade total de resultados;
+  - contagem lexical;
+  - contagem vetorial;
+  - termos da consulta.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção: uma conversa temporária exibiu `hybrid-local · hybrid-lexical-vector-v1`, `resultados 1 · lexical 1 · vetorial 1` e termos da consulta; a conversa foi limpa via UI e a fonte temporária foi removida.
+- Embeddings reais via OpenAI, upload/parsing, evals de recuperação e RAG semântico completo continuam fora do escopo.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: decidir próximo incremento após recuperação híbrida.
+- Próxima implementação planejada: decidir próximo incremento após observabilidade da recuperação.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -414,4 +433,4 @@
 
 ## Próxima ação recomendada
 
-Escolher entre UX/observabilidade da recuperação, embeddings reais ou upload/parsing.
+Escolher entre embeddings reais, upload/parsing ou evals de recuperação.

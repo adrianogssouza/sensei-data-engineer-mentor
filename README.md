@@ -6,7 +6,7 @@ SENSEI Data Engineer Mentor é um mentor pessoal de estudos com IA focado em Eng
 
 O SENSEI demonstra a construção incremental de um produto de IA com base real de aplicação: workspace, chat, abstração de providers, fallback seguro, persistência de histórico, fundação Supabase/Auth, guardrails de custo e documentação operacional.
 
-A v0.1-beta roda em modo privado com Supabase remoto. A aplicação prova o fluxo principal sem depender de quota/billing de IA real, grava histórico de chat no banco remoto, protege o workspace por senha em produção e já permite cadastrar fontes/documentos com conteúdo bruto manual, chunks persistidos, busca lexical/local ranqueada, embeddings mock persistidos em pgvector e recuperação híbrida no chat mock.
+A v0.1-beta roda em modo privado com Supabase remoto. A aplicação prova o fluxo principal sem depender de quota/billing de IA real, grava histórico de chat no banco remoto, protege o workspace por senha em produção e já permite cadastrar fontes/documentos com conteúdo bruto manual, chunks persistidos, busca lexical/local ranqueada, embeddings mock persistidos em pgvector, recuperação híbrida no chat mock e diagnóstico visual da recuperação por resposta.
 
 URL pública:
 
@@ -16,9 +16,9 @@ https://sensei-data-engineer-mentor.vercel.app
 
 ## Fase Atual
 
-Fase atual: v0.1-beta privada com recuperação híbrida lexical + vetorial.
+Fase atual: v0.1-beta privada com recuperação híbrida lexical + vetorial observável no chat.
 
-O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema Supabase remoto, shell de workspace, UI de chat com persistência local/remota, UI mínima de histórico, skeleton interno de provider de IA, integração Gemini preparada, documentos manuais, chunks, busca lexical ranqueada, pgvector, geração local determinística de embeddings e recuperação híbrida no chat mock. O modo operacional atual é single-user/private. RAG semântico, embeddings reais por provider externo, upload e shadcn/ui ainda não foram implementados.
+O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema Supabase remoto, shell de workspace, UI de chat com persistência local/remota, UI mínima de histórico, skeleton interno de provider de IA, integração Gemini preparada, documentos manuais, chunks, busca lexical ranqueada, pgvector, geração local determinística de embeddings, recuperação híbrida no chat mock e observabilidade da recuperação por mensagem. O modo operacional atual é single-user/private. RAG semântico completo, embeddings reais por provider externo, upload e shadcn/ui ainda não foram implementados.
 
 Handoff de portfólio: `docs/handoff-portfolio-v0.1-alpha.md`.
 
@@ -46,6 +46,7 @@ O que demonstrar:
 - workspace sem login obrigatório;
 - chat em modo mock;
 - resposta local sem chamada externa e, quando houver fonte compatível, com trecho recuperado;
+- diagnóstico de recuperação no chat quando houver metadados de fonte;
 - painel de histórico;
 - cadastro manual de documentos com busca lexical;
 - fallback local quando Supabase não está configurado;
@@ -67,7 +68,7 @@ Rotas disponíveis:
 - `/workspace/usage` - visão de guardrails locais de uso/custo
 - `/workspace/settings` - placeholder de configurações privadas
 
-A página de chat chama `/api/ai/chat`, que usa o registry interno de providers. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados. Sem chave Gemini, o app volta para o provider mock determinístico. A rota de chat consulta chunks por busca lexical/local e, quando há embeddings prontos, combina similaridade vetorial em um score híbrido. O mock pode citar fonte, chunk, score híbrido, score lexical, termos encontrados e similaridade vetorial. O histórico usa Supabase quando as variáveis públicas estão configuradas; caso contrário, as mensagens persistem neste navegador usando `localStorage`. A UI já permite listar conversas remotas, abrir conversa existente, criar nova conversa e limpar conversa. A página ainda não faz upload de arquivos e não executa RAG semântico.
+A página de chat chama `/api/ai/chat`, que usa o registry interno de providers. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados. Sem chave Gemini, o app volta para o provider mock determinístico. A rota de chat consulta chunks por busca lexical/local e, quando há embeddings prontos, combina similaridade vetorial em um score híbrido. O mock pode citar fonte, chunk, score híbrido, score lexical, termos encontrados e similaridade vetorial. A mensagem do assistente também pode exibir um bloco de diagnóstico com modo de recuperação, ranking, contagens lexical/vetorial e termos usados. O histórico usa Supabase quando as variáveis públicas estão configuradas; caso contrário, as mensagens persistem neste navegador usando `localStorage`. A UI já permite listar conversas remotas, abrir conversa existente, criar nova conversa e limpar conversa. A página ainda não faz upload de arquivos e não executa RAG semântico completo.
 
 ## Stack Técnica Instalada
 

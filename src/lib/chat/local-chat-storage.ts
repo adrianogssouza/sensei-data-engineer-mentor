@@ -14,13 +14,20 @@ function isChatMessage(value: unknown): value is ChatMessage {
 
   const message = value as Partial<ChatMessage>;
 
+  const hasSafeMetadata =
+    message.metadata === undefined ||
+    (typeof message.metadata === "object" &&
+      message.metadata !== null &&
+      !Array.isArray(message.metadata));
+
   return (
     typeof message.id === "string" &&
     (message.role === "user" ||
       message.role === "assistant" ||
       message.role === "system") &&
     typeof message.content === "string" &&
-    typeof message.createdAt === "string"
+    typeof message.createdAt === "string" &&
+    hasSafeMetadata
   );
 }
 

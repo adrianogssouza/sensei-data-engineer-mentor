@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 029
-- Checkpoint: recuperação híbrida lexical + vetorial validada em produção
+- Task atual concluída: TASK 030
+- Checkpoint: observabilidade da recuperação híbrida exibida no chat e validada em produção
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: decidir próximo incremento após recuperação híbrida
+- Próxima implementação definida: decidir próximo incremento após observabilidade da recuperação
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher entre UX/observabilidade da recuperação, embeddings reais ou upload/parsing
+- escolher entre embeddings reais, upload/parsing ou evals de recuperação
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex

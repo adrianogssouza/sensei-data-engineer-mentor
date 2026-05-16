@@ -16,10 +16,10 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta com recuperação híbrida lexical + vetorial
-- Última task concluída: TASK 029
-- Checkpoint atual: chat mock combina ranking lexical com similaridade vetorial quando há embeddings prontos
-- Próxima task: decidir entre melhorar UX/observabilidade da recuperação ou preparar embeddings reais/upload
+- Fase atual: v0.1-beta com recuperação híbrida lexical + vetorial observável no chat
+- Última task concluída: TASK 030
+- Checkpoint atual: chat mock combina ranking lexical com similaridade vetorial e mostra diagnóstico de recuperação por resposta
+- Próxima task: decidir entre preparar embeddings reais, upload/parsing ou evals de recuperação
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
@@ -35,7 +35,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Embeddings: extensão `vector` habilitada e colunas de embedding preparadas em `document_chunks`
 - Geração de embeddings: rota protegida `/api/documents/embeddings` usa `mock-hash-embedding-v1`
 - Recuperação híbrida: `/api/ai/chat` usa ranking lexical + busca vetorial com fallback lexical
-- Próxima implementação planejada: decidir próximo incremento após recuperação híbrida
+- Observabilidade da recuperação: mensagens do assistente podem exibir modo, ranking, contagens lexical/vetorial e termos usados
+- Próxima implementação planejada: decidir próximo incremento após observabilidade da recuperação
 
 ## Objetivo principal 2026
 

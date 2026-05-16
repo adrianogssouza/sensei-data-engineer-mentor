@@ -456,3 +456,15 @@ Antes de transformar o chat em RAG semântico, o projeto precisa validar que con
 
 Impacto:
 A migration `20260516123000` criou a função SQL `match_document_chunks` para busca vetorial em pgvector. A rota protegida `/api/documents/vector-search` permite validar similaridade diretamente. A rota `/api/ai/chat` passou a combinar ranking lexical v2 com resultados vetoriais, gerando score híbrido e preservando fallback lexical. A produção foi validada com fonte temporária, geração de embedding, busca vetorial, resposta híbrida no chat e limpeza final.
+
+---
+
+### DEC-040 — Observabilidade antes de embeddings reais
+
+TASK 030 tornou a recuperação visível na UI do chat.
+
+Motivo:
+Antes de trocar embeddings mock por embeddings reais ou avançar para upload/parsing, o usuário precisa enxergar por que uma resposta usou determinada fonte. Mostrar modo, ranking, contagens e termos reduz incerteza e facilita QA manual.
+
+Impacto:
+`ChatMessage` passou a aceitar `metadata`; `/api/chat/messages` persiste e lê esses metadados; o fallback local preserva mensagens com metadata seguro; e a lista de mensagens exibe um bloco de diagnóstico quando há recuperação. A produção foi validada com resposta `hybrid-local · hybrid-lexical-vector-v1`, contagens lexical/vetorial e termos usados. Embeddings reais, upload/parsing, evals e RAG semântico completo continuam para próximas tasks.

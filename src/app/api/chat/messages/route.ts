@@ -11,6 +11,7 @@ type PersistedChatMessage = {
   role: ChatRole;
   content: string;
   createdAt: string;
+  metadata: Json;
 };
 
 type PersistMessageInput = {
@@ -88,6 +89,7 @@ function toPersistedChatMessage(row: {
   role: "user" | "assistant" | "system" | "tool";
   content: string;
   created_at: string;
+  metadata: Json;
 }): PersistedChatMessage | undefined {
   if (!isChatRole(row.role)) {
     return undefined;
@@ -98,6 +100,7 @@ function toPersistedChatMessage(row: {
     role: row.role,
     content: row.content,
     createdAt: row.created_at,
+    metadata: row.metadata,
   };
 }
 
@@ -160,7 +163,7 @@ export async function GET(request: Request) {
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("chat_messages")
-      .select("id,role,content,created_at")
+      .select("id,role,content,metadata,created_at")
       .eq("thread_id", threadId)
       .order("created_at", { ascending: true });
 
@@ -228,7 +231,7 @@ export async function POST(request: Request) {
     const { data, error } = await supabase
       .from("chat_messages")
       .insert(rows)
-      .select("id,role,content,created_at")
+      .select("id,role,content,metadata,created_at")
       .order("created_at", { ascending: true });
 
     if (error) {
