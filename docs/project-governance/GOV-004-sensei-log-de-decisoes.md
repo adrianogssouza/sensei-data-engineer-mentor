@@ -372,3 +372,15 @@ Antes de chunks, embeddings e RAG, o sistema precisa guardar texto real das font
 
 Impacto:
 A tabela `documents` recebeu `raw_content`, `content_char_count` e `ingested_at` pela migration `20260516012500`. A API `/api/documents` passou a aceitar `rawContent`, calcular hash SHA-256 e marcar fontes com conteúdo como `ready`. A tela `/workspace/documents` ganhou campo de conteúdo bruto e visualização do texto salvo. A produção foi redeployada e validada com criação, listagem e remoção de fonte com conteúdo.
+
+---
+
+### DEC-033 — Chunks determinísticos antes de embeddings
+
+TASK 023 implementou chunks simples de conteúdo.
+
+Motivo:
+Antes de embeddings, pgvector ou RAG, o sistema precisa ter uma etapa auditável de segmentação de conteúdo. Isso permite validar tamanho, contagem e persistência dos blocos sem depender de IA externa.
+
+Impacto:
+A migration `20260516014500` criou `document_chunks` e adicionou `chunk_count` em `documents`. A API `/api/documents` agora divide `rawContent` em chunks determinísticos com tamanho base de 1200 caracteres e sobreposição de 160 caracteres. A tela de documentos mostra a contagem de chunks. A produção foi redeployada e validada com criação, consulta no banco e remoção em cascade de chunks.

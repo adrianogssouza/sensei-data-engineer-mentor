@@ -9,6 +9,7 @@ type DocumentSource = {
   sourcePath: string | null;
   rawContent: string | null;
   contentCharCount: number;
+  chunkCount: number;
   contentHash: string | null;
   ingestionStatus: string;
   ingestionError: string | null;
@@ -305,6 +306,7 @@ export default function WorkspaceDocumentsPage() {
                       <p className="mt-1 text-sm text-zinc-500">
                         {document.sourceType} · {document.ingestionStatus} ·{" "}
                         {document.contentCharCount} caracteres ·{" "}
+                        {document.chunkCount} chunks ·{" "}
                         {formatDate(document.createdAt)}
                       </p>
                     </div>

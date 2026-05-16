@@ -33,4 +33,5 @@
 - TASK 020 - Concluída: hardening leve single-user/private implementado com senha privada em produção protegendo workspace e APIs internas.
 - TASK 021 - Concluída: cadastro manual de fontes/documentos implementado com API protegida, tela em `/workspace/documents`, deploy e validação em produção.
 - TASK 022 - Concluída: ingestão manual inicial de conteúdo implementada com `raw_content`, contagem, hash, status `ready`, migration remota e validação em produção.
-- Checkpoint atual - Concluído: v0.1-beta já permite cadastrar fonte com conteúdo bruto; chunks ainda precisam ser implementados.
+- TASK 023 - Concluída: chunks simples implementados com tabela `document_chunks`, `chunk_count`, geração automática a partir de `raw_content`, migration remota e validação em produção.
+- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto e chunks; busca sobre chunks ainda precisa ser implementada.

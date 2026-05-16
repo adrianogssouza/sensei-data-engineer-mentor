@@ -8,6 +8,8 @@ const MAX_TITLE_LENGTH = 120;
 const MAX_SOURCE_PATH_LENGTH = 500;
 const MAX_NOTES_LENGTH = 2000;
 const MAX_RAW_CONTENT_LENGTH = 20000;
+const CHUNK_SIZE = 1200;
+const CHUNK_OVERLAP = 160;
 const PRIVATE_ACCESS_USERNAME = "sensei";
 const SOURCE_TYPES = ["manual", "url", "file_reference"] as const;
 
@@ -20,6 +22,7 @@ type DocumentSource = {
   sourcePath: string | null;
   rawContent: string | null;
   contentCharCount: number;
+  chunkCount: number;
   contentHash: string | null;
   ingestionStatus: string;
   ingestionError: string | null;
@@ -82,6 +85,7 @@ function toDocumentSource(row: {
   source_path: string | null;
   raw_content: string | null;
   content_char_count: number;
+  chunk_count: number;
   content_hash: string | null;
   ingestion_status: string;
   ingestion_error: string | null;
@@ -97,6 +101,7 @@ function toDocumentSource(row: {
     sourcePath: row.source_path,
     rawContent: row.raw_content,
     contentCharCount: row.content_char_count,
+    chunkCount: row.chunk_count,
     contentHash: row.content_hash,
     ingestionStatus: row.ingestion_status,
     ingestionError: row.ingestion_error,
@@ -109,6 +114,37 @@ function toDocumentSource(row: {
 
 function getContentHash(rawContent: string): string {
   return createHash("sha256").update(rawContent).digest("hex");
+}
+
+function createTextChunks(rawContent: string): string[] {
+  const normalizedContent = rawContent.replace(/\s+\n/g, "\n").trim();
+  const chunks: string[] = [];
+  let start = 0;
+
+  while (start < normalizedContent.length) {
+    const hardEnd = Math.min(start + CHUNK_SIZE, normalizedContent.length);
+    const slice = normalizedContent.slice(start, hardEnd);
+    const paragraphBreak = slice.lastIndexOf("\n\n");
+    const sentenceBreak = slice.lastIndexOf(". ");
+    const softBreak =
+      hardEnd < normalizedContent.length
+        ? Math.max(paragraphBreak, sentenceBreak)
+        : -1;
+    const end = softBreak > CHUNK_SIZE * 0.5 ? start + softBreak + 1 : hardEnd;
+    const chunk = normalizedContent.slice(start, end).trim();
+
+    if (chunk) {
+      chunks.push(chunk);
+    }
+
+    if (end >= normalizedContent.length) {
+      break;
+    }
+
+    start = Math.max(end - CHUNK_OVERLAP, start + 1);
+  }
+
+  return chunks;
 }
 
 function getUnavailableResponse(error: unknown) {
@@ -177,7 +213,7 @@ export async function GET(request: Request) {
     const { data, error } = await supabase
       .from("documents")
       .select(
-        "id,title,source_type,source_path,raw_content,content_char_count,content_hash,ingestion_status,ingestion_error,ingested_at,metadata,created_at,updated_at",
+        "id,title,source_type,source_path,raw_content,content_char_count,chunk_count,content_hash,ingestion_status,ingestion_error,ingested_at,metadata,created_at,updated_at",
       )
       .order("updated_at", { ascending: false })
       .limit(50);
@@ -230,6 +266,7 @@ export async function POST(request: Request) {
     body.rawContent,
     MAX_RAW_CONTENT_LENGTH,
   );
+  const chunks = rawContent ? createTextChunks(rawContent) : [];
   const ingestedAt = rawContent ? new Date().toISOString() : null;
 
   try {
@@ -242,13 +279,14 @@ export async function POST(request: Request) {
         source_path: sourcePath,
         raw_content: rawContent,
         content_char_count: rawContent?.length ?? 0,
+        chunk_count: 0,
         content_hash: rawContent ? getContentHash(rawContent) : null,
-        ingestion_status: rawContent ? "ready" : "pending",
+        ingestion_status: rawContent && chunks.length > 0 ? "ready" : "pending",
         ingested_at: ingestedAt,
         metadata: notes ? { notes } : {},
       })
       .select(
-        "id,title,source_type,source_path,raw_content,content_char_count,content_hash,ingestion_status,ingestion_error,ingested_at,metadata,created_at,updated_at",
+        "id,title,source_type,source_path,raw_content,content_char_count,chunk_count,content_hash,ingestion_status,ingestion_error,ingested_at,metadata,created_at,updated_at",
       )
       .single();
 
@@ -256,9 +294,46 @@ export async function POST(request: Request) {
       throw error;
     }
 
+    if (chunks.length === 0) {
+      return Response.json({
+        available: true,
+        document: toDocumentSource(data),
+      });
+    }
+
+    const { error: chunksError } = await supabase.from("document_chunks").insert(
+      chunks.map((chunk, chunkIndex) => ({
+        document_id: data.id,
+        chunk_index: chunkIndex,
+        content: chunk,
+        char_count: chunk.length,
+        metadata: {
+          chunkSize: CHUNK_SIZE,
+          overlap: CHUNK_OVERLAP,
+        },
+      })),
+    );
+
+    if (chunksError) {
+      throw chunksError;
+    }
+
+    const { data: updatedData, error: updateError } = await supabase
+      .from("documents")
+      .update({ chunk_count: chunks.length })
+      .eq("id", data.id)
+      .select(
+        "id,title,source_type,source_path,raw_content,content_char_count,chunk_count,content_hash,ingestion_status,ingestion_error,ingested_at,metadata,created_at,updated_at",
+      )
+      .single();
+
+    if (updateError) {
+      throw updateError;
+    }
+
     return Response.json({
       available: true,
-      document: toDocumentSource(data),
+      document: toDocumentSource(updatedData),
     });
   } catch (error) {
     return getUnavailableResponse(error);

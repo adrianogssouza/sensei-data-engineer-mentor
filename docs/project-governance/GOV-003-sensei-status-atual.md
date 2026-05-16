@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-15
-- Fase: v0.1-beta com ingestão manual inicial de conteúdo
-- Última task concluída: TASK 022
-- Checkpoint atual: fontes podem guardar conteúdo bruto manual e status `ready`
-- Próxima task: planejar chunks de conteúdo antes de embeddings/RAG
+- Fase: v0.1-beta com chunks simples de conteúdo
+- Última task concluída: TASK 023
+- Checkpoint atual: fontes com conteúdo bruto geram chunks persistidos no Supabase
+- Próxima task: planejar busca lexical/local antes de embeddings/RAG
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -52,6 +52,7 @@
 - TASK 020 — Hardening leve single-user/private
 - TASK 021 — Cadastro manual de fontes/documentos
 - TASK 022 — Ingestão manual inicial de conteúdo
+- TASK 023 — Chunks simples de conteúdo
 
 ## Bloqueios
 
@@ -269,11 +270,26 @@
 - Validação em produção: uma fonte manual com conteúdo foi criada, listada com `ready`, `contentCharCount` e `contentHash`, removida e a lista final ficou vazia.
 - Upload físico, storage, parsing de PDF/HTML, chunks, embeddings, pgvector, RAG e busca semântica continuam fora do escopo.
 
+## Chunks Simples de Conteúdo
+
+- Migration `20260516014500_add_document_chunks.sql` criada e aplicada no Supabase remoto.
+- Tabela `document_chunks` criada com vínculo `document_id` para `documents` e `on delete cascade`.
+- Coluna `chunk_count` adicionada em `documents`.
+- API `/api/documents` agora divide `rawContent` em chunks determinísticos no cadastro.
+- Parâmetros iniciais:
+  - `CHUNK_SIZE = 1200`;
+  - `CHUNK_OVERLAP = 160`.
+- Cada chunk salva `chunk_index`, `content`, `char_count` e metadados básicos.
+- `/workspace/documents` mostra a contagem de chunks de cada fonte.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção: uma fonte manual com conteúdo foi criada com `chunkCount = 1`, a tabela `document_chunks` confirmou 1 chunk, a fonte foi removida e os chunks foram removidos por cascade.
+- Embeddings, pgvector, RAG, busca semântica, parsing de PDF/HTML e upload físico continuam fora do escopo.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: criar chunks de conteúdo antes de embeddings/RAG.
+- Próxima implementação planejada: busca lexical/local sobre chunks antes de embeddings/RAG.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -284,8 +300,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão criando a primeira fatia de chunks.
+- Retomar na próxima sessão criando busca lexical/local sobre chunks.
 
 ## Próxima ação recomendada
 
-Planejar chunks de conteúdo das fontes prontas.
+Planejar busca lexical/local sobre chunks.

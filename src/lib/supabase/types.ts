@@ -139,6 +139,7 @@ export type Database = {
           source_path: string | null;
           raw_content: string | null;
           content_char_count: number;
+          chunk_count: number;
           content_hash: string | null;
           ingestion_status: string;
           ingestion_error: string | null;
@@ -154,6 +155,7 @@ export type Database = {
           source_path?: string | null;
           raw_content?: string | null;
           content_char_count?: number;
+          chunk_count?: number;
           content_hash?: string | null;
           ingestion_status?: string;
           ingestion_error?: string | null;
@@ -169,6 +171,7 @@ export type Database = {
           source_path?: string | null;
           raw_content?: string | null;
           content_char_count?: number;
+          chunk_count?: number;
           content_hash?: string | null;
           ingestion_status?: string;
           ingestion_error?: string | null;
@@ -178,6 +181,44 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [];
+      };
+      document_chunks: {
+        Row: {
+          id: string;
+          document_id: string;
+          chunk_index: number;
+          content: string;
+          char_count: number;
+          metadata: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          document_id: string;
+          chunk_index: number;
+          content: string;
+          char_count: number;
+          metadata?: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          document_id?: string;
+          chunk_index?: number;
+          content?: string;
+          char_count?: number;
+          metadata?: Json;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "document_chunks_document_id_fkey";
+            columns: ["document_id"];
+            isOneToOne: false;
+            referencedRelation: "documents";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: Record<string, never>;
