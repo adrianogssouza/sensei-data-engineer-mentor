@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 020
-- Checkpoint: workspace e APIs internas protegidos por senha privada em produção
+- Task atual concluída: TASK 021
+- Checkpoint: cadastro manual de fontes/documentos validado em produção
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: iniciar primeiro bloco funcional da v0.1-beta
+- Próxima implementação definida: planejar ingestão de conteúdo das fontes
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher entre upload/fontes ou base de conhecimento para v0.1-beta
+- escolher a primeira fatia de ingestão/parsing de conteúdo
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex

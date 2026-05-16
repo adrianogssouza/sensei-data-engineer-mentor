@@ -16,17 +16,18 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-alpha mock-first privada com Supabase remoto
-- Última task concluída: TASK 020
-- Checkpoint atual: workspace e APIs internas protegidos por senha privada em produção
-- Próxima task: iniciar o primeiro bloco funcional da v0.1-beta
+- Fase atual: v0.1-beta iniciada com cadastro manual de fontes
+- Última task concluída: TASK 021
+- Checkpoint atual: fontes/documentos podem ser cadastrados, listados e removidos no Supabase remoto
+- Próxima task: planejar ingestão de conteúdo das fontes
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
 - URL pública: `https://sensei-data-engineer-mentor.vercel.app`
 - Supabase remoto: projeto `xazgvdegyapkacsijvqw`, migration `20260429132612` aplicada
-- Acesso privado: `/workspace`, `/api/chat/*` e `/api/ai/*` protegidos quando `SENSEI_PRIVATE_ACCESS_PASSWORD` está configurada
-- Próxima implementação planejada: iniciar upload/fontes ou base de conhecimento da v0.1-beta
+- Acesso privado: `/workspace`, `/api/chat/*`, `/api/ai/*` e `/api/documents` protegidos quando `SENSEI_PRIVATE_ACCESS_PASSWORD` está configurada
+- Fontes/documentos: cadastro manual implementado em `/workspace/documents`
+- Próxima implementação planejada: ingestão/parsing de conteúdo antes de embeddings/RAG
 
 ## Objetivo principal 2026
 

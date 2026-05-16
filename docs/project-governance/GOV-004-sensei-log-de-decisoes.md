@@ -348,3 +348,15 @@ O produto não terá uso público nesta fase; será usado apenas pelo Product Ow
 
 Impacto:
 Foi adicionada a variável `SENSEI_PRIVATE_ACCESS_PASSWORD` e o proxy passou a proteger `/workspace`, `/api/chat/*` e `/api/ai/*` com HTTP Basic Auth quando essa variável está configurada. A homepage permanece pública para apresentação do projeto. A Vercel Production recebeu a senha como variável sensível e foi validada com bloqueio `401` sem credencial e acesso bem-sucedido com credencial válida. Multi-user/RLS e login obrigatório continuam fora do escopo por decisão de uso pessoal.
+
+---
+
+### DEC-031 — v0.1-beta começa por cadastro manual de fontes
+
+TASK 021 iniciou o primeiro bloco funcional da v0.1-beta.
+
+Motivo:
+Antes de embeddings e RAG, o sistema precisa ter um inventário confiável de fontes que o usuário quer estudar ou transformar em base de conhecimento.
+
+Impacto:
+Foi criada a API protegida `/api/documents` para listar, cadastrar e remover registros da tabela `documents`. A tela `/workspace/documents` agora permite registrar título, tipo, referência e notas. A produção foi redeployada e validada com criação, listagem e remoção de fonte de teste. Upload físico, parsing, embeddings, pgvector e RAG permanecem fora do escopo até a próxima decisão.

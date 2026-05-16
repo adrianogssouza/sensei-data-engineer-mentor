@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-15
-- Fase: v0.1-alpha mock-first privada com Supabase remoto
-- Última task concluída: TASK 020
-- Checkpoint atual: workspace e APIs internas protegidos por senha privada em produção
-- Próxima task: iniciar o primeiro bloco funcional da v0.1-beta
+- Fase: v0.1-beta iniciada com cadastro manual de fontes
+- Última task concluída: TASK 021
+- Checkpoint atual: fontes/documentos podem ser cadastrados, listados e removidos no Supabase remoto
+- Próxima task: planejar ingestão de conteúdo das fontes
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -50,6 +50,7 @@
 - TASK 018 — Deploy real mock-first na Vercel
 - TASK 019 — Configuração do Supabase remoto para histórico real
 - TASK 020 — Hardening leve single-user/private
+- TASK 021 — Cadastro manual de fontes/documentos
 
 ## Bloqueios
 
@@ -105,7 +106,8 @@
 
 - Layout de workspace criado em `/workspace`.
 - Navegação interna criada para overview, chat, documents, usage e settings.
-- Rotas placeholder criadas para `/workspace/chat`, `/workspace/documents`, `/workspace/usage` e `/workspace/settings`.
+- Rotas placeholder criadas para `/workspace/chat`, `/workspace/usage` e `/workspace/settings`.
+- `/workspace/documents` agora possui cadastro manual, listagem e remoção de fontes/documentos.
 - Chat agora possui rotas internas para persistência Supabase quando configurado.
 - RAG, upload, embeddings, pgvector e usage UI persistente ainda não foram implementados.
 
@@ -236,11 +238,25 @@
   - `/api/chat/threads` retornou `available: true` com credencial válida.
 - Multi-user/RLS, login obrigatório e contas públicas continuam fora do escopo por decisão de uso pessoal.
 
+## Cadastro Manual de Fontes/Documentos
+
+- API `/api/documents` criada para listar, cadastrar e remover registros da tabela `documents`.
+- `/workspace/documents` deixou de ser placeholder e agora permite registrar título, tipo, referência e notas.
+- Tipos de fonte aceitos nesta etapa: `manual`, `url` e `file_reference`.
+- Todo novo registro entra com `ingestion_status = pending`.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção:
+  - `/api/documents` retornou `401` sem senha;
+  - `/workspace/documents` retornou `401` sem senha;
+  - com credencial válida, uma fonte de teste foi criada, listada e removida;
+  - a lista final de documentos ficou vazia após a limpeza.
+- Upload físico, storage, parsing, embeddings, pgvector, RAG e busca semântica continuam fora do escopo.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: iniciar primeiro bloco funcional da v0.1-beta.
+- Próxima implementação planejada: planejar ingestão/parsing de conteúdo das fontes.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -251,8 +267,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão iniciando upload/fontes ou base de conhecimento.
+- Retomar na próxima sessão escolhendo a primeira fatia de ingestão/parsing.
 
 ## Próxima ação recomendada
 
-Iniciar o primeiro bloco funcional da v0.1-beta.
+Planejar ingestão de conteúdo das fontes cadastradas.

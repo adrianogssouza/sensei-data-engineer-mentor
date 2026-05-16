@@ -31,4 +31,5 @@
 - TASK 018 - Concluída: deploy real mock-first na Vercel executado, GitHub conectado, URL pública validada e relatório de deploy criado.
 - TASK 019 - Concluída: Supabase remoto configurado no projeto `xazgvdegyapkacsijvqw`, migration inicial aplicada, Vercel Production configurada e histórico real validado em produção.
 - TASK 020 - Concluída: hardening leve single-user/private implementado com senha privada em produção protegendo workspace e APIs internas.
-- Checkpoint atual - Concluído: v0.1-alpha mock-first privada com Supabase remoto; primeiro bloco funcional da v0.1-beta ainda precisa ser iniciado.
+- TASK 021 - Concluída: cadastro manual de fontes/documentos implementado com API protegida, tela em `/workspace/documents`, deploy e validação em produção.
+- Checkpoint atual - Concluído: v0.1-beta iniciada com fontes cadastráveis; ingestão de conteúdo ainda precisa ser planejada.

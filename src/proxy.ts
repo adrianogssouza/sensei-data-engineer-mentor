@@ -123,5 +123,7 @@ export const config = {
     "/workspace/:path*",
     "/api/chat/:path*",
     "/api/ai/:path*",
+    "/api/documents",
+    "/api/documents/:path*",
   ],
 };
