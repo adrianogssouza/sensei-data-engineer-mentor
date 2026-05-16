@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import { getPrivateAccessEnv } from "@/lib/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/types";
@@ -5,6 +7,7 @@ import type { Json } from "@/lib/supabase/types";
 const MAX_TITLE_LENGTH = 120;
 const MAX_SOURCE_PATH_LENGTH = 500;
 const MAX_NOTES_LENGTH = 2000;
+const MAX_RAW_CONTENT_LENGTH = 20000;
 const PRIVATE_ACCESS_USERNAME = "sensei";
 const SOURCE_TYPES = ["manual", "url", "file_reference"] as const;
 
@@ -15,8 +18,12 @@ type DocumentSource = {
   title: string;
   sourceType: string;
   sourcePath: string | null;
+  rawContent: string | null;
+  contentCharCount: number;
+  contentHash: string | null;
   ingestionStatus: string;
   ingestionError: string | null;
+  ingestedAt: string | null;
   metadata: Json;
   createdAt: string;
   updatedAt: string;
@@ -27,6 +34,7 @@ type CreateDocumentRequestBody = {
   sourceType?: unknown;
   sourcePath?: unknown;
   notes?: unknown;
+  rawContent?: unknown;
 };
 
 function isSourceType(sourceType: unknown): sourceType is SourceType {
@@ -72,8 +80,12 @@ function toDocumentSource(row: {
   title: string;
   source_type: string;
   source_path: string | null;
+  raw_content: string | null;
+  content_char_count: number;
+  content_hash: string | null;
   ingestion_status: string;
   ingestion_error: string | null;
+  ingested_at: string | null;
   metadata: Json;
   created_at: string;
   updated_at: string;
@@ -83,12 +95,20 @@ function toDocumentSource(row: {
     title: row.title,
     sourceType: row.source_type,
     sourcePath: row.source_path,
+    rawContent: row.raw_content,
+    contentCharCount: row.content_char_count,
+    contentHash: row.content_hash,
     ingestionStatus: row.ingestion_status,
     ingestionError: row.ingestion_error,
+    ingestedAt: row.ingested_at,
     metadata: row.metadata,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+function getContentHash(rawContent: string): string {
+  return createHash("sha256").update(rawContent).digest("hex");
 }
 
 function getUnavailableResponse(error: unknown) {
@@ -157,7 +177,7 @@ export async function GET(request: Request) {
     const { data, error } = await supabase
       .from("documents")
       .select(
-        "id,title,source_type,source_path,ingestion_status,ingestion_error,metadata,created_at,updated_at",
+        "id,title,source_type,source_path,raw_content,content_char_count,content_hash,ingestion_status,ingestion_error,ingested_at,metadata,created_at,updated_at",
       )
       .order("updated_at", { ascending: false })
       .limit(50);
@@ -206,6 +226,11 @@ export async function POST(request: Request) {
     MAX_SOURCE_PATH_LENGTH,
   );
   const notes = normalizeOptionalText(body.notes, MAX_NOTES_LENGTH);
+  const rawContent = normalizeOptionalText(
+    body.rawContent,
+    MAX_RAW_CONTENT_LENGTH,
+  );
+  const ingestedAt = rawContent ? new Date().toISOString() : null;
 
   try {
     const supabase = await createServerSupabaseClient();
@@ -215,11 +240,15 @@ export async function POST(request: Request) {
         title,
         source_type: sourceType,
         source_path: sourcePath,
-        ingestion_status: "pending",
+        raw_content: rawContent,
+        content_char_count: rawContent?.length ?? 0,
+        content_hash: rawContent ? getContentHash(rawContent) : null,
+        ingestion_status: rawContent ? "ready" : "pending",
+        ingested_at: ingestedAt,
         metadata: notes ? { notes } : {},
       })
       .select(
-        "id,title,source_type,source_path,ingestion_status,ingestion_error,metadata,created_at,updated_at",
+        "id,title,source_type,source_path,raw_content,content_char_count,content_hash,ingestion_status,ingestion_error,ingested_at,metadata,created_at,updated_at",
       )
       .single();
 

@@ -7,8 +7,12 @@ type DocumentSource = {
   title: string;
   sourceType: string;
   sourcePath: string | null;
+  rawContent: string | null;
+  contentCharCount: number;
+  contentHash: string | null;
   ingestionStatus: string;
   ingestionError: string | null;
+  ingestedAt: string | null;
   metadata: unknown;
   createdAt: string;
   updatedAt: string;
@@ -50,6 +54,7 @@ export default function WorkspaceDocumentsPage() {
   const [sourceType, setSourceType] = useState("manual");
   const [sourcePath, setSourcePath] = useState("");
   const [notes, setNotes] = useState("");
+  const [rawContent, setRawContent] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [removingDocumentId, setRemovingDocumentId] = useState<string | null>(
@@ -106,6 +111,7 @@ export default function WorkspaceDocumentsPage() {
           sourceType,
           sourcePath,
           notes,
+          rawContent,
         }),
       });
       const payload = (await response.json()) as DocumentsApiResponse;
@@ -122,6 +128,7 @@ export default function WorkspaceDocumentsPage() {
       setTitle("");
       setSourcePath("");
       setNotes("");
+      setRawContent("");
       setSourceType("manual");
       setStatusMessage("Fonte cadastrada.");
     } catch {
@@ -229,6 +236,20 @@ export default function WorkspaceDocumentsPage() {
           />
         </label>
 
+        <label className="grid gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+          Conteúdo bruto
+          <textarea
+            className="min-h-44 resize-y border border-zinc-300 bg-transparent px-3 py-2 text-base text-zinc-950 outline-none transition-colors focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+            maxLength={20000}
+            onChange={(event) => setRawContent(event.target.value)}
+            placeholder="Cole aqui o texto da fonte para deixar pronto para a próxima etapa de chunks e embeddings"
+            value={rawContent}
+          />
+          <span className="text-xs font-normal text-zinc-500">
+            {rawContent.trim().length} caracteres de conteúdo
+          </span>
+        </label>
+
         <div className="flex flex-wrap items-center gap-3">
           <button
             className="border border-zinc-950 px-4 py-2 text-sm font-medium text-zinc-950 transition-colors hover:bg-zinc-950 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-50 dark:text-zinc-50 dark:hover:bg-zinc-50 dark:hover:text-zinc-950"
@@ -283,6 +304,7 @@ export default function WorkspaceDocumentsPage() {
                       </h4>
                       <p className="mt-1 text-sm text-zinc-500">
                         {document.sourceType} · {document.ingestionStatus} ·{" "}
+                        {document.contentCharCount} caracteres ·{" "}
                         {formatDate(document.createdAt)}
                       </p>
                     </div>
@@ -308,6 +330,17 @@ export default function WorkspaceDocumentsPage() {
                     <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-zinc-700 dark:text-zinc-300">
                       {documentNotes}
                     </p>
+                  ) : null}
+
+                  {document.rawContent ? (
+                    <details className="mt-3 border border-zinc-200 p-3 dark:border-zinc-800">
+                      <summary className="cursor-pointer text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                        Ver conteúdo bruto
+                      </summary>
+                      <p className="mt-3 max-h-60 overflow-auto whitespace-pre-wrap text-sm leading-6 text-zinc-700 dark:text-zinc-300">
+                        {document.rawContent}
+                      </p>
+                    </details>
                   ) : null}
                 </article>
               );

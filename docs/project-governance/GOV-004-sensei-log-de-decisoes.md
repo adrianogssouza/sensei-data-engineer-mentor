@@ -360,3 +360,15 @@ Antes de embeddings e RAG, o sistema precisa ter um inventário confiável de fo
 
 Impacto:
 Foi criada a API protegida `/api/documents` para listar, cadastrar e remover registros da tabela `documents`. A tela `/workspace/documents` agora permite registrar título, tipo, referência e notas. A produção foi redeployada e validada com criação, listagem e remoção de fonte de teste. Upload físico, parsing, embeddings, pgvector e RAG permanecem fora do escopo até a próxima decisão.
+
+---
+
+### DEC-032 — Conteúdo bruto manual antes de chunks e embeddings
+
+TASK 022 implementou a primeira ingestão manual de conteúdo.
+
+Motivo:
+Antes de chunks, embeddings e RAG, o sistema precisa guardar texto real das fontes de forma simples e auditável. A decisão foi começar por conteúdo bruto colado manualmente, evitando upload/parsing prematuro.
+
+Impacto:
+A tabela `documents` recebeu `raw_content`, `content_char_count` e `ingested_at` pela migration `20260516012500`. A API `/api/documents` passou a aceitar `rawContent`, calcular hash SHA-256 e marcar fontes com conteúdo como `ready`. A tela `/workspace/documents` ganhou campo de conteúdo bruto e visualização do texto salvo. A produção foi redeployada e validada com criação, listagem e remoção de fonte com conteúdo.

@@ -137,9 +137,12 @@ export type Database = {
           title: string;
           source_type: string;
           source_path: string | null;
+          raw_content: string | null;
+          content_char_count: number;
           content_hash: string | null;
           ingestion_status: string;
           ingestion_error: string | null;
+          ingested_at: string | null;
           metadata: Json;
           created_at: string;
           updated_at: string;
@@ -149,9 +152,12 @@ export type Database = {
           title: string;
           source_type?: string;
           source_path?: string | null;
+          raw_content?: string | null;
+          content_char_count?: number;
           content_hash?: string | null;
           ingestion_status?: string;
           ingestion_error?: string | null;
+          ingested_at?: string | null;
           metadata?: Json;
           created_at?: string;
           updated_at?: string;
@@ -161,9 +167,12 @@ export type Database = {
           title?: string;
           source_type?: string;
           source_path?: string | null;
+          raw_content?: string | null;
+          content_char_count?: number;
           content_hash?: string | null;
           ingestion_status?: string;
           ingestion_error?: string | null;
+          ingested_at?: string | null;
           metadata?: Json;
           created_at?: string;
           updated_at?: string;

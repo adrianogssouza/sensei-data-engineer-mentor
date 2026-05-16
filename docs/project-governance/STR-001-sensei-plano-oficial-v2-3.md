@@ -74,6 +74,7 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 019 concluída
 - TASK 020 concluída
 - TASK 021 concluída
+- TASK 022 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Fundação Next.js criada
@@ -90,10 +91,11 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - Supabase remoto configurado, migration inicial aplicada e histórico de chat validado em produção.
 - Hardening leve single-user/private concluído com proteção por senha no workspace e APIs internas.
 - v0.1-beta iniciada com cadastro manual de fontes/documentos no Supabase remoto.
+- Ingestão manual inicial de conteúdo implementada com `raw_content`, hash, contagem e status `ready`.
 
 ## Próximo passo
 
-Planejar ingestão/parsing de conteúdo das fontes antes de embeddings/RAG.
+Planejar chunks de conteúdo antes de embeddings/RAG.
 
 ## Regra central
 

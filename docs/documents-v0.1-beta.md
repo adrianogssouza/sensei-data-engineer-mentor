@@ -10,7 +10,8 @@ Status: iniciado na TASK 021.
   - título;
   - tipo;
   - referência;
-  - notas.
+  - notas;
+  - conteúdo bruto manual.
 - Listagem de fontes cadastradas.
 - Remoção de fontes cadastradas.
 
@@ -25,8 +26,19 @@ Campos usados nesta etapa:
 - `source_path`
 - `ingestion_status`
 - `metadata.notes`
+- `raw_content`
+- `content_char_count`
+- `content_hash`
+- `ingested_at`
 
-Todo novo registro entra com `ingestion_status = pending`.
+Registros sem conteúdo entram como `pending`.
+
+Registros com conteúdo bruto entram como `ready` e recebem:
+
+- texto em `raw_content`;
+- contagem em `content_char_count`;
+- hash SHA-256 em `content_hash`;
+- timestamp em `ingested_at`.
 
 ## Tipos aceitos
 
@@ -42,6 +54,7 @@ Todo novo registro entra com `ingestion_status = pending`.
 - A fonte apareceu na listagem.
 - A fonte foi removida.
 - A lista final ficou vazia após a limpeza.
+- Na TASK 022, uma fonte manual com conteúdo bruto foi criada, listada com `ready`, `contentCharCount` e `contentHash`, removida, e a lista final voltou a ficar vazia.
 
 ## Fora do escopo
 

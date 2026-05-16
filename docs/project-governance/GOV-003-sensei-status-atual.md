@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-15
-- Fase: v0.1-beta iniciada com cadastro manual de fontes
-- Última task concluída: TASK 021
-- Checkpoint atual: fontes/documentos podem ser cadastrados, listados e removidos no Supabase remoto
-- Próxima task: planejar ingestão de conteúdo das fontes
+- Fase: v0.1-beta com ingestão manual inicial de conteúdo
+- Última task concluída: TASK 022
+- Checkpoint atual: fontes podem guardar conteúdo bruto manual e status `ready`
+- Próxima task: planejar chunks de conteúdo antes de embeddings/RAG
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -51,6 +51,7 @@
 - TASK 019 — Configuração do Supabase remoto para histórico real
 - TASK 020 — Hardening leve single-user/private
 - TASK 021 — Cadastro manual de fontes/documentos
+- TASK 022 — Ingestão manual inicial de conteúdo
 
 ## Bloqueios
 
@@ -252,11 +253,27 @@
   - a lista final de documentos ficou vazia após a limpeza.
 - Upload físico, storage, parsing, embeddings, pgvector, RAG e busca semântica continuam fora do escopo.
 
+## Ingestão Manual Inicial de Conteúdo
+
+- Migration `20260516012500_add_document_raw_content.sql` criada e aplicada no Supabase remoto.
+- Tabela `documents` agora possui `raw_content`, `content_char_count` e `ingested_at`.
+- API `/api/documents` aceita `rawContent` no cadastro.
+- Quando `rawContent` é informado:
+  - `raw_content` recebe o texto bruto;
+  - `content_char_count` recebe a contagem de caracteres;
+  - `content_hash` recebe hash SHA-256 do conteúdo;
+  - `ingestion_status` passa para `ready`;
+  - `ingested_at` é preenchido.
+- `/workspace/documents` permite colar conteúdo bruto na criação de uma fonte e visualizar o conteúdo salvo.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção: uma fonte manual com conteúdo foi criada, listada com `ready`, `contentCharCount` e `contentHash`, removida e a lista final ficou vazia.
+- Upload físico, storage, parsing de PDF/HTML, chunks, embeddings, pgvector, RAG e busca semântica continuam fora do escopo.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: planejar ingestão/parsing de conteúdo das fontes.
+- Próxima implementação planejada: criar chunks de conteúdo antes de embeddings/RAG.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -267,8 +284,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão escolhendo a primeira fatia de ingestão/parsing.
+- Retomar na próxima sessão criando a primeira fatia de chunks.
 
 ## Próxima ação recomendada
 
-Planejar ingestão de conteúdo das fontes cadastradas.
+Planejar chunks de conteúdo das fontes prontas.

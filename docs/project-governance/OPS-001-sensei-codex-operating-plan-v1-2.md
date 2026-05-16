@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 021
-- Checkpoint: cadastro manual de fontes/documentos validado em produção
+- Task atual concluída: TASK 022
+- Checkpoint: ingestão manual inicial de conteúdo validada em produção
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: planejar ingestão de conteúdo das fontes
+- Próxima implementação definida: planejar chunks de conteúdo
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher a primeira fatia de ingestão/parsing de conteúdo
+- criar a primeira fatia de chunks sem embeddings/RAG
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex
