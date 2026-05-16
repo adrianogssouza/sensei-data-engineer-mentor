@@ -15,6 +15,7 @@ Status: configurado na TASK 019.
 - A migration `20260429132612_initial_app_schema.sql` foi aplicada no banco remoto.
 - A Vercel Production recebeu as variáveis `AI_PROVIDER`, `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 - A aplicação foi redeployada em produção.
+- Depois da TASK 020, o workspace e as APIs internas foram protegidos por `SENSEI_PRIVATE_ACCESS_PASSWORD` em produção.
 
 ## Validação feita
 

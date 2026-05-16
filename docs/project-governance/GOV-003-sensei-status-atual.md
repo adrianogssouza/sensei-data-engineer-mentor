@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-15
-- Fase: v0.1-alpha mock-first publicada com Supabase remoto
-- Última task concluída: TASK 019
-- Checkpoint atual: Supabase remoto configurado e histórico validado em produção
-- Próxima task: definir o primeiro bloco da v0.1-beta
+- Fase: v0.1-alpha mock-first privada com Supabase remoto
+- Última task concluída: TASK 020
+- Checkpoint atual: workspace e APIs internas protegidos por senha privada em produção
+- Próxima task: iniciar o primeiro bloco funcional da v0.1-beta
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -49,6 +49,7 @@
 - TASK 017 — Handoff de portfólio v0.1-alpha
 - TASK 018 — Deploy real mock-first na Vercel
 - TASK 019 — Configuração do Supabase remoto para histórico real
+- TASK 020 — Hardening leve single-user/private
 
 ## Bloqueios
 
@@ -85,6 +86,7 @@
 
 - Homepage pública atualizada como landing real do app.
 - `/workspace` criado como rota pública principal para uso diário.
+- `/workspace`, `/api/chat/*` e `/api/ai/*` ficam protegidos por HTTP Basic Auth quando `SENSEI_PRIVATE_ACCESS_PASSWORD` está configurada.
 - Login e signup permanecem disponíveis, mas não são obrigatórios no fluxo principal.
 - `/dashboard` permanece protegido para preservar a fundação de auth futura.
 
@@ -221,11 +223,24 @@
 - Correção mínima aplicada na API de mensagens para omitir `created_at` quando `createdAt` não vier no payload e deixar o banco usar `now()`.
 - RAG, upload, embeddings, pgvector, Gemini real, multi-user/RLS e persistência de uso seguem fora do escopo.
 
+## Hardening Leve Single-User/Private
+
+- Variável `SENSEI_PRIVATE_ACCESS_PASSWORD` adicionada como segredo opcional de servidor.
+- Produção na Vercel configurada com senha privada sensível.
+- Proxy do Next.js agora protege `/workspace`, `/api/chat/*` e `/api/ai/*` com HTTP Basic Auth quando a senha existe.
+- Homepage pública permanece aberta para leitura/portfólio.
+- Validação em produção:
+  - `/` retornou `200` sem senha;
+  - `/workspace/chat` retornou `401` sem senha;
+  - `/api/chat/threads` retornou `401` sem senha;
+  - `/api/chat/threads` retornou `available: true` com credencial válida.
+- Multi-user/RLS, login obrigatório e contas públicas continuam fora do escopo por decisão de uso pessoal.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: escolher primeiro bloco da v0.1-beta.
+- Próxima implementação planejada: iniciar primeiro bloco funcional da v0.1-beta.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -236,8 +251,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão definindo o primeiro bloco da v0.1-beta.
+- Retomar na próxima sessão iniciando upload/fontes ou base de conhecimento.
 
 ## Próxima ação recomendada
 
-Definir o primeiro bloco da v0.1-beta.
+Iniciar o primeiro bloco funcional da v0.1-beta.

@@ -6,7 +6,7 @@ SENSEI Data Engineer Mentor é um mentor pessoal de estudos com IA focado em Eng
 
 O SENSEI demonstra a construção incremental de um produto de IA com base real de aplicação: workspace, chat, abstração de providers, fallback seguro, persistência de histórico, fundação Supabase/Auth, guardrails de custo e documentação operacional.
 
-A v0.1-alpha está publicada em modo mock-first com Supabase remoto. Ela prova o fluxo principal sem depender de quota/billing de IA real e já grava histórico de chat no banco remoto.
+A v0.1-alpha está publicada em modo mock-first privado com Supabase remoto. Ela prova o fluxo principal sem depender de quota/billing de IA real, grava histórico de chat no banco remoto e protege o workspace por senha em produção.
 
 URL pública:
 
@@ -271,10 +271,11 @@ src/
 - TASK 017 - Handoff de portfólio v0.1-alpha
 - TASK 018 - Deploy real mock-first na Vercel
 - TASK 019 - Configuração do Supabase remoto para histórico real
+- TASK 020 - Hardening leve single-user/private
 
 ## Próximo Marco
 
-Definir o primeiro bloco da v0.1-beta.
+Iniciar o primeiro bloco funcional da v0.1-beta.
 
 ## Status do Provider de IA
 
@@ -306,7 +307,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 019. A v0.1-alpha mock-first está publicada na Vercel com histórico remoto no Supabase.
+Checkpoint atual: o trabalho está sincronizado até TASK 020. A v0.1-alpha mock-first está publicada na Vercel com histórico remoto no Supabase e workspace protegido por senha.
 
 ## Segredos
 

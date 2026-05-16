@@ -13,6 +13,10 @@ export type AiProviderEnv = {
   GEMINI_MODEL: string;
 };
 
+export type PrivateAccessEnv = {
+  SENSEI_PRIVATE_ACCESS_PASSWORD?: string;
+};
+
 const DEFAULT_AI_PROVIDER = "mock";
 const DEFAULT_GEMINI_MODEL = "gemini-2.0-flash-lite";
 
@@ -62,6 +66,12 @@ export function getAiProviderEnv(): AiProviderEnv {
     AI_PROVIDER: process.env.AI_PROVIDER ?? DEFAULT_AI_PROVIDER,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     GEMINI_MODEL: process.env.GEMINI_MODEL ?? DEFAULT_GEMINI_MODEL,
+  };
+}
+
+export function getPrivateAccessEnv(): PrivateAccessEnv {
+  return {
+    SENSEI_PRIVATE_ACCESS_PASSWORD: process.env.SENSEI_PRIVATE_ACCESS_PASSWORD,
   };
 }
 

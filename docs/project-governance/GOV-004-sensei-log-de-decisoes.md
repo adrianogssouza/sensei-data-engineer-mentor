@@ -336,3 +336,15 @@ Depois da publicação mock-first, a aplicação precisava deixar de depender ap
 
 Impacto:
 O projeto Supabase `xazgvdegyapkacsijvqw` foi linkado, recebeu a migration inicial `20260429132612` e foi configurado na Vercel Production com variáveis públicas de Supabase e `AI_PROVIDER=mock`. A URL `https://sensei-data-engineer-mentor.vercel.app` foi redeployada e validada com ciclo real de criar, ler, listar e arquivar conversa. O provider de IA continua mock por causa do bloqueio de quota/billing do Gemini.
+
+---
+
+### DEC-030 — Uso segue privado e protegido por senha simples
+
+TASK 020 implementou hardening leve para o modo single-user/private.
+
+Motivo:
+O produto não terá uso público nesta fase; será usado apenas pelo Product Owner. Mesmo assim, como a URL está online, o workspace e as APIs internas precisam de uma barreira simples contra acesso externo acidental.
+
+Impacto:
+Foi adicionada a variável `SENSEI_PRIVATE_ACCESS_PASSWORD` e o proxy passou a proteger `/workspace`, `/api/chat/*` e `/api/ai/*` com HTTP Basic Auth quando essa variável está configurada. A homepage permanece pública para apresentação do projeto. A Vercel Production recebeu a senha como variável sensível e foi validada com bloqueio `401` sem credencial e acesso bem-sucedido com credencial válida. Multi-user/RLS e login obrigatório continuam fora do escopo por decisão de uso pessoal.
