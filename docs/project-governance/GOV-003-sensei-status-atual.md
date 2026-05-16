@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-15
-- Fase: v0.1-alpha mock-first publicada
-- Última task concluída: TASK 018
-- Checkpoint atual: deploy real mock-first na Vercel concluído
-- Próxima task: definir próximo bloco pós-deploy
+- Fase: v0.1-alpha mock-first publicada com Supabase remoto
+- Última task concluída: TASK 019
+- Checkpoint atual: Supabase remoto configurado e histórico validado em produção
+- Próxima task: definir o primeiro bloco da v0.1-beta
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -48,6 +48,7 @@
 - TASK 016 — QA v0.1-alpha
 - TASK 017 — Handoff de portfólio v0.1-alpha
 - TASK 018 — Deploy real mock-first na Vercel
+- TASK 019 — Configuração do Supabase remoto para histórico real
 
 ## Bloqueios
 
@@ -206,13 +207,25 @@
 - Relatório criado em `docs/deploy-v0.1-alpha.md`.
 - `/`, `/workspace/chat`, `/api/ai/chat` e fallback de `/api/chat/threads` foram validados na URL publicada.
 - `.vercel/` foi criado localmente pela CLI e ignorado no Git.
-- Supabase remoto, migrations remotas, Gemini real, RAG, upload, embeddings, pgvector e multi-user/RLS continuam fora do escopo desta task.
+- Gemini real, RAG, upload, embeddings, pgvector e multi-user/RLS continuam fora do escopo desta task.
+
+## Supabase Remoto para Histórico Real
+
+- Projeto Supabase remoto escolhido: `xazgvdegyapkacsijvqw`.
+- Migration inicial `20260429132612_initial_app_schema.sql` aplicada no banco remoto.
+- Vercel Production recebeu `AI_PROVIDER`, `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- Produção publicada novamente em `https://sensei-data-engineer-mentor.vercel.app`.
+- `/api/chat/threads` passou a retornar `available: true` na URL pública.
+- Ciclo real de histórico validado em produção: criar mensagens, ler mensagens, listar thread e arquivar thread.
+- Thread residual de validação foi arquivado; a lista ativa terminou vazia.
+- Correção mínima aplicada na API de mensagens para omitir `created_at` quando `createdAt` não vier no payload e deixar o banco usar `now()`.
+- RAG, upload, embeddings, pgvector, Gemini real, multi-user/RLS e persistência de uso seguem fora do escopo.
 
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: escolher próximo bloco pós-deploy.
+- Próxima implementação planejada: escolher primeiro bloco da v0.1-beta.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -223,8 +236,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão definindo se o próximo bloco será configurar Supabase remoto ou planejamento da v0.1-beta.
+- Retomar na próxima sessão definindo o primeiro bloco da v0.1-beta.
 
 ## Próxima ação recomendada
 
-Definir próximo bloco pós-deploy.
+Definir o primeiro bloco da v0.1-beta.

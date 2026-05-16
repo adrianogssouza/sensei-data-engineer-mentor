@@ -71,6 +71,7 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 016 concluída
 - TASK 017 concluída
 - TASK 018 concluída
+- TASK 019 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Fundação Next.js criada
@@ -84,10 +85,11 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - QA v0.1-alpha mock-first aprovado localmente.
 - Handoff de portfólio v0.1-alpha concluído.
 - Deploy real mock-first na Vercel concluído.
+- Supabase remoto configurado, migration inicial aplicada e histórico de chat validado em produção.
 
 ## Próximo passo
 
-Definir próximo bloco pós-deploy: configurar Supabase remoto ou planejar v0.1-beta.
+Definir o primeiro bloco da v0.1-beta: upload/fontes, embeddings/RAG ou hardening de dados.
 
 ## Regra central
 

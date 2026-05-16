@@ -29,4 +29,5 @@
 - TASK 016 - Concluída: QA v0.1-alpha mock-first aprovado localmente com rotas principais, API de IA mock, fallback de histórico, lint, build e diff check validados.
 - TASK 017 - Concluída: handoff de portfólio v0.1-alpha criado com descrição, demo local, entregas, decisões técnicas, próximos passos e README reorganizado para leitura externa.
 - TASK 018 - Concluída: deploy real mock-first na Vercel executado, GitHub conectado, URL pública validada e relatório de deploy criado.
-- Checkpoint atual - Concluído: v0.1-alpha mock-first publicada; próximo bloco ainda precisa ser definido.
+- TASK 019 - Concluída: Supabase remoto configurado no projeto `xazgvdegyapkacsijvqw`, migration inicial aplicada, Vercel Production configurada e histórico real validado em produção.
+- Checkpoint atual - Concluído: v0.1-alpha mock-first publicada com Supabase remoto; primeiro bloco da v0.1-beta ainda precisa ser definido.

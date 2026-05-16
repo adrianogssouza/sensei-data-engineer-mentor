@@ -324,3 +324,15 @@ Depois do handoff de portfólio, a alpha precisava sair do ambiente local para s
 
 Impacto:
 O projeto foi linkado na Vercel como `adrianogssouzas-projects/sensei-data-engineer-mentor`, conectado ao GitHub e publicado em `https://sensei-data-engineer-mentor.vercel.app`. O deploy foi validado com provider mock e sem chamada externa de IA. Supabase remoto e migrations continuam para um próximo bloco.
+
+---
+
+### DEC-029 — Supabase remoto passa a armazenar histórico real
+
+TASK 019 configurou o Supabase remoto para o histórico de chat em produção.
+
+Motivo:
+Depois da publicação mock-first, a aplicação precisava deixar de depender apenas do fallback local para histórico e provar persistência real na URL pública.
+
+Impacto:
+O projeto Supabase `xazgvdegyapkacsijvqw` foi linkado, recebeu a migration inicial `20260429132612` e foi configurado na Vercel Production com variáveis públicas de Supabase e `AI_PROVIDER=mock`. A URL `https://sensei-data-engineer-mentor.vercel.app` foi redeployada e validada com ciclo real de criar, ler, listar e arquivar conversa. O provider de IA continua mock por causa do bloqueio de quota/billing do Gemini.

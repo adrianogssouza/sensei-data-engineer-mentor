@@ -27,6 +27,14 @@ type ValidPersistMessageInput = {
   metadata?: unknown;
 };
 
+type ChatMessageInsert = {
+  thread_id: string;
+  role: ChatRole;
+  content: string;
+  metadata: Json;
+  created_at?: string;
+};
+
 type PersistMessagesRequestBody = {
   threadId?: unknown;
   title?: unknown;
@@ -209,17 +217,17 @@ export async function POST(request: Request) {
       typeof body.threadId === "string" && body.threadId.trim()
         ? body.threadId.trim()
         : await createThread(body.title);
+    const rows: ChatMessageInsert[] = messages.map((message) => ({
+      thread_id: threadId,
+      role: message.role,
+      content: message.content,
+      metadata: getSafeMetadata(message.metadata),
+      ...(message.createdAt ? { created_at: message.createdAt } : {}),
+    }));
+
     const { data, error } = await supabase
       .from("chat_messages")
-      .insert(
-        messages.map((message) => ({
-          thread_id: threadId,
-          role: message.role,
-          content: message.content,
-          metadata: getSafeMetadata(message.metadata),
-          created_at: message.createdAt,
-        })),
-      )
+      .insert(rows)
       .select("id,role,content,created_at")
       .order("created_at", { ascending: true });
 

@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 018
-- Checkpoint: deploy real mock-first na Vercel concluído
+- Task atual concluída: TASK 019
+- Checkpoint: Supabase remoto configurado e histórico validado em produção
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,16 +19,16 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: escolher próximo bloco pós-deploy
+- Próxima implementação definida: escolher primeiro bloco da v0.1-beta
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher entre configurar Supabase remoto ou planejamento da v0.1-beta
+- escolher entre upload/fontes, embeddings/RAG ou hardening de dados para v0.1-beta
 - manter escopo pequeno e validável
-- não implementar RAG, embeddings, upload, pgvector ou multi-user/RLS
+- não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex
 - declarar perfil recomendado de recursos por task conforme GOV-007
 

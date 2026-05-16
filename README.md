@@ -6,7 +6,7 @@ SENSEI Data Engineer Mentor é um mentor pessoal de estudos com IA focado em Eng
 
 O SENSEI demonstra a construção incremental de um produto de IA com base real de aplicação: workspace, chat, abstração de providers, fallback seguro, persistência de histórico, fundação Supabase/Auth, guardrails de custo e documentação operacional.
 
-A v0.1-alpha está publicada em modo mock-first. Ela prova o fluxo principal sem depender de quota/billing de IA real e deixa o caminho preparado para Supabase remoto e evolução futura para RAG.
+A v0.1-alpha está publicada em modo mock-first com Supabase remoto. Ela prova o fluxo principal sem depender de quota/billing de IA real e já grava histórico de chat no banco remoto.
 
 URL pública:
 
@@ -240,7 +240,7 @@ src/
 - `src/lib/supabase/` contém a fundação dos clients Supabase browser/server e tipos placeholder do banco.
 - `src/proxy.ts` atualiza cookies de auth do Supabase e protege `/dashboard`.
 - `src/components/` e `src/types/` reservam espaço para código compartilhado futuro.
-- `supabase/migrations/` contém migrations locais que ainda não foram aplicadas remotamente por este repo.
+- `supabase/migrations/` contém a migration inicial aplicada no Supabase remoto escolhido para a alpha.
 
 ## Tasks Concluídas
 
@@ -270,10 +270,11 @@ src/
 - TASK 016 - QA v0.1-alpha
 - TASK 017 - Handoff de portfólio v0.1-alpha
 - TASK 018 - Deploy real mock-first na Vercel
+- TASK 019 - Configuração do Supabase remoto para histórico real
 
 ## Próximo Marco
 
-Configurar Supabase remoto ou preparar a v0.1-beta.
+Definir o primeiro bloco da v0.1-beta.
 
 ## Status do Provider de IA
 
@@ -283,7 +284,7 @@ Provider padrão atual: `mock`.
 
 Gemini está disponível pela rota server quando explicitamente habilitado com `AI_PROVIDER=gemini` e `GEMINI_API_KEY`. O modelo padrão é `gemini-2.0-flash-lite`, escolhido para experimentação com controle de custo. Se Gemini não estiver configurado ou falhar, o provider mock permanece como fallback.
 
-Anthropic e OpenAI estão planejados como ids de provider, mas nenhum SDK Anthropic/OpenAI foi instalado. Ainda não há RAG, embeddings, upload, pgvector, persistência Supabase, streaming ou persistência de uso em banco.
+Anthropic e OpenAI estão planejados como ids de provider, mas nenhum SDK Anthropic/OpenAI foi instalado. Ainda não há RAG, embeddings, upload, pgvector, streaming ou persistência de uso em banco.
 
 ## Guardrails de Uso / Custo
 
@@ -305,7 +306,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 018. A v0.1-alpha mock-first está publicada na Vercel.
+Checkpoint atual: o trabalho está sincronizado até TASK 019. A v0.1-alpha mock-first está publicada na Vercel com histórico remoto no Supabase.
 
 ## Segredos
 
