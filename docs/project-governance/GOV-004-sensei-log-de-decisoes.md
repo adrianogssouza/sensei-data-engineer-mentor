@@ -396,3 +396,15 @@ Antes de embeddings e RAG, o projeto precisa provar que consegue recuperar trech
 
 Impacto:
 Foi criada a rota protegida `/api/documents/search?q=...`, que consulta `document_chunks.content` com `ilike`, calcula um score simples por ocorrência do termo e retorna trechos ranqueados. A tela `/workspace/documents` ganhou a seção "Buscar nos chunks". A produção foi validada com criação de fonte temporária, busca por termos, retorno do chunk esperado e limpeza final.
+
+---
+
+### DEC-035 — Recuperação lexical no chat mock antes de embeddings
+
+TASK 025 conectou a busca lexical/local ao fluxo de chat mock.
+
+Motivo:
+Antes de embeddings, pgvector e RAG semântico, o projeto precisa validar a experiência básica de o tutor responder usando trechos de fontes cadastradas. A decisão foi reaproveitar a busca lexical já validada e manter o provider mock determinístico, barato e auditável.
+
+Impacto:
+A lógica de busca em chunks foi extraída para um helper server compartilhado. A rota `/api/ai/chat` agora extrai termos da última mensagem do usuário, consulta `document_chunks` e envia os trechos encontrados ao provider mock por metadados internos. Quando há resultado, o mock responde citando a fonte, o índice do chunk e o trecho recuperado. Embeddings, pgvector, RAG semântico, streaming e providers pagos continuam fora do escopo.

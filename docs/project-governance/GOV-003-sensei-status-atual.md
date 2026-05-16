@@ -2,11 +2,11 @@
 
 ## Retrato Atual
 
-- Data de atualização: 2026-05-15
-- Fase: v0.1-beta com busca lexical/local sobre chunks
-- Última task concluída: TASK 024
-- Checkpoint atual: chunks podem ser consultados por termo antes de embeddings/RAG
-- Próxima task: planejar uso dos resultados de busca no chat mock
+- Data de atualização: 2026-05-16
+- Fase: v0.1-beta com busca lexical/local conectada ao chat mock
+- Última task concluída: TASK 025
+- Checkpoint atual: chat mock usa trechos de `document_chunks` quando encontra termos da pergunta
+- Próxima task: decidir próximo incremento após validação da recuperação lexical no chat mock
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -54,6 +54,7 @@
 - TASK 022 — Ingestão manual inicial de conteúdo
 - TASK 023 — Chunks simples de conteúdo
 - TASK 024 — Busca lexical/local sobre chunks
+- TASK 025 — Busca lexical/local no chat mock
 
 ## Bloqueios
 
@@ -102,7 +103,7 @@
 - Índices básicos criados para mensagens, eventos de uso e documentos.
 - Tipos TypeScript do banco atualizados manualmente.
 - Schema atual é single-user/private, sem `user_id`, RLS multi-user ou policies com `auth.uid()`.
-- pgvector, `document_chunks`, embeddings, upload, AI e RAG ainda não foram implementados.
+- pgvector, embeddings, upload, RAG semântico e ownership multi-user ainda não foram implementados.
 - Nenhuma migration foi aplicada a banco remoto nesta task.
 
 ## Shell do Workspace
@@ -120,7 +121,8 @@
 - Respostas do assistente são determinísticas e locais.
 - Chat usa API interna de IA e API interna de histórico quando Supabase está configurado.
 - Sem Supabase configurado, o fallback local via `localStorage` permanece operacional.
-- Não há streaming, RAG ou persistência de uso.
+- O provider mock pode usar trechos recuperados por busca lexical/local quando há fontes cadastradas.
+- Não há streaming, RAG, busca semântica ou persistência de uso.
 
 ## Persistência Local do Chat
 
@@ -149,7 +151,8 @@
 - Fallback operacional atual: provider mock.
 - Anthropic e OpenAI estão planejados nos tipos, mas não estão ativos.
 - Nenhum SDK de Anthropic/OpenAI foi instalado.
-- Não há RAG, embeddings, upload, pgvector, persistência Supabase, streaming ou persistência de uso.
+- O provider mock recebe trechos recuperados por `document_chunks` via metadados da rota `/api/ai/chat`.
+- Não há RAG, embeddings, upload, pgvector, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
 
@@ -299,13 +302,27 @@
   - uma fonte temporária foi criada com conteúdo e chunk;
   - buscas por `window` e `cliente` retornaram o chunk esperado;
   - a fonte foi removida e a busca voltou a retornar lista vazia.
-- Embeddings, pgvector, RAG, busca semântica e integração da busca com o chat continuam fora do escopo.
+- Embeddings, pgvector, RAG e busca semântica continuam fora do escopo.
+
+## Busca Lexical/Local no Chat Mock
+
+- TASK 025 conectou a busca lexical/local ao fluxo de `/api/ai/chat`.
+- A rota de chat extrai termos relevantes da última mensagem do usuário e consulta `document_chunks`.
+- Os trechos encontrados são enviados ao provider mock por metadados internos.
+- O provider mock passa a responder com indicação da fonte, índice do chunk e trecho recuperado quando há resultado.
+- A rota preserva fallback seguro: se a busca falhar, o chat continua respondendo em modo mock determinístico.
+- A busca continua lexical/local, baseada em `ilike`, sem embeddings, sem pgvector e sem RAG semântico.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção:
+  - uma fonte temporária foi criada com conteúdo sobre `window functions`;
+  - `/api/ai/chat` respondeu com "Local mock com fontes" e citou a fonte temporária;
+  - a fonte temporária foi removida ao final.
 
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: conectar busca lexical ao chat mock antes de embeddings/RAG.
+- Próxima implementação planejada: decidir entre melhorar ranking lexical, preparar embeddings ou iniciar upload/parsing.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -316,8 +333,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão conectando busca lexical ao chat mock.
+- Retomar na próxima sessão decidindo a próxima task incremental.
 
 ## Próxima ação recomendada
 
-Planejar uso da busca lexical no chat mock.
+Escolher a próxima task: melhorar ranking lexical, preparar embeddings ou iniciar upload/parsing.

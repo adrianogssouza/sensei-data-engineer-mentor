@@ -35,4 +35,5 @@
 - TASK 022 - Concluída: ingestão manual inicial de conteúdo implementada com `raw_content`, contagem, hash, status `ready`, migration remota e validação em produção.
 - TASK 023 - Concluída: chunks simples implementados com tabela `document_chunks`, `chunk_count`, geração automática a partir de `raw_content`, migration remota e validação em produção.
 - TASK 024 - Concluída: busca lexical/local sobre chunks implementada com rota protegida, UI em documentos, deploy e validação em produção.
-- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto, chunks e busca lexical; integração com chat ainda precisa ser implementada.
+- TASK 025 - Concluída: busca lexical/local conectada ao chat mock com trechos de fontes enviados ao provider mock sem embeddings/RAG.
+- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto, chunks, busca lexical e usa trechos recuperados no chat mock.

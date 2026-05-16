@@ -1,4 +1,45 @@
-export function createMockAssistantResponse(userMessage: string): string {
+export type MockRetrievedChunk = {
+  documentTitle: string;
+  chunkIndex: number;
+  content: string;
+};
+
+function createSnippet(content: string): string {
+  const compactContent = content.replace(/\s+/g, " ").trim();
+
+  if (compactContent.length <= 360) {
+    return compactContent;
+  }
+
+  return `${compactContent.slice(0, 357)}...`;
+}
+
+function createRetrievalResponse(retrievedChunks: MockRetrievedChunk[]): string {
+  const firstChunk = retrievedChunks[0];
+  const extraCount = retrievedChunks.length - 1;
+  const extraText =
+    extraCount > 0
+      ? ` Encontrei mais ${extraCount} trecho(s) relacionado(s) nas suas fontes.`
+      : "";
+
+  return [
+    "Local mock com fontes: encontrei um trecho relevante nas suas fontes cadastradas.",
+    "",
+    `Fonte: ${firstChunk.documentTitle} (chunk ${firstChunk.chunkIndex}).`,
+    `Trecho: "${createSnippet(firstChunk.content)}"`,
+    "",
+    `Use esse trecho como base de estudo: destaque o conceito principal, transforme em uma pergunta pratica e depois valide com um exercicio pequeno.${extraText}`,
+  ].join("\n");
+}
+
+export function createMockAssistantResponse(
+  userMessage: string,
+  retrievedChunks: MockRetrievedChunk[] = [],
+): string {
+  if (retrievedChunks.length > 0) {
+    return createRetrievalResponse(retrievedChunks);
+  }
+
   const normalizedMessage = userMessage.toLowerCase();
 
   if (normalizedMessage.includes("sql")) {

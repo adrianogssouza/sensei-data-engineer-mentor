@@ -1,4 +1,7 @@
-import { createMockAssistantResponse } from "@/lib/chat/mock-chat";
+import {
+  createMockAssistantResponse,
+  type MockRetrievedChunk,
+} from "@/lib/chat/mock-chat";
 import type {
   AiGenerateRequest,
   AiGenerateResponse,
@@ -24,13 +27,31 @@ function estimateTokenCount(content: string): number {
   return trimmedContent.split(/\s+/).length;
 }
 
+function getRetrievedChunks(metadata: Record<string, unknown> | undefined) {
+  const retrievedChunks = metadata?.retrievedChunks;
+
+  if (!Array.isArray(retrievedChunks)) {
+    return [];
+  }
+
+  return retrievedChunks.filter(
+    (chunk): chunk is MockRetrievedChunk =>
+      typeof chunk === "object" &&
+      chunk !== null &&
+      typeof (chunk as MockRetrievedChunk).documentTitle === "string" &&
+      typeof (chunk as MockRetrievedChunk).chunkIndex === "number" &&
+      typeof (chunk as MockRetrievedChunk).content === "string",
+  );
+}
+
 export const mockAiProvider: AiProvider = {
   id: "mock",
   name: "Local mock provider",
   defaultModel: MOCK_MODEL,
   async generate(request: AiGenerateRequest): Promise<AiGenerateResponse> {
     const lastUserMessage = getLastUserMessage(request.messages);
-    const content = createMockAssistantResponse(lastUserMessage);
+    const retrievedChunks = getRetrievedChunks(request.metadata);
+    const content = createMockAssistantResponse(lastUserMessage, retrievedChunks);
     const promptTokens = request.messages.reduce(
       (total, message) => total + estimateTokenCount(message.content),
       0,

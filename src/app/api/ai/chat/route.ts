@@ -7,10 +7,36 @@ import {
   evaluateAiUsageGuardrails,
   recordExternalAiUsage,
 } from "@/lib/ai/usage-guardrails";
+import {
+  searchDocumentChunks,
+  type ChunkSearchResult,
+} from "@/lib/documents/chunk-search";
 import type { AiGenerateRequest, AiMessage } from "@/types/ai";
 
 const MAX_MESSAGES = 20;
 const MAX_MESSAGE_LENGTH = 4000;
+const MAX_CHAT_RETRIEVAL_RESULTS = 3;
+const CHAT_SEARCH_STOPWORDS = new Set([
+  "ainda",
+  "como",
+  "com",
+  "das",
+  "dos",
+  "esse",
+  "essa",
+  "este",
+  "esta",
+  "isso",
+  "para",
+  "pela",
+  "pelo",
+  "qual",
+  "quais",
+  "que",
+  "sobre",
+  "uma",
+  "voce",
+]);
 
 export const runtime = "nodejs";
 
@@ -70,6 +96,82 @@ function getFallbackReason(providerId: string, error: unknown): string {
   return `Selected AI provider failed: ${safeMessage}`;
 }
 
+function getLastUserMessage(messages: AiMessage[]): string {
+  return messages.findLast((message) => message.role === "user")?.content ?? "";
+}
+
+function getChatSearchTerms(message: string): string[] {
+  const normalizedMessage = message
+    .toLocaleLowerCase("pt-BR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  const words = normalizedMessage.match(/[a-z0-9_+#.-]{4,}/g) ?? [];
+
+  return Array.from(
+    new Set(words.filter((word) => !CHAT_SEARCH_STOPWORDS.has(word))),
+  ).slice(0, 4);
+}
+
+function toRetrievedChunkMetadata(result: ChunkSearchResult) {
+  return {
+    chunkId: result.chunkId,
+    documentId: result.documentId,
+    documentTitle: result.documentTitle,
+    chunkIndex: result.chunkIndex,
+    content: result.content,
+    score: result.score,
+  };
+}
+
+async function getChatRetrievalMetadata(messages: AiMessage[]) {
+  const searchTerms = getChatSearchTerms(getLastUserMessage(messages));
+
+  if (searchTerms.length === 0) {
+    return {
+      retrieval: {
+        mode: "lexical-local",
+        queryTerms: searchTerms,
+        resultCount: 0,
+      },
+      retrievedChunks: [],
+    };
+  }
+
+  const resultsByChunkId = new Map<string, ChunkSearchResult>();
+
+  for (const term of searchTerms) {
+    const results = await searchDocumentChunks(term, {
+      maxResults: MAX_CHAT_RETRIEVAL_RESULTS,
+    });
+
+    for (const result of results) {
+      const existingResult = resultsByChunkId.get(result.chunkId);
+
+      if (!existingResult || result.score > existingResult.score) {
+        resultsByChunkId.set(result.chunkId, result);
+      }
+    }
+
+    if (resultsByChunkId.size >= MAX_CHAT_RETRIEVAL_RESULTS) {
+      break;
+    }
+  }
+
+  const retrievedChunks = Array.from(resultsByChunkId.values())
+    .sort((a, b) => b.score - a.score || a.chunkIndex - b.chunkIndex)
+    .slice(0, MAX_CHAT_RETRIEVAL_RESULTS)
+    .map(toRetrievedChunkMetadata);
+
+  return {
+    retrieval: {
+      mode: "lexical-local",
+      queryTerms: searchTerms,
+      resultCount: retrievedChunks.length,
+    },
+    retrievedChunks,
+  };
+}
+
 export async function POST(request: Request) {
   let body: ChatRequestBody;
 
@@ -91,10 +193,22 @@ export async function POST(request: Request) {
   const provider = getDefaultAiProvider();
   const selectionNote = getAiProviderSelectionNote();
   const guardrailDecision = evaluateAiUsageGuardrails(messages, provider.id);
+  const retrievalMetadata = await getChatRetrievalMetadata(messages).catch(
+    (error) => ({
+      retrieval: {
+        mode: "lexical-local",
+        resultCount: 0,
+        error:
+          error instanceof Error ? error.message : "Busca lexical indisponivel.",
+      },
+      retrievedChunks: [],
+    }),
+  );
   const generateRequest: AiGenerateRequest = {
     messages,
     maxTokens: guardrailDecision.maxOutputTokens,
     metadata: {
+      ...retrievalMetadata,
       promptTokensEstimate: guardrailDecision.promptTokensEstimate,
     },
   };
@@ -125,6 +239,7 @@ export async function POST(request: Request) {
           projectedTokens: guardrailDecision.projectedTokens,
           projectedCostUsd: guardrailDecision.projectedCostUsd,
         },
+        retrieval: retrievalMetadata.retrieval,
       },
     });
   }
@@ -147,6 +262,7 @@ export async function POST(request: Request) {
           projectedCostUsd: guardrailDecision.projectedCostUsd,
           dailyUsage: usageSnapshot,
         },
+        retrieval: retrievalMetadata.retrieval,
       },
     });
   } catch (error) {
@@ -173,6 +289,7 @@ export async function POST(request: Request) {
           projectedTokens: guardrailDecision.projectedTokens,
           projectedCostUsd: guardrailDecision.projectedCostUsd,
         },
+        retrieval: retrievalMetadata.retrieval,
       },
     });
   }
