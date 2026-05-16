@@ -1,6 +1,6 @@
 # Embeddings v0.1-beta
 
-Status: recuperação híbrida observável e avaliável após TASK 031.
+Status: recuperação híbrida observável e avaliada por dataset versionado após TASK 032.
 
 ## O que existe
 
@@ -14,6 +14,7 @@ Status: recuperação híbrida observável e avaliável após TASK 031.
 - Botão "Gerar embeddings" em `/workspace/documents`.
 - Bloco de diagnóstico no chat para respostas com metadados de recuperação.
 - Eval manual em `/workspace/documents` para validar o topo do ranking híbrido.
+- Dataset padrão versionado em `src/lib/documents/retrieval-eval-dataset.json`.
 
 ## Banco usado
 
@@ -65,3 +66,4 @@ Ela ainda não substitui embeddings reais de OpenAI ou outro provider.
 - Na TASK 029, uma fonte temporária com embedding foi recuperada por `/api/documents/vector-search`; o chat respondeu em modo híbrido com score lexical e similaridade vetorial; a fonte foi removida ao final.
 - Na TASK 030, a UI de chat exibiu `hybrid-local · hybrid-lexical-vector-v1`, contagens lexical/vetorial e termos usados em uma resposta temporária; a conversa e a fonte temporária foram limpas ao final.
 - Na TASK 031, uma fonte temporária com embedding foi avaliada pelo novo eval manual e passou com o chunk esperado no topo; a fonte foi removida ao final.
+- Na TASK 032, fontes temporárias compatíveis com o dataset padrão foram criadas, receberam embeddings mock, o dataset passou 3/3 e as fontes foram removidas ao final.

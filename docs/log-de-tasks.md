@@ -42,4 +42,5 @@
 - TASK 029 - Concluída: recuperação híbrida lexical + vetorial implementada com função pgvector, rota protegida de busca vetorial, chat híbrido e validação em produção.
 - TASK 030 - Concluída: observabilidade da recuperação no chat implementada com metadata persistida e bloco visual por resposta mostrando modo, ranking, contagens lexical/vetorial e termos usados.
 - TASK 031 - Concluída: eval manual de recuperação implementado com rota protegida, UI em documentos, reuso do ranking híbrido e validação de topo do ranking.
-- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto, chunks, busca lexical ranqueada, embeddings mock em pgvector, recuperação híbrida no chat mock, diagnóstico visual da recuperação e eval manual.
+- TASK 032 - Concluída: dataset versionado de evals de recuperação implementado com arquivo JSON padrão, execução via API/UI e validação em produção.
+- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto, chunks, busca lexical ranqueada, embeddings mock em pgvector, recuperação híbrida no chat mock, diagnóstico visual da recuperação, eval manual e dataset padrão de evals.

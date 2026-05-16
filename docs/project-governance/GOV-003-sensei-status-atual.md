@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-16
-- Fase: v0.1-beta com recuperação híbrida lexical + vetorial observável e avaliável
-- Última task concluída: TASK 031
-- Checkpoint atual: recuperação híbrida pode ser inspecionada no chat e validada por eval manual
-- Próxima task: decidir entre embeddings reais, upload/parsing ou dataset versionado de evals
+- Fase: v0.1-beta com recuperação híbrida lexical + vetorial observável e avaliada por dataset versionado
+- Última task concluída: TASK 032
+- Checkpoint atual: recuperação híbrida pode ser inspecionada no chat, validada manualmente e testada contra dataset padrão versionado
+- Próxima task: decidir entre embeddings reais, upload/parsing ou ampliar dataset de evals
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -61,6 +61,7 @@
 - TASK 029 — Recuperação híbrida lexical + vetorial
 - TASK 030 — Observabilidade da recuperação no chat
 - TASK 031 — Eval manual de recuperação
+- TASK 032 — Dataset versionado de evals de recuperação
 
 ## Bloqueios
 
@@ -164,6 +165,7 @@
 - A recuperação do chat combina resultados lexicais e vetoriais quando há embeddings prontos.
 - A UI do chat exibe o diagnóstico da recuperação por mensagem do assistente quando os metadados estão disponíveis.
 - A UI de documentos possui eval manual para validar se uma pergunta recupera a fonte esperada no topo.
+- A UI de documentos pode rodar o dataset padrão versionado de evals de recuperação.
 - Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -429,11 +431,25 @@
 - Validação em produção: uma fonte temporária foi criada, recebeu embedding mock, passou no eval manual e foi removida ao final.
 - Dataset versionado de evals, thresholds avançados, avaliação por LLM, embeddings reais e upload/parsing continuam fora do escopo.
 
+## Dataset Versionado de Evals de Recuperação
+
+- TASK 032 criou `src/lib/documents/retrieval-eval-dataset.json`.
+- Dataset inicial: `retrieval-evals-v1`.
+- Casos padrão iniciais cobrem SQL window functions, dbt incremental models e Airflow DAG retry.
+- `/api/documents/retrieval-evals` agora aceita `useDefaultDataset: true`.
+- POST vazio na rota roda o dataset padrão.
+- GET da rota expõe metadados do dataset e exemplos de uso.
+- `/workspace/documents` ganhou botão "Rodar dataset padrão".
+- A UI exibe resumo `passou/total`, versão do dataset e resultados por caso.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção: fontes temporárias compatíveis com o dataset foram criadas, embeddings mock gerados, o dataset padrão passou 3/3 e as fontes temporárias foram removidas ao final.
+- Ampliação do dataset, fixtures permanentes de fonte, thresholds avançados, embeddings reais e upload/parsing continuam fora do escopo.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: decidir próximo incremento após eval manual de recuperação.
+- Próxima implementação planejada: decidir próximo incremento após dataset versionado de evals.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -448,4 +464,4 @@
 
 ## Próxima ação recomendada
 
-Escolher entre embeddings reais, upload/parsing ou dataset versionado de evals.
+Escolher entre embeddings reais, upload/parsing ou ampliar dataset de evals.

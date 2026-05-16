@@ -5,6 +5,7 @@ import {
   searchHybridDocumentChunks,
   type HybridChunkSearchResult,
 } from "@/lib/documents/hybrid-search";
+import retrievalEvalDataset from "@/lib/documents/retrieval-eval-dataset.json";
 import { getPrivateAccessResponse, hasPrivateAccess } from "@/lib/private-access";
 
 const MAX_EVAL_CASES = 10;
@@ -30,6 +31,7 @@ type RetrievalEvalCase = {
 type RetrievalEvalRequestBody = {
   cases?: unknown;
   maxResults?: unknown;
+  useDefaultDataset?: unknown;
 };
 
 function normalizeComparisonText(value: string): string {
@@ -101,6 +103,13 @@ function getMaxResults(value: unknown): number {
   }
 
   return Math.min(Math.max(value, 1), 8);
+}
+
+function getDefaultEvalCases(): RetrievalEvalCase[] {
+  return retrievalEvalDataset.cases
+    .slice(0, MAX_EVAL_CASES)
+    .map(toEvalCase)
+    .filter((testCase): testCase is RetrievalEvalCase => Boolean(testCase));
 }
 
 function matchesExpectedTitle(
@@ -190,8 +199,15 @@ export async function GET(request: Request) {
 
   return Response.json({
     available: true,
+    dataset: {
+      version: retrievalEvalDataset.version,
+      description: retrievalEvalDataset.description,
+      maxResults: retrievalEvalDataset.maxResults,
+      caseCount: retrievalEvalDataset.cases.length,
+      cases: retrievalEvalDataset.cases,
+    },
     description:
-      "POST cases para validar se a recuperacao hibrida retorna o chunk esperado no topo.",
+      "POST cases ou useDefaultDataset=true para validar se a recuperacao hibrida retorna o chunk esperado no topo.",
     example: {
       cases: [
         {
@@ -212,10 +228,12 @@ export async function POST(request: Request) {
     return getPrivateAccessResponse();
   }
 
-  let body: RetrievalEvalRequestBody;
+  let body: RetrievalEvalRequestBody = {};
 
   try {
-    body = (await request.json()) as RetrievalEvalRequestBody;
+    const rawBody = await request.text();
+
+    body = rawBody ? (JSON.parse(rawBody) as RetrievalEvalRequestBody) : {};
   } catch {
     return Response.json(
       { available: false, error: "JSON invalido.", results: [] },
@@ -223,17 +241,21 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!Array.isArray(body.cases)) {
+  const useDefaultDataset = body.useDefaultDataset === true || !body.cases;
+
+  if (!useDefaultDataset && !Array.isArray(body.cases)) {
     return Response.json(
       { available: false, error: "cases obrigatorio.", results: [] },
       { status: 400 },
     );
   }
 
-  const cases = body.cases
-    .slice(0, MAX_EVAL_CASES)
-    .map(toEvalCase)
-    .filter((testCase): testCase is RetrievalEvalCase => Boolean(testCase));
+  const cases = useDefaultDataset
+    ? getDefaultEvalCases()
+    : (body.cases as unknown[])
+        .slice(0, MAX_EVAL_CASES)
+        .map(toEvalCase)
+        .filter((testCase): testCase is RetrievalEvalCase => Boolean(testCase));
 
   if (cases.length === 0) {
     return Response.json(
@@ -243,7 +265,9 @@ export async function POST(request: Request) {
   }
 
   try {
-    const maxResults = getMaxResults(body.maxResults);
+    const maxResults = getMaxResults(
+      body.maxResults ?? retrievalEvalDataset.maxResults,
+    );
     const results = await Promise.all(
       cases.map((testCase) => runEvalCase(testCase, maxResults)),
     );
@@ -251,6 +275,12 @@ export async function POST(request: Request) {
 
     return Response.json({
       available: true,
+      dataset: useDefaultDataset
+        ? {
+            version: retrievalEvalDataset.version,
+            description: retrievalEvalDataset.description,
+          }
+        : null,
       maxResults,
       summary: {
         total: results.length,

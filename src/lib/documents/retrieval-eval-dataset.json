@@ -1,0 +1,28 @@
+{
+  "version": "retrieval-evals-v1",
+  "description": "Casos base para validar o topo da recuperacao hibrida do SENSEI.",
+  "maxResults": 3,
+  "cases": [
+    {
+      "name": "SQL window functions",
+      "query": "Explique window functions para analytics",
+      "expectedDocumentTitle": "SQL",
+      "expectedContentIncludes": "window functions",
+      "expectedChunkIndex": 0
+    },
+    {
+      "name": "dbt incremental models",
+      "query": "Como funcionam modelos incrementais no dbt",
+      "expectedDocumentTitle": "dbt",
+      "expectedContentIncludes": "incremental",
+      "expectedChunkIndex": 0
+    },
+    {
+      "name": "Airflow DAG retry",
+      "query": "O que observar em retries de DAG no Airflow",
+      "expectedDocumentTitle": "Airflow",
+      "expectedContentIncludes": "retry",
+      "expectedChunkIndex": 0
+    }
+  ]
+}

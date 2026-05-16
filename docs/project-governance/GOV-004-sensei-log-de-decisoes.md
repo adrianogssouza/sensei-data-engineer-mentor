@@ -480,3 +480,15 @@ Antes de criar dataset versionado, embeddings reais ou upload/parsing, o projeto
 
 Impacto:
 A lógica híbrida foi extraída para `src/lib/documents/hybrid-search.ts` e reutilizada pelo chat. A rota protegida `/api/documents/retrieval-evals` aceita casos manuais com pergunta, título esperado e trecho esperado, retornando passou/falhou e o resultado do topo. A tela `/workspace/documents` ganhou seção para rodar um eval manual. A produção foi validada com fonte temporária, embedding mock, eval aprovado e limpeza final.
+
+---
+
+### DEC-042 — Dataset versionado antes de embeddings reais
+
+TASK 032 criou um dataset padrão de evals de recuperação.
+
+Motivo:
+Antes de trocar o mecanismo de embeddings ou adicionar upload/parsing, o projeto precisa de uma referência repetível para detectar regressões no ranking híbrido. Um dataset pequeno em JSON mantém a validação versionada no Git sem criar schema novo.
+
+Impacto:
+Foi criado `src/lib/documents/retrieval-eval-dataset.json` com versão `retrieval-evals-v1` e casos padrão de SQL, dbt e Airflow. A rota `/api/documents/retrieval-evals` roda o dataset quando recebe `useDefaultDataset: true` ou POST vazio, e a UI ganhou botão "Rodar dataset padrão" com resumo e resultado por caso. A produção foi validada com fontes temporárias compatíveis com o dataset, embeddings mock, execução 3/3 e limpeza final.
