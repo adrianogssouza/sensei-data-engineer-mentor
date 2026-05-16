@@ -408,3 +408,15 @@ Antes de embeddings, pgvector e RAG semântico, o projeto precisa validar a expe
 
 Impacto:
 A lógica de busca em chunks foi extraída para um helper server compartilhado. A rota `/api/ai/chat` agora extrai termos da última mensagem do usuário, consulta `document_chunks` e envia os trechos encontrados ao provider mock por metadados internos. Quando há resultado, o mock responde citando a fonte, o índice do chunk e o trecho recuperado. Embeddings, pgvector, RAG semântico, streaming e providers pagos continuam fora do escopo.
+
+---
+
+### DEC-036 — Ranking lexical v2 antes de embeddings
+
+TASK 026 melhorou o ranking lexical/local.
+
+Motivo:
+Antes de introduzir embeddings ou pgvector, o projeto precisa tornar a recuperação lexical atual mais confiável e rastreável. Isso reduz incerteza no comportamento do chat com fontes e cria uma base de comparação simples para a futura busca vetorial.
+
+Impacto:
+O helper de busca em chunks agora extrai termos relevantes, consulta frase e termos, consolida candidatos por chunk e calcula um score simples com `phraseMatches`, `termMatches` e `matchedTerms`. A rota de documentos e a rota de chat compartilham a mesma estratégia. O chat mock exibe score lexical e termos encontrados quando responde com fonte. Embeddings, pgvector e RAG semântico continuam fora do escopo.

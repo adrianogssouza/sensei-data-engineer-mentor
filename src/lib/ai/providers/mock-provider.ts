@@ -40,7 +40,11 @@ function getRetrievedChunks(metadata: Record<string, unknown> | undefined) {
       chunk !== null &&
       typeof (chunk as MockRetrievedChunk).documentTitle === "string" &&
       typeof (chunk as MockRetrievedChunk).chunkIndex === "number" &&
-      typeof (chunk as MockRetrievedChunk).content === "string",
+      typeof (chunk as MockRetrievedChunk).content === "string" &&
+      ((chunk as MockRetrievedChunk).matchedTerms === undefined ||
+        Array.isArray((chunk as MockRetrievedChunk).matchedTerms)) &&
+      ((chunk as MockRetrievedChunk).score === undefined ||
+        typeof (chunk as MockRetrievedChunk).score === "number"),
   );
 }
 

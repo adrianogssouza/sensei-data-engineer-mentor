@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 025
-- Checkpoint: busca lexical/local conectada ao chat mock e validada em produção
+- Task atual concluída: TASK 026
+- Checkpoint: ranking lexical/local v2 validado no chat mock
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: decidir próximo incremento após recuperação lexical no chat mock
+- Próxima implementação definida: preparar próximo incremento da v0.1-beta sem pular validações
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher entre melhorar ranking lexical, preparar embeddings ou iniciar upload/parsing
+- escolher entre fundação de embeddings/pgvector ou início de upload/parsing
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex

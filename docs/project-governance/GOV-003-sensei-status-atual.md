@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-16
-- Fase: v0.1-beta com busca lexical/local conectada ao chat mock
-- Última task concluída: TASK 025
-- Checkpoint atual: chat mock usa trechos de `document_chunks` quando encontra termos da pergunta
-- Próxima task: decidir próximo incremento após validação da recuperação lexical no chat mock
+- Fase: v0.1-beta com busca lexical/local ranqueada no chat mock
+- Última task concluída: TASK 026
+- Checkpoint atual: chat mock usa ranking lexical v2 com termos encontrados e score simples
+- Próxima task: preparar fundação de embeddings/pgvector ou iniciar upload/parsing
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -55,6 +55,7 @@
 - TASK 023 — Chunks simples de conteúdo
 - TASK 024 — Busca lexical/local sobre chunks
 - TASK 025 — Busca lexical/local no chat mock
+- TASK 026 — Ranking lexical/local v2
 
 ## Bloqueios
 
@@ -122,6 +123,7 @@
 - Chat usa API interna de IA e API interna de histórico quando Supabase está configurado.
 - Sem Supabase configurado, o fallback local via `localStorage` permanece operacional.
 - O provider mock pode usar trechos recuperados por busca lexical/local quando há fontes cadastradas.
+- O ranking lexical considera frase, termos relevantes, contagens e score simples.
 - Não há streaming, RAG, busca semântica ou persistência de uso.
 
 ## Persistência Local do Chat
@@ -152,6 +154,7 @@
 - Anthropic e OpenAI estão planejados nos tipos, mas não estão ativos.
 - Nenhum SDK de Anthropic/OpenAI foi instalado.
 - O provider mock recebe trechos recuperados por `document_chunks` via metadados da rota `/api/ai/chat`.
+- Os metadados de recuperação incluem termos buscados, ranking usado e quantidade de resultados.
 - Não há RAG, embeddings, upload, pgvector, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -318,11 +321,25 @@
   - `/api/ai/chat` respondeu com "Local mock com fontes" e citou a fonte temporária;
   - a fonte temporária foi removida ao final.
 
+## Ranking Lexical/Local v2
+
+- TASK 026 melhorou a estratégia de recuperação lexical sem adicionar embeddings, pgvector ou dependências.
+- A busca compartilhada em `src/lib/documents/chunk-search.ts` agora extrai termos relevantes da pergunta.
+- A recuperação consulta a frase normalizada e também termos individuais, juntando candidatos por chunk.
+- O score considera:
+  - ocorrência de frase;
+  - quantidade de termos encontrados;
+  - total de ocorrências dos termos.
+- Os resultados retornam `matchedTerms`, `phraseMatches`, `termMatches` e `score`.
+- `/api/documents/search` e `/api/ai/chat` usam a mesma lógica compartilhada.
+- O chat mock mostra score lexical e termos encontrados quando responde com fonte.
+- A validação em produção confirmou que uma pergunta com múltiplos termos recuperou o chunk esperado e exibiu score/termos no chat.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: decidir entre melhorar ranking lexical, preparar embeddings ou iniciar upload/parsing.
+- Próxima implementação planejada: preparar fundação de embeddings/pgvector ou iniciar upload/parsing.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -333,8 +350,8 @@
 - Fontes e repo devem continuar sincronizados.
 - Auth foi despriorizado como fluxo principal; evitar recolocar login obrigatório sem nova decisão documentada.
 - Governança documental sincronizada antes da TASK 010.
-- Retomar na próxima sessão decidindo a próxima task incremental.
+- Retomar na próxima sessão escolhendo o próximo incremento da v0.1-beta.
 
 ## Próxima ação recomendada
 
-Escolher a próxima task: melhorar ranking lexical, preparar embeddings ou iniciar upload/parsing.
+Escolher a próxima task: fundação de embeddings/pgvector ou início de upload/parsing.

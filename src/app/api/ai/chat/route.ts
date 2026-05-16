@@ -8,6 +8,7 @@ import {
   recordExternalAiUsage,
 } from "@/lib/ai/usage-guardrails";
 import {
+  extractChunkSearchTerms,
   searchDocumentChunks,
   type ChunkSearchResult,
 } from "@/lib/documents/chunk-search";
@@ -16,27 +17,6 @@ import type { AiGenerateRequest, AiMessage } from "@/types/ai";
 const MAX_MESSAGES = 20;
 const MAX_MESSAGE_LENGTH = 4000;
 const MAX_CHAT_RETRIEVAL_RESULTS = 3;
-const CHAT_SEARCH_STOPWORDS = new Set([
-  "ainda",
-  "como",
-  "com",
-  "das",
-  "dos",
-  "esse",
-  "essa",
-  "este",
-  "esta",
-  "isso",
-  "para",
-  "pela",
-  "pelo",
-  "qual",
-  "quais",
-  "que",
-  "sobre",
-  "uma",
-  "voce",
-]);
 
 export const runtime = "nodejs";
 
@@ -100,18 +80,6 @@ function getLastUserMessage(messages: AiMessage[]): string {
   return messages.findLast((message) => message.role === "user")?.content ?? "";
 }
 
-function getChatSearchTerms(message: string): string[] {
-  const normalizedMessage = message
-    .toLocaleLowerCase("pt-BR")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-  const words = normalizedMessage.match(/[a-z0-9_+#.-]{4,}/g) ?? [];
-
-  return Array.from(
-    new Set(words.filter((word) => !CHAT_SEARCH_STOPWORDS.has(word))),
-  ).slice(0, 4);
-}
-
 function toRetrievedChunkMetadata(result: ChunkSearchResult) {
   return {
     chunkId: result.chunkId,
@@ -120,11 +88,15 @@ function toRetrievedChunkMetadata(result: ChunkSearchResult) {
     chunkIndex: result.chunkIndex,
     content: result.content,
     score: result.score,
+    matchedTerms: result.matchedTerms,
+    phraseMatches: result.phraseMatches,
+    termMatches: result.termMatches,
   };
 }
 
 async function getChatRetrievalMetadata(messages: AiMessage[]) {
-  const searchTerms = getChatSearchTerms(getLastUserMessage(messages));
+  const lastUserMessage = getLastUserMessage(messages);
+  const searchTerms = extractChunkSearchTerms(lastUserMessage);
 
   if (searchTerms.length === 0) {
     return {
@@ -137,35 +109,17 @@ async function getChatRetrievalMetadata(messages: AiMessage[]) {
     };
   }
 
-  const resultsByChunkId = new Map<string, ChunkSearchResult>();
-
-  for (const term of searchTerms) {
-    const results = await searchDocumentChunks(term, {
+  const retrievedChunks = (
+    await searchDocumentChunks(lastUserMessage, {
       maxResults: MAX_CHAT_RETRIEVAL_RESULTS,
-    });
-
-    for (const result of results) {
-      const existingResult = resultsByChunkId.get(result.chunkId);
-
-      if (!existingResult || result.score > existingResult.score) {
-        resultsByChunkId.set(result.chunkId, result);
-      }
-    }
-
-    if (resultsByChunkId.size >= MAX_CHAT_RETRIEVAL_RESULTS) {
-      break;
-    }
-  }
-
-  const retrievedChunks = Array.from(resultsByChunkId.values())
-    .sort((a, b) => b.score - a.score || a.chunkIndex - b.chunkIndex)
-    .slice(0, MAX_CHAT_RETRIEVAL_RESULTS)
-    .map(toRetrievedChunkMetadata);
+    })
+  ).map(toRetrievedChunkMetadata);
 
   return {
     retrieval: {
       mode: "lexical-local",
       queryTerms: searchTerms,
+      ranking: "phrase-and-term-score-v2",
       resultCount: retrievedChunks.length,
     },
     retrievedChunks,
