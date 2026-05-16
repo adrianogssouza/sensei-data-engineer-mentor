@@ -1,0 +1,21 @@
+{
+  "version": "retrieval-eval-fixtures-v1",
+  "description": "Fontes padrao para rodar o dataset retrieval-evals-v1.",
+  "documents": [
+    {
+      "title": "SQL eval fixture",
+      "sourcePath": "sensei-fixture://retrieval/sql-window-functions",
+      "content": "SQL window functions permitem calcular metricas de analytics por particao sem colapsar linhas. Use window functions com partition by e order by para comparar valores dentro de uma janela e responder perguntas analiticas."
+    },
+    {
+      "title": "dbt eval fixture",
+      "sourcePath": "sensei-fixture://retrieval/dbt-incremental-models",
+      "content": "dbt incremental models processam apenas dados novos ou alterados. Um modelo incremental reduz custo e tempo quando configurado com chave unica, estrategia adequada e filtros consistentes."
+    },
+    {
+      "title": "Airflow eval fixture",
+      "sourcePath": "sensei-fixture://retrieval/airflow-dag-retry",
+      "content": "Airflow DAG retry deve ser observado quando tarefas falham temporariamente. Configure retry, retry delay e monitore logs para entender falhas de orquestracao."
+    }
+  ]
+}

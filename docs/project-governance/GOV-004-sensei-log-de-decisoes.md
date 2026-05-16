@@ -492,3 +492,15 @@ Antes de trocar o mecanismo de embeddings ou adicionar upload/parsing, o projeto
 
 Impacto:
 Foi criado `src/lib/documents/retrieval-eval-dataset.json` com versão `retrieval-evals-v1` e casos padrão de SQL, dbt e Airflow. A rota `/api/documents/retrieval-evals` roda o dataset quando recebe `useDefaultDataset: true` ou POST vazio, e a UI ganhou botão "Rodar dataset padrão" com resumo e resultado por caso. A produção foi validada com fontes temporárias compatíveis com o dataset, embeddings mock, execução 3/3 e limpeza final.
+
+---
+
+### DEC-043 — Fixtures versionadas antes de embeddings reais
+
+TASK 033 criou fontes fixture para o dataset de evals.
+
+Motivo:
+O dataset versionado só é repetível se as fontes esperadas também puderem ser recriadas de forma controlada. Antes de avançar para embeddings reais ou upload/parsing, o projeto precisa de fixtures carregáveis que eliminem cadastro manual durante QA.
+
+Impacto:
+Foi criado `src/lib/documents/retrieval-eval-fixtures.json` com versão `retrieval-eval-fixtures-v1` e fontes padrão para SQL, dbt e Airflow. A rota protegida `/api/documents/retrieval-fixtures` recria essas fontes no Supabase de forma idempotente, com chunks prontos e embeddings pendentes. A tela `/workspace/documents` ganhou o botão "Carregar fontes de eval". A produção foi validada carregando fixtures, gerando embeddings mock e rodando o dataset padrão com resultado 3/3.

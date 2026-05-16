@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 032
-- Checkpoint: dataset versionado de evals de recuperação implementado e validado
+- Task atual concluída: TASK 033
+- Checkpoint: fixtures versionadas de fontes para evals implementadas e validadas
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: decidir próximo incremento após dataset versionado de evals
+- Próxima implementação definida: decidir próximo incremento após fixtures versionadas de evals
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher entre embeddings reais, upload/parsing ou ampliar dataset de evals
+- escolher entre embeddings reais, upload/parsing ou ampliar dataset/fixtures de evals
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex

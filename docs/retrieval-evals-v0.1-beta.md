@@ -1,13 +1,15 @@
 # Retrieval Evals v0.1-beta
 
-Status: dataset versionado de evals criado na TASK 032.
+Status: dataset e fixtures versionados criados até TASK 033.
 
 ## O que existe
 
 - Rota protegida `/api/documents/retrieval-evals`.
 - UI em `/workspace/documents` para rodar um eval manual.
 - Dataset padrão versionado em `src/lib/documents/retrieval-eval-dataset.json`.
+- Fixtures versionadas em `src/lib/documents/retrieval-eval-fixtures.json`.
 - Botão "Rodar dataset padrão" em `/workspace/documents`.
+- Botão "Carregar fontes de eval" em `/workspace/documents`.
 - Reuso do mesmo ranking híbrido usado pelo chat.
 - Saída com passou/falhou, resultado do topo, score híbrido e metadados de recuperação.
 
@@ -27,6 +29,10 @@ informados.
 Quando a rota recebe `useDefaultDataset: true` ou um POST sem corpo, ela roda o
 dataset padrão versionado.
 
+Para preparar as fontes do dataset, use `POST /api/documents/retrieval-fixtures`
+ou o botão "Carregar fontes de eval". Depois gere embeddings mock e rode o
+dataset padrão.
+
 ## Dataset atual
 
 - Versão: `retrieval-evals-v1`
@@ -34,6 +40,14 @@ dataset padrão versionado.
   - SQL window functions
   - dbt incremental models
   - Airflow DAG retry
+
+## Fixtures atuais
+
+- Versão: `retrieval-eval-fixtures-v1`
+- Fontes:
+  - SQL eval fixture
+  - dbt eval fixture
+  - Airflow eval fixture
 
 ## Exemplo de payload
 
@@ -65,11 +79,11 @@ dataset padrão versionado.
 - Até 10 casos por chamada.
 - Até 8 resultados recuperados por caso.
 - Eval não persiste histórico.
-- O dataset depende de existirem fontes compatíveis cadastradas no Supabase.
+- O dataset depende de fontes compatíveis no Supabase, mas elas podem ser carregadas pelas fixtures versionadas.
 - Não há nota agregada por categoria, threshold semântico ou avaliação por LLM.
 
 ## Validação feita
 
 - `pnpm lint` passou.
 - `pnpm build` passou.
-- Produção foi validada com fontes temporárias compatíveis com o dataset, embeddings mock, dataset aprovado 3/3 e limpeza final.
+- Produção foi validada carregando fixtures, gerando embeddings mock e rodando o dataset padrão com resultado 3/3.

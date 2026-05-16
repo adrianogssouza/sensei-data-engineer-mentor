@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-16
-- Fase: v0.1-beta com recuperação híbrida lexical + vetorial observável e avaliada por dataset versionado
-- Última task concluída: TASK 032
-- Checkpoint atual: recuperação híbrida pode ser inspecionada no chat, validada manualmente e testada contra dataset padrão versionado
-- Próxima task: decidir entre embeddings reais, upload/parsing ou ampliar dataset de evals
+- Fase: v0.1-beta com recuperação híbrida lexical + vetorial observável e avaliada por dataset/fixtures versionados
+- Última task concluída: TASK 033
+- Checkpoint atual: recuperação híbrida pode ser inspecionada no chat e testada contra dataset padrão com fontes fixture carregáveis
+- Próxima task: decidir entre embeddings reais, upload/parsing ou ampliar dataset/fixtures de evals
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -62,6 +62,7 @@
 - TASK 030 — Observabilidade da recuperação no chat
 - TASK 031 — Eval manual de recuperação
 - TASK 032 — Dataset versionado de evals de recuperação
+- TASK 033 — Fixtures versionadas de fontes para evals
 
 ## Bloqueios
 
@@ -166,6 +167,7 @@
 - A UI do chat exibe o diagnóstico da recuperação por mensagem do assistente quando os metadados estão disponíveis.
 - A UI de documentos possui eval manual para validar se uma pergunta recupera a fonte esperada no topo.
 - A UI de documentos pode rodar o dataset padrão versionado de evals de recuperação.
+- A UI de documentos pode carregar fontes fixture versionadas para rodar o dataset padrão sem cadastro manual.
 - Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -445,11 +447,25 @@
 - Validação em produção: fontes temporárias compatíveis com o dataset foram criadas, embeddings mock gerados, o dataset padrão passou 3/3 e as fontes temporárias foram removidas ao final.
 - Ampliação do dataset, fixtures permanentes de fonte, thresholds avançados, embeddings reais e upload/parsing continuam fora do escopo.
 
+## Fixtures Versionadas de Evals
+
+- TASK 033 criou `src/lib/documents/retrieval-eval-fixtures.json`.
+- Fixture inicial: `retrieval-eval-fixtures-v1`.
+- Rota protegida `/api/documents/retrieval-fixtures` criada.
+- `GET /api/documents/retrieval-fixtures` expõe metadados das fixtures.
+- `POST /api/documents/retrieval-fixtures` recria idempotentemente as fontes fixture no Supabase.
+- A criação usa `source_path` `sensei-fixture://...` e metadata `fixture = retrieval-evals`.
+- `/workspace/documents` ganhou botão "Carregar fontes de eval".
+- O fluxo esperado é carregar fixtures, gerar embeddings mock e rodar dataset padrão.
+- Produção redeployada e validada com Basic Auth ativo.
+- Validação em produção: fixtures foram carregadas, embeddings mock gerados e o dataset padrão passou 3/3.
+- Embeddings reais, upload/parsing, thresholds avançados e ampliação do dataset continuam fora do escopo.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: decidir próximo incremento após dataset versionado de evals.
+- Próxima implementação planejada: decidir próximo incremento após fixtures versionadas de evals.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -464,4 +480,4 @@
 
 ## Próxima ação recomendada
 
-Escolher entre embeddings reais, upload/parsing ou ampliar dataset de evals.
+Escolher entre embeddings reais, upload/parsing ou ampliar dataset/fixtures de evals.

@@ -16,10 +16,10 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta com recuperação híbrida lexical + vetorial observável e avaliada por dataset versionado
-- Última task concluída: TASK 032
-- Checkpoint atual: recuperação híbrida pode ser inspecionada no chat, validada manualmente e testada contra dataset padrão versionado
-- Próxima task: decidir entre preparar embeddings reais, upload/parsing ou ampliar dataset de evals
+- Fase atual: v0.1-beta com recuperação híbrida lexical + vetorial observável e avaliada por dataset/fixtures versionados
+- Última task concluída: TASK 033
+- Checkpoint atual: recuperação híbrida pode ser inspecionada no chat e testada contra dataset padrão com fontes fixture carregáveis
+- Próxima task: decidir entre preparar embeddings reais, upload/parsing ou ampliar dataset/fixtures de evals
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
@@ -38,7 +38,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Observabilidade da recuperação: mensagens do assistente podem exibir modo, ranking, contagens lexical/vetorial e termos usados
 - Evals de recuperação: `/api/documents/retrieval-evals` e UI em `/workspace/documents` validam o topo do ranking híbrido
 - Dataset de evals: `src/lib/documents/retrieval-eval-dataset.json` define casos padrão versionados
-- Próxima implementação planejada: decidir próximo incremento após dataset versionado de evals
+- Fixtures de evals: `src/lib/documents/retrieval-eval-fixtures.json` e `/api/documents/retrieval-fixtures` carregam fontes padrão no Supabase
+- Próxima implementação planejada: decidir próximo incremento após fixtures versionadas de evals
 
 ## Objetivo principal 2026
 

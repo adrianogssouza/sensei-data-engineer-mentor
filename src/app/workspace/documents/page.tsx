@@ -97,6 +97,13 @@ type RetrievalEvalApiResponse = {
   results?: RetrievalEvalResult[];
 };
 
+type RetrievalFixturesApiResponse = {
+  available?: boolean;
+  error?: string;
+  fixtureVersion?: string;
+  documentCount?: number;
+};
+
 const SOURCE_TYPE_OPTIONS = [
   { label: "Manual", value: "manual" },
   { label: "URL", value: "url" },
@@ -147,6 +154,8 @@ export default function WorkspaceDocumentsPage() {
   );
   const [isRunningEval, setIsRunningEval] = useState(false);
   const [evalMessage, setEvalMessage] = useState<string | null>(null);
+  const [isLoadingFixtures, setIsLoadingFixtures] = useState(false);
+  const [fixtureMessage, setFixtureMessage] = useState<string | null>(null);
   const [removingDocumentId, setRemovingDocumentId] = useState<string | null>(
     null,
   );
@@ -401,6 +410,34 @@ export default function WorkspaceDocumentsPage() {
     });
   }
 
+  async function handleLoadRetrievalFixtures() {
+    setIsLoadingFixtures(true);
+    setFixtureMessage(null);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch("/api/documents/retrieval-fixtures", {
+        method: "POST",
+      });
+      const payload = (await response.json()) as RetrievalFixturesApiResponse;
+
+      if (!response.ok || !payload.available) {
+        setFixtureMessage(payload.error ?? "Fixtures indisponiveis.");
+        return;
+      }
+
+      setFixtureMessage(
+        `${payload.documentCount ?? 0} fonte(s) de eval carregada(s). ` +
+          `Versao: ${payload.fixtureVersion ?? "fixture"}.`,
+      );
+      await loadDocuments();
+    } catch {
+      setFixtureMessage("Fixtures indisponiveis.");
+    } finally {
+      setIsLoadingFixtures(false);
+    }
+  }
+
   return (
     <div className="space-y-8">
       <div>
@@ -588,6 +625,23 @@ export default function WorkspaceDocumentsPage() {
             Rode uma checagem rápida para confirmar se a pergunta recupera a
             fonte esperada no topo do ranking híbrido.
           </p>
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <button
+            className="border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+            disabled={isLoadingFixtures}
+            onClick={() => void handleLoadRetrievalFixtures()}
+            type="button"
+          >
+            {isLoadingFixtures ? "Carregando..." : "Carregar fontes de eval"}
+          </button>
+
+          {fixtureMessage ? (
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              {fixtureMessage}
+            </p>
+          ) : null}
         </div>
 
         <form
