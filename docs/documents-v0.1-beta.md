@@ -15,6 +15,7 @@ Status: iniciado na TASK 021.
 - Listagem de fontes cadastradas.
 - Remoção de fontes cadastradas.
 - Edição básica de fontes cadastradas.
+- Contadores e filtros por status de ingestão.
 - Geração automática de chunks simples quando há conteúdo bruto.
 - Reprocessamento de chunks por documento a partir de `raw_content`.
 - Busca lexical/local sobre chunks.
@@ -102,6 +103,7 @@ Quando o conteúdo bruto de uma fonte existente é editado:
 - Na TASK 029, uma fonte temporária com embedding foi recuperada por busca vetorial e usada pelo chat em modo híbrido; a fonte foi removida ao final.
 - Na TASK 035, foi adicionada rota protegida e ação de UI para reprocessar uma fonte e regenerar seus chunks a partir do conteúdo bruto salvo.
 - Na TASK 036, foi adicionada edição básica de documento existente com invalidação segura de chunks quando o conteúdo bruto muda.
+- Na TASK 037, foram adicionados contadores e filtros de status para listar fontes prontas, pendentes e que precisam reprocessar.
 
 ## Fora do escopo
 

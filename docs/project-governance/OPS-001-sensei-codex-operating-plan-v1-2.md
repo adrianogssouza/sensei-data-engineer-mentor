@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 036
-- Checkpoint: edição básica de documentos implementada pela UI/API
+- Task atual concluída: TASK 037
+- Checkpoint: filtros e contadores de status de documentos implementados na UI
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: decidir próximo incremento após edição básica de documentos
+- Próxima implementação definida: decidir próximo incremento após filtros/status de documentos
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher entre embeddings reais, parsing avançado/PDF ou melhoria de UX/QA documental
+- escolher entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex

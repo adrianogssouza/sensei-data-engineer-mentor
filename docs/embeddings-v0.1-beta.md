@@ -1,6 +1,6 @@
 # Embeddings v0.1-beta
 
-Status: recuperação híbrida observável e avaliada com edição e reprocessamento de documentos após TASK 036.
+Status: recuperação híbrida observável e avaliada com filtros, edição e reprocessamento de documentos após TASK 037.
 
 ## O que existe
 
@@ -18,6 +18,7 @@ Status: recuperação híbrida observável e avaliada com edição e reprocessam
 - Fixtures versionadas em `src/lib/documents/retrieval-eval-fixtures.json`.
 - Importação textual simples de `.txt`, `.md` e `.markdown` em `/workspace/documents`.
 - Edição básica de documentos em `/workspace/documents`.
+- Filtros de status de documentos em `/workspace/documents`.
 - Reprocessamento de chunks por documento em `/workspace/documents`.
 
 ## Banco usado
@@ -75,3 +76,4 @@ Ela ainda não substitui embeddings reais de OpenAI ou outro provider.
 - Na TASK 034, a UI de documentos passou a importar arquivo textual local para preencher `rawContent`; `pnpm lint`, `pnpm build` e deploy foram validados.
 - Na TASK 035, a UI/API passou a reprocessar documentos, recriando chunks e deixando embeddings pendentes para nova geração.
 - Na TASK 036, editar `rawContent` passou a invalidar chunks antigos e exigir reprocessamento antes de gerar embeddings novamente.
+- Na TASK 037, a UI passou a mostrar contadores e filtros para identificar documentos prontos, pendentes e a reprocessar.

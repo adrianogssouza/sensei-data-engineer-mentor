@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-18
-- Fase: v0.1-beta com upload textual simples, edição de documentos, reprocessamento de chunks e recuperação híbrida observável
-- Última task concluída: TASK 036
-- Checkpoint atual: documentos podem ser cadastrados, editados, importados por `.txt`/`.md`, reprocessados e usados em evals
-- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria de UX/QA documental
+- Fase: v0.1-beta com upload textual simples, edição de documentos, filtros de status, reprocessamento de chunks e recuperação híbrida observável
+- Última task concluída: TASK 037
+- Checkpoint atual: documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados e usados em evals
+- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -66,6 +66,7 @@
 - TASK 034 — Upload textual simples
 - TASK 035 — Reprocessamento de documentos
 - TASK 036 — Edição básica de documentos
+- TASK 037 — Filtros/status de documentos
 
 ## Bloqueios
 
@@ -174,6 +175,7 @@
 - A UI de documentos importa arquivos `.txt`, `.md` e `.markdown` localmente no navegador para preencher o conteúdo bruto.
 - A UI de documentos permite reprocessar uma fonte existente para regenerar seus chunks a partir de `raw_content`.
 - A UI de documentos permite editar título, tipo, referência, notas e conteúdo bruto de uma fonte existente.
+- A UI de documentos mostra contadores e filtros por status de ingestão para orientar QA operacional.
 - Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -501,11 +503,19 @@
 - A tela `/workspace/documents` ganhou botão "Editar", formulário inline, botão "Salvar edição" e aviso para reprocessar chunks.
 - Não houve nova migration, storage físico, parsing de PDF/DOCX/HTML ou embeddings reais nesta task.
 
+## Filtros/Status de Documentos
+
+- TASK 037 adicionou contadores de documentos prontos, pendentes e que precisam reprocessar.
+- A tela `/workspace/documents` ganhou filtros de lista: todos, prontos, pendentes e reprocessar.
+- O filtro `Reprocessar` ajuda a encontrar fontes com `ingestion_status = needs_reprocess` após edição de conteúdo.
+- O filtro `Pendentes` agrupa fontes ainda sem conteúdo/chunks prontos.
+- Não houve nova rota, migration, storage físico, parsing de PDF/DOCX/HTML ou embeddings reais nesta task.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: decidir próximo incremento após edição básica de documentos.
+- Próxima implementação planejada: decidir próximo incremento após filtros/status de documentos.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -520,4 +530,4 @@
 
 ## Próxima ação recomendada
 
-Escolher entre embeddings reais, parsing avançado/PDF ou melhoria de UX/QA documental.
+Escolher entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.

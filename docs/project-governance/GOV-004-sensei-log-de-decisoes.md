@@ -540,3 +540,15 @@ Depois de importar, cadastrar e reprocessar documentos, o usuário precisa corri
 
 Impacto:
 `PUT /api/documents` passou a atualizar título, tipo, referência, notas e `raw_content`. Quando o conteúdo muda, os chunks antigos são removidos e a fonte fica com `ingestion_status = needs_reprocess`, evitando que a busca use trechos desatualizados. A tela `/workspace/documents` ganhou botão "Editar" e formulário inline para salvar alterações. Parsing avançado, storage físico, embeddings reais e RAG semântico completo continuam fora do escopo.
+
+---
+
+### DEC-047 — Status operacional antes de nova capacidade de ingestão
+
+TASK 037 implementou filtros e contadores de status na lista de documentos.
+
+Motivo:
+Depois de adicionar edição e reprocessamento, a tela passou a ter estados operacionais importantes: fontes prontas, pendentes e fontes com conteúdo alterado que precisam reprocessar. Antes de avançar para embeddings reais ou parsing avançado, o usuário precisa conseguir identificar rapidamente o que está pronto para busca/evals e o que exige ação.
+
+Impacto:
+`/workspace/documents` passou a exibir contadores de documentos prontos, pendentes e a reprocessar, além de filtros para todos, prontos, pendentes e reprocessar. A mudança é apenas de UI/QA operacional, sem novas rotas, migrations, storage físico, parsing avançado ou embeddings reais.

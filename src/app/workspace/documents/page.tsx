@@ -114,10 +114,22 @@ type RetrievalFixturesApiResponse = {
   documentCount?: number;
 };
 
+type DocumentStatusFilter = "all" | "ready" | "pending" | "needs_reprocess";
+
 const SOURCE_TYPE_OPTIONS = [
   { label: "Manual", value: "manual" },
   { label: "URL", value: "url" },
   { label: "Arquivo local", value: "file_reference" },
+];
+
+const DOCUMENT_STATUS_FILTERS: Array<{
+  label: string;
+  value: DocumentStatusFilter;
+}> = [
+  { label: "Todos", value: "all" },
+  { label: "Prontos", value: "ready" },
+  { label: "Pendentes", value: "pending" },
+  { label: "Reprocessar", value: "needs_reprocess" },
 ];
 
 const ACCEPTED_TEXT_FILE_EXTENSIONS = [".txt", ".md", ".markdown"];
@@ -187,8 +199,37 @@ export default function WorkspaceDocumentsPage() {
   const [editNotes, setEditNotes] = useState("");
   const [editRawContent, setEditRawContent] = useState("");
   const [isUpdatingDocument, setIsUpdatingDocument] = useState(false);
+  const [documentStatusFilter, setDocumentStatusFilter] =
+    useState<DocumentStatusFilter>("all");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const documentStatusCounts = documents.reduce(
+    (counts, document) => {
+      if (document.ingestionStatus === "ready") {
+        counts.ready += 1;
+      } else if (document.ingestionStatus === "needs_reprocess") {
+        counts.needsReprocess += 1;
+      } else {
+        counts.pending += 1;
+      }
+
+      return counts;
+    },
+    { ready: 0, pending: 0, needsReprocess: 0 },
+  );
+
+  const filteredDocuments =
+    documentStatusFilter === "all"
+      ? documents
+      : documents.filter(
+          (document) => document.ingestionStatus === documentStatusFilter,
+        );
+
+  const activeFilterLabel =
+    DOCUMENT_STATUS_FILTERS.find(
+      (option) => option.value === documentStatusFilter,
+    )?.label ?? "Todos";
 
   async function loadDocuments() {
     setIsLoading(true);
@@ -992,13 +1033,59 @@ export default function WorkspaceDocumentsPage() {
       </section>
 
       <section>
-        <div className="flex items-center justify-between gap-4 border-b border-zinc-200 pb-3 dark:border-zinc-800">
-          <h3 className="text-base font-medium text-zinc-950 dark:text-zinc-50">
-            Fontes cadastradas
-          </h3>
-          <span className="text-sm text-zinc-500">
-            {documents.length} {documents.length === 1 ? "fonte" : "fontes"}
-          </span>
+        <div className="border-b border-zinc-200 pb-4 dark:border-zinc-800">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <h3 className="text-base font-medium text-zinc-950 dark:text-zinc-50">
+              Fontes cadastradas
+            </h3>
+            <span className="text-sm text-zinc-500">
+              {documents.length} {documents.length === 1 ? "fonte" : "fontes"}
+            </span>
+          </div>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Prontas
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {documentStatusCounts.ready}
+              </p>
+            </div>
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Pendentes
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {documentStatusCounts.pending}
+              </p>
+            </div>
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Reprocessar
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {documentStatusCounts.needsReprocess}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            {DOCUMENT_STATUS_FILTERS.map((option) => (
+              <button
+                className={`border px-3 py-1.5 text-sm transition-colors ${
+                  documentStatusFilter === option.value
+                    ? "border-zinc-950 bg-zinc-950 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-950"
+                    : "border-zinc-300 text-zinc-700 hover:border-zinc-950 hover:text-zinc-950 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+                }`}
+                key={option.value}
+                onClick={() => setDocumentStatusFilter(option.value)}
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {isLoading ? (
@@ -1009,9 +1096,13 @@ export default function WorkspaceDocumentsPage() {
           <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
             Nenhuma fonte cadastrada ainda.
           </p>
+        ) : filteredDocuments.length === 0 ? (
+          <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
+            Nenhuma fonte no filtro {activeFilterLabel.toLowerCase()}.
+          </p>
         ) : (
           <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
-            {documents.map((document) => {
+            {filteredDocuments.map((document) => {
               const documentNotes = getNotes(document.metadata);
 
               return (

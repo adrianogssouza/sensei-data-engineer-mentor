@@ -16,10 +16,10 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta com upload textual simples, edição de documentos, reprocessamento de chunks e recuperação híbrida observável
-- Última task concluída: TASK 036
-- Checkpoint atual: documentos podem ser cadastrados, editados, importados por `.txt`/`.md`, reprocessados e usados em evals
-- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria de UX/QA documental
+- Fase atual: v0.1-beta com upload textual simples, edição de documentos, filtros de status, reprocessamento de chunks e recuperação híbrida observável
+- Última task concluída: TASK 037
+- Checkpoint atual: documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados e usados em evals
+- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
@@ -42,7 +42,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Upload textual: `/workspace/documents` importa `.txt`, `.md` e `.markdown` no navegador e preenche `raw_content`
 - Reprocessamento de documentos: `/api/documents/reprocess` regenera chunks a partir de `raw_content` existente e deixa embeddings pendentes para nova geração
 - Edição de documentos: `PUT /api/documents` atualiza título, tipo, referência, notas e `raw_content`; quando o conteúdo muda, chunks antigos são removidos e a fonte fica como `needs_reprocess`
-- Próxima implementação planejada: decidir próximo incremento após edição básica de documentos
+- Status de documentos: `/workspace/documents` exibe contadores e filtros para todos, prontos, pendentes e fontes que precisam reprocessar
+- Próxima implementação planejada: decidir próximo incremento após filtros/status de documentos
 
 ## Objetivo principal 2026
 
