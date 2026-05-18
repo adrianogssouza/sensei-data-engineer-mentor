@@ -516,3 +516,15 @@ Antes de adicionar storage de arquivos, parsing de PDF ou pipeline assíncrono, 
 
 Impacto:
 `/workspace/documents` ganhou um input de arquivo que aceita `.txt`, `.md` e `.markdown`. O arquivo é lido localmente no navegador, preenche o conteúdo bruto, sugere título/sourcePath e usa o fluxo existente de cadastro para salvar documento, chunks, hash e status. Storage físico, PDF, DOCX, HTML remoto, OCR e embeddings reais continuam fora do escopo.
+
+---
+
+### DEC-045 — Reprocessamento de chunks antes de edição avançada
+
+TASK 035 implementou reprocessamento de documentos pela UI/API.
+
+Motivo:
+Depois do cadastro por texto colado ou arquivo textual, o usuário precisa conseguir regenerar chunks de uma fonte já salva sem remover e recriar o documento inteiro. Isso torna a gestão de documentos mais segura antes de avançar para embeddings reais, parsing avançado ou edição completa de conteúdo.
+
+Impacto:
+O chunking foi extraído para `src/lib/documents/chunking.ts` e reutilizado pela rota principal e pela nova rota protegida `/api/documents/reprocess`. A tela `/workspace/documents` ganhou botão "Reprocessar" por fonte com `raw_content`. O reprocessamento apaga os chunks antigos do documento, cria novos chunks com `embedding_status = pending`, atualiza `chunk_count`/status de ingestão e orienta gerar embeddings novamente. Storage físico, PDF/DOCX/HTML, edição avançada e embeddings reais continuam fora do escopo.

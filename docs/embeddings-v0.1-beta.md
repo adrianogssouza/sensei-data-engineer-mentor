@@ -1,6 +1,6 @@
 # Embeddings v0.1-beta
 
-Status: recuperação híbrida observável e avaliada com upload textual simples após TASK 034.
+Status: recuperação híbrida observável e avaliada com reprocessamento de chunks após TASK 035.
 
 ## O que existe
 
@@ -17,6 +17,7 @@ Status: recuperação híbrida observável e avaliada com upload textual simples
 - Dataset padrão versionado em `src/lib/documents/retrieval-eval-dataset.json`.
 - Fixtures versionadas em `src/lib/documents/retrieval-eval-fixtures.json`.
 - Importação textual simples de `.txt`, `.md` e `.markdown` em `/workspace/documents`.
+- Reprocessamento de chunks por documento em `/workspace/documents`.
 
 ## Banco usado
 
@@ -71,3 +72,4 @@ Ela ainda não substitui embeddings reais de OpenAI ou outro provider.
 - Na TASK 032, fontes temporárias compatíveis com o dataset padrão foram criadas, receberam embeddings mock, o dataset passou 3/3 e as fontes foram removidas ao final.
 - Na TASK 033, as fixtures versionadas foram carregadas pela UI/API, receberam embeddings mock e o dataset padrão passou 3/3 em produção.
 - Na TASK 034, a UI de documentos passou a importar arquivo textual local para preencher `rawContent`; `pnpm lint`, `pnpm build` e deploy foram validados.
+- Na TASK 035, a UI/API passou a reprocessar documentos, recriando chunks e deixando embeddings pendentes para nova geração.

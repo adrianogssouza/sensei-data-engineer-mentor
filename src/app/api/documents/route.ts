@@ -1,6 +1,11 @@
 import { createHash } from "node:crypto";
 
 import { hasPrivateAccess, getPrivateAccessResponse } from "@/lib/private-access";
+import {
+  CHUNK_OVERLAP,
+  CHUNK_SIZE,
+  createTextChunks,
+} from "@/lib/documents/chunking";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/types";
 
@@ -8,8 +13,6 @@ const MAX_TITLE_LENGTH = 120;
 const MAX_SOURCE_PATH_LENGTH = 500;
 const MAX_NOTES_LENGTH = 2000;
 const MAX_RAW_CONTENT_LENGTH = 20000;
-const CHUNK_SIZE = 1200;
-const CHUNK_OVERLAP = 160;
 const SOURCE_TYPES = ["manual", "url", "file_reference"] as const;
 
 type SourceType = (typeof SOURCE_TYPES)[number];
@@ -113,37 +116,6 @@ function toDocumentSource(row: {
 
 function getContentHash(rawContent: string): string {
   return createHash("sha256").update(rawContent).digest("hex");
-}
-
-function createTextChunks(rawContent: string): string[] {
-  const normalizedContent = rawContent.replace(/\s+\n/g, "\n").trim();
-  const chunks: string[] = [];
-  let start = 0;
-
-  while (start < normalizedContent.length) {
-    const hardEnd = Math.min(start + CHUNK_SIZE, normalizedContent.length);
-    const slice = normalizedContent.slice(start, hardEnd);
-    const paragraphBreak = slice.lastIndexOf("\n\n");
-    const sentenceBreak = slice.lastIndexOf(". ");
-    const softBreak =
-      hardEnd < normalizedContent.length
-        ? Math.max(paragraphBreak, sentenceBreak)
-        : -1;
-    const end = softBreak > CHUNK_SIZE * 0.5 ? start + softBreak + 1 : hardEnd;
-    const chunk = normalizedContent.slice(start, end).trim();
-
-    if (chunk) {
-      chunks.push(chunk);
-    }
-
-    if (end >= normalizedContent.length) {
-      break;
-    }
-
-    start = Math.max(end - CHUNK_OVERLAP, start + 1);
-  }
-
-  return chunks;
 }
 
 function getUnavailableResponse(error: unknown) {

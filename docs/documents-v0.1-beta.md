@@ -15,6 +15,7 @@ Status: iniciado na TASK 021.
 - Listagem de fontes cadastradas.
 - Remoção de fontes cadastradas.
 - Geração automática de chunks simples quando há conteúdo bruto.
+- Reprocessamento de chunks por documento a partir de `raw_content`.
 - Busca lexical/local sobre chunks.
 - Uso dos chunks recuperados no chat mock.
 - Ranking lexical/local v2 com termos encontrados e score simples.
@@ -91,14 +92,13 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - Na TASK 027, a migration de embeddings foi aplicada; uma fonte temporária continuou criando `chunkCount = 1`; a fonte foi removida ao final.
 - Na TASK 028, uma fonte temporária teve 1 embedding gerado com provider mock e foi removida ao final.
 - Na TASK 029, uma fonte temporária com embedding foi recuperada por busca vetorial e usada pelo chat em modo híbrido; a fonte foi removida ao final.
+- Na TASK 035, foi adicionada rota protegida e ação de UI para reprocessar uma fonte e regenerar seus chunks a partir do conteúdo bruto salvo.
 
 ## Fora do escopo
 
 - Upload físico de arquivos.
 - Storage de arquivos.
-- Parsing de PDF/HTML/Markdown.
-- pgvector.
+- Parsing de PDF/HTML/DOCX.
 - Embeddings reais via provider externo.
-- RAG.
 - RAG semântico com resposta generativa real sobre fontes.
-- Ranking semântico ou resposta generativa real sobre fontes.
+- Edição avançada do conteúdo bruto já salvo.

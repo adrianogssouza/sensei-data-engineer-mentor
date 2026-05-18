@@ -54,6 +54,15 @@ type EmbeddingsApiResponse = {
   failedCount?: number;
 };
 
+type ReprocessDocumentApiResponse = {
+  available?: boolean;
+  error?: string;
+  documentId?: string;
+  chunkCount?: number;
+  embeddingStatus?: string;
+  reprocessedAt?: string;
+};
+
 type RetrievalEvalResult = {
   name: string;
   query: string;
@@ -165,6 +174,9 @@ export default function WorkspaceDocumentsPage() {
   const [removingDocumentId, setRemovingDocumentId] = useState<string | null>(
     null,
   );
+  const [reprocessingDocumentId, setReprocessingDocumentId] = useState<
+    string | null
+  >(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -318,6 +330,54 @@ export default function WorkspaceDocumentsPage() {
       setErrorMessage("Nao foi possivel remover a fonte.");
     } finally {
       setRemovingDocumentId(null);
+    }
+  }
+
+  async function handleReprocessDocument(documentId: string) {
+    setReprocessingDocumentId(documentId);
+    setStatusMessage(null);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch("/api/documents/reprocess", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ documentId }),
+      });
+      const payload = (await response.json()) as ReprocessDocumentApiResponse;
+
+      if (!response.ok || !payload.available || !payload.documentId) {
+        setErrorMessage(
+          payload.error ?? "Nao foi possivel reprocessar a fonte.",
+        );
+        return;
+      }
+
+      const reprocessedAt = payload.reprocessedAt ?? new Date().toISOString();
+
+      setDocuments((currentDocuments) =>
+        currentDocuments.map((document) =>
+          document.id === payload.documentId
+            ? {
+                ...document,
+                chunkCount: payload.chunkCount ?? document.chunkCount,
+                ingestionStatus: "ready",
+                ingestionError: null,
+                ingestedAt: reprocessedAt,
+                updatedAt: reprocessedAt,
+              }
+            : document,
+        ),
+      );
+      setStatusMessage(
+        `Fonte reprocessada com ${payload.chunkCount ?? 0} chunks. Gere embeddings novamente.`,
+      );
+    } catch {
+      setErrorMessage("Nao foi possivel reprocessar a fonte.");
+    } finally {
+      setReprocessingDocumentId(null);
     }
   }
 
@@ -881,16 +941,40 @@ export default function WorkspaceDocumentsPage() {
                         {formatDate(document.createdAt)}
                       </p>
                     </div>
-                    <button
-                      className="border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-red-700 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-red-400 dark:hover:text-red-400"
-                      disabled={removingDocumentId === document.id}
-                      onClick={() => void handleRemoveDocument(document.id)}
-                      type="button"
-                    >
-                      {removingDocumentId === document.id
-                        ? "Removendo..."
-                        : "Remover"}
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        className="border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+                        disabled={
+                          !document.rawContent ||
+                          reprocessingDocumentId === document.id ||
+                          removingDocumentId === document.id
+                        }
+                        onClick={() => void handleReprocessDocument(document.id)}
+                        title={
+                          document.rawContent
+                            ? "Regenerar chunks desta fonte"
+                            : "Sem conteudo bruto para reprocessar"
+                        }
+                        type="button"
+                      >
+                        {reprocessingDocumentId === document.id
+                          ? "Reprocessando..."
+                          : "Reprocessar"}
+                      </button>
+                      <button
+                        className="border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-red-700 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-red-400 dark:hover:text-red-400"
+                        disabled={
+                          removingDocumentId === document.id ||
+                          reprocessingDocumentId === document.id
+                        }
+                        onClick={() => void handleRemoveDocument(document.id)}
+                        type="button"
+                      >
+                        {removingDocumentId === document.id
+                          ? "Removendo..."
+                          : "Remover"}
+                      </button>
+                    </div>
                   </div>
 
                   {document.sourcePath ? (

@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-18
-- Fase: v0.1-beta com upload textual simples, recuperação híbrida observável e avaliada
-- Última task concluída: TASK 034
-- Checkpoint atual: documentos podem ser cadastrados por texto colado, arquivo `.txt`/`.md` local ou fixtures de eval
-- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou gestão de documentos
+- Fase: v0.1-beta com upload textual simples, reprocessamento de chunks, recuperação híbrida observável e avaliada
+- Última task concluída: TASK 035
+- Checkpoint atual: documentos podem ser cadastrados por texto colado, arquivo `.txt`/`.md` local, fixtures de eval e reprocessados pela UI
+- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou edição avançada de documentos
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -64,6 +64,7 @@
 - TASK 032 — Dataset versionado de evals de recuperação
 - TASK 033 — Fixtures versionadas de fontes para evals
 - TASK 034 — Upload textual simples
+- TASK 035 — Reprocessamento de documentos
 
 ## Bloqueios
 
@@ -170,6 +171,7 @@
 - A UI de documentos pode rodar o dataset padrão versionado de evals de recuperação.
 - A UI de documentos pode carregar fontes fixture versionadas para rodar o dataset padrão sem cadastro manual.
 - A UI de documentos importa arquivos `.txt`, `.md` e `.markdown` localmente no navegador para preencher o conteúdo bruto.
+- A UI de documentos permite reprocessar uma fonte existente para regenerar seus chunks a partir de `raw_content`.
 - Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -477,11 +479,21 @@
 - Validação local: `pnpm lint` e `pnpm build` passaram.
 - Validação: deploy de produção concluído; validação visual local confirmou a seção "Importar arquivo textual".
 
+## Reprocessamento de Documentos
+
+- TASK 035 criou helper compartilhado de chunking em `src/lib/documents/chunking.ts`.
+- A rota protegida `/api/documents/reprocess` regenera chunks a partir do `raw_content` salvo.
+- O reprocessamento apaga os chunks antigos do documento e insere novos chunks com o mesmo tamanho e overlap oficiais.
+- Embeddings antigos deixam de valer porque os chunks são recriados; os novos chunks entram com `embedding_status = pending`.
+- A tela `/workspace/documents` ganhou botão "Reprocessar" por fonte com conteúdo bruto.
+- Após reprocessar, a UI atualiza `chunkCount`, `ingestion_status`, `ingested_at` e orienta gerar embeddings novamente.
+- Não houve nova migration, storage físico, parsing de PDF/DOCX/HTML ou embeddings reais nesta task.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: decidir próximo incremento após fixtures versionadas de evals.
+- Próxima implementação planejada: decidir próximo incremento após reprocessamento de documentos.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -496,4 +508,4 @@
 
 ## Próxima ação recomendada
 
-Escolher entre embeddings reais, upload/parsing ou ampliar dataset/fixtures de evals.
+Escolher entre embeddings reais, parsing avançado/PDF ou edição avançada de documentos.
