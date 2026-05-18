@@ -504,3 +504,15 @@ O dataset versionado só é repetível se as fontes esperadas também puderem se
 
 Impacto:
 Foi criado `src/lib/documents/retrieval-eval-fixtures.json` com versão `retrieval-eval-fixtures-v1` e fontes padrão para SQL, dbt e Airflow. A rota protegida `/api/documents/retrieval-fixtures` recria essas fontes no Supabase de forma idempotente, com chunks prontos e embeddings pendentes. A tela `/workspace/documents` ganhou o botão "Carregar fontes de eval". A produção foi validada carregando fixtures, gerando embeddings mock e rodando o dataset padrão com resultado 3/3.
+
+---
+
+### DEC-044 — Upload textual local antes de storage/parsing avançado
+
+TASK 034 implementou importação simples de arquivos textuais.
+
+Motivo:
+Antes de adicionar storage de arquivos, parsing de PDF ou pipeline assíncrono, o projeto precisa de um caminho prático para carregar conteúdo de estudo sem colar manualmente. Arquivos `.txt` e `.md` cobrem uma etapa útil com baixo risco e sem nova dependência.
+
+Impacto:
+`/workspace/documents` ganhou um input de arquivo que aceita `.txt`, `.md` e `.markdown`. O arquivo é lido localmente no navegador, preenche o conteúdo bruto, sugere título/sourcePath e usa o fluxo existente de cadastro para salvar documento, chunks, hash e status. Storage físico, PDF, DOCX, HTML remoto, OCR e embeddings reais continuam fora do escopo.

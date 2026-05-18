@@ -16,10 +16,10 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta com recuperação híbrida lexical + vetorial observável e avaliada por dataset/fixtures versionados
-- Última task concluída: TASK 033
-- Checkpoint atual: recuperação híbrida pode ser inspecionada no chat e testada contra dataset padrão com fontes fixture carregáveis
-- Próxima task: decidir entre preparar embeddings reais, upload/parsing ou ampliar dataset/fixtures de evals
+- Fase atual: v0.1-beta com upload textual simples, recuperação híbrida observável e avaliada
+- Última task concluída: TASK 034
+- Checkpoint atual: documentos podem ser cadastrados por texto colado, arquivo `.txt`/`.md` local ou fixtures de eval
+- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou ampliar gestão de documentos
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
@@ -39,7 +39,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Evals de recuperação: `/api/documents/retrieval-evals` e UI em `/workspace/documents` validam o topo do ranking híbrido
 - Dataset de evals: `src/lib/documents/retrieval-eval-dataset.json` define casos padrão versionados
 - Fixtures de evals: `src/lib/documents/retrieval-eval-fixtures.json` e `/api/documents/retrieval-fixtures` carregam fontes padrão no Supabase
-- Próxima implementação planejada: decidir próximo incremento após fixtures versionadas de evals
+- Upload textual: `/workspace/documents` importa `.txt`, `.md` e `.markdown` no navegador e preenche `raw_content`
+- Próxima implementação planejada: decidir próximo incremento após upload textual simples
 
 ## Objetivo principal 2026
 

@@ -44,4 +44,5 @@
 - TASK 031 - Concluída: eval manual de recuperação implementado com rota protegida, UI em documentos, reuso do ranking híbrido e validação de topo do ranking.
 - TASK 032 - Concluída: dataset versionado de evals de recuperação implementado com arquivo JSON padrão, execução via API/UI e validação em produção.
 - TASK 033 - Concluída: fixtures versionadas de fontes para evals implementadas com rota protegida, botão na UI e validação dataset 3/3 em produção.
-- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto, chunks, busca lexical ranqueada, embeddings mock em pgvector, recuperação híbrida no chat mock, diagnóstico visual da recuperação, eval manual, dataset padrão e fixtures carregáveis de evals.
+- TASK 034 - Concluída: upload textual simples implementado para `.txt`, `.md` e `.markdown`, preenchendo o conteúdo bruto no navegador antes do cadastro.
+- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto por texto colado ou arquivo textual, chunks, busca lexical ranqueada, embeddings mock em pgvector, recuperação híbrida no chat mock, diagnóstico visual da recuperação, eval manual, dataset padrão e fixtures carregáveis de evals.

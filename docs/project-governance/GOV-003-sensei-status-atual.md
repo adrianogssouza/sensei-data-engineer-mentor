@@ -2,11 +2,11 @@
 
 ## Retrato Atual
 
-- Data de atualização: 2026-05-16
-- Fase: v0.1-beta com recuperação híbrida lexical + vetorial observável e avaliada por dataset/fixtures versionados
-- Última task concluída: TASK 033
-- Checkpoint atual: recuperação híbrida pode ser inspecionada no chat e testada contra dataset padrão com fontes fixture carregáveis
-- Próxima task: decidir entre embeddings reais, upload/parsing ou ampliar dataset/fixtures de evals
+- Data de atualização: 2026-05-18
+- Fase: v0.1-beta com upload textual simples, recuperação híbrida observável e avaliada
+- Última task concluída: TASK 034
+- Checkpoint atual: documentos podem ser cadastrados por texto colado, arquivo `.txt`/`.md` local ou fixtures de eval
+- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou gestão de documentos
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -63,6 +63,7 @@
 - TASK 031 — Eval manual de recuperação
 - TASK 032 — Dataset versionado de evals de recuperação
 - TASK 033 — Fixtures versionadas de fontes para evals
+- TASK 034 — Upload textual simples
 
 ## Bloqueios
 
@@ -168,6 +169,7 @@
 - A UI de documentos possui eval manual para validar se uma pergunta recupera a fonte esperada no topo.
 - A UI de documentos pode rodar o dataset padrão versionado de evals de recuperação.
 - A UI de documentos pode carregar fontes fixture versionadas para rodar o dataset padrão sem cadastro manual.
+- A UI de documentos importa arquivos `.txt`, `.md` e `.markdown` localmente no navegador para preencher o conteúdo bruto.
 - Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -460,6 +462,20 @@
 - Produção redeployada e validada com Basic Auth ativo.
 - Validação em produção: fixtures foram carregadas, embeddings mock gerados e o dataset padrão passou 3/3.
 - Embeddings reais, upload/parsing, thresholds avançados e ampliação do dataset continuam fora do escopo.
+
+## Upload Textual Simples
+
+- TASK 034 adicionou importação local de arquivos textuais em `/workspace/documents`.
+- Formatos aceitos nesta etapa: `.txt`, `.md` e `.markdown`.
+- O arquivo é lido no navegador via `File.text()`.
+- O conteúdo lido preenche `rawContent` antes do cadastro.
+- Se o título estiver vazio, o nome do arquivo preenche o título inicial.
+- `sourceType` passa para `file_reference` e `sourcePath` recebe o nome do arquivo.
+- O cadastro continua usando a rota existente `/api/documents`, preservando chunking, hash e status `ready`.
+- Não há storage de arquivo físico nesta etapa.
+- Não há parsing de PDF, DOCX, HTML remoto ou OCR nesta etapa.
+- Validação local: `pnpm lint` e `pnpm build` passaram.
+- Validação: deploy de produção concluído; validação visual local confirmou a seção "Importar arquivo textual".
 
 ## Plano Curto v0.1-alpha
 

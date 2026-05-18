@@ -86,6 +86,7 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 031 concluída
 - TASK 032 concluída
 - TASK 033 concluída
+- TASK 034 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Fundação Next.js criada
@@ -114,10 +115,11 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - Eval manual de recuperação implementado para validar o topo do ranking híbrido.
 - Dataset versionado de evals de recuperação implementado e executável pela UI/API.
 - Fixtures versionadas de fontes de eval implementadas e carregáveis pela UI/API.
+- Upload textual simples para `.txt`, `.md` e `.markdown` implementado no navegador.
 
 ## Próximo passo
 
-Decidir próximo incremento após fixtures versionadas de evals: embeddings reais, upload/parsing ou ampliar casos de avaliação.
+Decidir próximo incremento após upload textual simples: embeddings reais, parsing avançado/PDF ou gestão de documentos.
 
 ## Regra central
 

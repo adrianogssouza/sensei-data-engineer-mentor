@@ -110,6 +110,8 @@ const SOURCE_TYPE_OPTIONS = [
   { label: "Arquivo local", value: "file_reference" },
 ];
 
+const ACCEPTED_TEXT_FILE_EXTENSIONS = [".txt", ".md", ".markdown"];
+
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
@@ -134,6 +136,10 @@ export default function WorkspaceDocumentsPage() {
   const [sourcePath, setSourcePath] = useState("");
   const [notes, setNotes] = useState("");
   const [rawContent, setRawContent] = useState("");
+  const [fileImportMessage, setFileImportMessage] = useState<string | null>(
+    null,
+  );
+  const [isReadingFile, setIsReadingFile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -234,6 +240,56 @@ export default function WorkspaceDocumentsPage() {
       setErrorMessage("Nao foi possivel salvar a fonte.");
     } finally {
       setIsSaving(false);
+    }
+  }
+
+  async function handleTextFileImport(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    const normalizedFileName = file.name.toLocaleLowerCase("pt-BR");
+    const hasAcceptedExtension = ACCEPTED_TEXT_FILE_EXTENSIONS.some(
+      (extension) => normalizedFileName.endsWith(extension),
+    );
+
+    if (!hasAcceptedExtension) {
+      setFileImportMessage("Use um arquivo .txt ou .md nesta etapa.");
+      event.target.value = "";
+      return;
+    }
+
+    setIsReadingFile(true);
+    setFileImportMessage(null);
+
+    try {
+      const text = await file.text();
+      const trimmedText = text.trim();
+
+      if (!trimmedText) {
+        setFileImportMessage("O arquivo selecionado está vazio.");
+        return;
+      }
+
+      if (!title.trim()) {
+        setTitle(file.name.replace(/\.[^.]+$/, ""));
+      }
+
+      setSourceType("file_reference");
+      setSourcePath(file.name);
+      setRawContent(trimmedText);
+      setFileImportMessage(
+        `${file.name} carregado com ${trimmedText.length} caracteres.`,
+      );
+    } catch {
+      setFileImportMessage("Nao foi possivel ler o arquivo selecionado.");
+    } finally {
+      setIsReadingFile(false);
+      event.target.value = "";
     }
   }
 
@@ -520,6 +576,27 @@ export default function WorkspaceDocumentsPage() {
           <span className="text-xs font-normal text-zinc-500">
             {rawContent.trim().length} caracteres de conteúdo
           </span>
+        </label>
+
+        <label className="grid gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+          Importar arquivo textual
+          <input
+            accept=".txt,.md,.markdown,text/plain,text/markdown"
+            className="border border-dashed border-zinc-300 bg-transparent px-3 py-3 text-sm text-zinc-700 outline-none transition-colors file:mr-3 file:border-0 file:bg-zinc-950 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white focus:border-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:file:bg-zinc-50 dark:file:text-zinc-950 dark:focus:border-zinc-50"
+            disabled={isReadingFile || isSaving}
+            onChange={(event) => void handleTextFileImport(event)}
+            type="file"
+          />
+          <span className="text-xs font-normal text-zinc-500">
+            {isReadingFile
+              ? "Lendo arquivo..."
+              : "Aceita .txt, .md e .markdown; o conteúdo preenche o campo bruto."}
+          </span>
+          {fileImportMessage ? (
+            <span className="text-xs font-normal text-zinc-600 dark:text-zinc-400">
+              {fileImportMessage}
+            </span>
+          ) : null}
         </label>
 
         <div className="flex flex-wrap items-center gap-3">

@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 033
-- Checkpoint: fixtures versionadas de fontes para evals implementadas e validadas
+- Task atual concluída: TASK 034
+- Checkpoint: upload textual simples de `.txt`/`.md` implementado e validado
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: decidir próximo incremento após fixtures versionadas de evals
+- Próxima implementação definida: decidir próximo incremento após upload textual simples
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher entre embeddings reais, upload/parsing ou ampliar dataset/fixtures de evals
+- escolher entre embeddings reais, parsing avançado/PDF ou gestão de documentos
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex
