@@ -201,6 +201,7 @@ export default function WorkspaceDocumentsPage() {
   const [isUpdatingDocument, setIsUpdatingDocument] = useState(false);
   const [documentStatusFilter, setDocumentStatusFilter] =
     useState<DocumentStatusFilter>("all");
+  const [isBulkReprocessing, setIsBulkReprocessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -230,6 +231,11 @@ export default function WorkspaceDocumentsPage() {
     DOCUMENT_STATUS_FILTERS.find(
       (option) => option.value === documentStatusFilter,
     )?.label ?? "Todos";
+
+  const reprocessableDocuments = documents.filter(
+    (document) =>
+      document.ingestionStatus === "needs_reprocess" && document.rawContent,
+  );
 
   async function loadDocuments() {
     setIsLoading(true);
@@ -429,6 +435,71 @@ export default function WorkspaceDocumentsPage() {
       setErrorMessage("Nao foi possivel reprocessar a fonte.");
     } finally {
       setReprocessingDocumentId(null);
+    }
+  }
+
+  async function handleBulkReprocessDocuments() {
+    const documentsToReprocess = reprocessableDocuments;
+
+    if (documentsToReprocess.length === 0) {
+      setStatusMessage("Nenhuma fonte precisa de reprocessamento.");
+      return;
+    }
+
+    setIsBulkReprocessing(true);
+    setStatusMessage(null);
+    setErrorMessage(null);
+
+    let processedCount = 0;
+
+    try {
+      for (const document of documentsToReprocess) {
+        setReprocessingDocumentId(document.id);
+
+        const response = await fetch("/api/documents/reprocess", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ documentId: document.id }),
+        });
+        const payload = (await response.json()) as ReprocessDocumentApiResponse;
+
+        if (!response.ok || !payload.available || !payload.documentId) {
+          setErrorMessage(
+            payload.error ??
+              `Nao foi possivel reprocessar ${document.title}.`,
+          );
+          return;
+        }
+
+        const reprocessedAt = payload.reprocessedAt ?? new Date().toISOString();
+
+        setDocuments((currentDocuments) =>
+          currentDocuments.map((currentDocument) =>
+            currentDocument.id === payload.documentId
+              ? {
+                  ...currentDocument,
+                  chunkCount: payload.chunkCount ?? currentDocument.chunkCount,
+                  ingestionStatus: "ready",
+                  ingestionError: null,
+                  ingestedAt: reprocessedAt,
+                  updatedAt: reprocessedAt,
+                }
+              : currentDocument,
+          ),
+        );
+        processedCount += 1;
+      }
+
+      setStatusMessage(
+        `${processedCount} fonte(s) reprocessada(s). Gere embeddings novamente.`,
+      );
+    } catch {
+      setErrorMessage("Nao foi possivel reprocessar as fontes.");
+    } finally {
+      setReprocessingDocumentId(null);
+      setIsBulkReprocessing(false);
     }
   }
 
@@ -1085,6 +1156,18 @@ export default function WorkspaceDocumentsPage() {
                 {option.label}
               </button>
             ))}
+            <button
+              className="border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+              disabled={
+                isBulkReprocessing || reprocessableDocuments.length === 0
+              }
+              onClick={() => void handleBulkReprocessDocuments()}
+              type="button"
+            >
+              {isBulkReprocessing
+                ? "Reprocessando..."
+                : "Reprocessar fila"}
+            </button>
           </div>
         </div>
 

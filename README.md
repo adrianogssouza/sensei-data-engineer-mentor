@@ -6,7 +6,7 @@ SENSEI Data Engineer Mentor é um mentor pessoal de estudos com IA focado em Eng
 
 O SENSEI demonstra a construção incremental de um produto de IA com base real de aplicação: workspace, chat, abstração de providers, fallback seguro, persistência de histórico, fundação Supabase/Auth, guardrails de custo e documentação operacional.
 
-A v0.1-beta roda em modo privado com Supabase remoto. A aplicação prova o fluxo principal sem depender de quota/billing de IA real, grava histórico de chat no banco remoto, protege o workspace por senha em produção e já permite cadastrar, editar e filtrar fontes/documentos com conteúdo bruto manual ou arquivo textual, reprocessar chunks, buscar conteúdo com ranking lexical/local, gerar embeddings mock persistidos em pgvector, usar recuperação híbrida no chat mock, ver diagnóstico visual da recuperação por resposta, rodar eval manual do topo do ranking, dataset versionado de evals e fixtures carregáveis.
+A v0.1-beta roda em modo privado com Supabase remoto. A aplicação prova o fluxo principal sem depender de quota/billing de IA real, grava histórico de chat no banco remoto, protege o workspace por senha em produção e já permite cadastrar, editar e filtrar fontes/documentos com conteúdo bruto manual ou arquivo textual, reprocessar chunks individualmente ou em lote, buscar conteúdo com ranking lexical/local, gerar embeddings mock persistidos em pgvector, usar recuperação híbrida no chat mock, ver diagnóstico visual da recuperação por resposta, rodar eval manual do topo do ranking, dataset versionado de evals e fixtures carregáveis.
 
 URL pública:
 
@@ -16,9 +16,9 @@ https://sensei-data-engineer-mentor.vercel.app
 
 ## Fase Atual
 
-Fase atual: v0.1-beta privada com upload textual simples, edição de documentos, filtros de status, reprocessamento de chunks e recuperação híbrida lexical + vetorial observável e avaliada.
+Fase atual: v0.1-beta privada com upload textual simples, edição de documentos, filtros de status, reprocessamento em lote e recuperação híbrida lexical + vetorial observável e avaliada.
 
-O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema Supabase remoto, shell de workspace, UI de chat com persistência local/remota, UI mínima de histórico, skeleton interno de provider de IA, integração Gemini preparada, documentos manuais, upload textual simples, edição de documentos, filtros de status, chunks, reprocessamento de chunks, busca lexical ranqueada, pgvector, geração local determinística de embeddings, recuperação híbrida no chat mock, observabilidade da recuperação por mensagem, eval manual de recuperação, dataset padrão de evals e fixtures carregáveis. O modo operacional atual é single-user/private. RAG semântico completo, embeddings reais por provider externo, storage de arquivos, PDF/OCR e shadcn/ui ainda não foram implementados.
+O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema Supabase remoto, shell de workspace, UI de chat com persistência local/remota, UI mínima de histórico, skeleton interno de provider de IA, integração Gemini preparada, documentos manuais, upload textual simples, edição de documentos, filtros de status, chunks, reprocessamento individual/em lote, busca lexical ranqueada, pgvector, geração local determinística de embeddings, recuperação híbrida no chat mock, observabilidade da recuperação por mensagem, eval manual de recuperação, dataset padrão de evals e fixtures carregáveis. O modo operacional atual é single-user/private. RAG semântico completo, embeddings reais por provider externo, storage de arquivos, PDF/OCR e shadcn/ui ainda não foram implementados.
 
 Handoff de portfólio: `docs/handoff-portfolio-v0.1-alpha.md`.
 
@@ -51,6 +51,7 @@ O que demonstrar:
 - cadastro manual de documentos com busca lexical;
 - edição de documento existente com invalidação segura de chunks;
 - filtros de status para encontrar fontes prontas, pendentes e a reprocessar;
+- reprocessamento em lote da fila de fontes alteradas;
 - importação de `.txt`, `.md` e `.markdown` para preencher conteúdo bruto;
 - reprocessamento de uma fonte para regenerar chunks;
 - avaliação manual da recuperação no topo do ranking híbrido;
@@ -75,7 +76,7 @@ Rotas disponíveis:
 - `/workspace/usage` - visão de guardrails locais de uso/custo
 - `/workspace/settings` - placeholder de configurações privadas
 
-A página de chat chama `/api/ai/chat`, que usa o registry interno de providers. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados. Sem chave Gemini, o app volta para o provider mock determinístico. A rota de chat consulta chunks por busca lexical/local e, quando há embeddings prontos, combina similaridade vetorial em um score híbrido. O mock pode citar fonte, chunk, score híbrido, score lexical, termos encontrados e similaridade vetorial. A mensagem do assistente também pode exibir um bloco de diagnóstico com modo de recuperação, ranking, contagens lexical/vetorial e termos usados. A tela de documentos permite colar conteúdo, importar arquivo textual local, editar fonte existente, filtrar fontes por status, reprocessar chunks de uma fonte, carregar fontes fixture, rodar um eval manual ou o dataset padrão versionado contra o mesmo ranking híbrido. O histórico usa Supabase quando as variáveis públicas estão configuradas; caso contrário, as mensagens persistem neste navegador usando `localStorage`. A UI já permite listar conversas remotas, abrir conversa existente, criar nova conversa e limpar conversa. A página ainda não faz storage físico de arquivos, PDF/OCR ou RAG semântico completo.
+A página de chat chama `/api/ai/chat`, que usa o registry interno de providers. Gemini só é usado quando `AI_PROVIDER=gemini` e `GEMINI_API_KEY` estão configurados. Sem chave Gemini, o app volta para o provider mock determinístico. A rota de chat consulta chunks por busca lexical/local e, quando há embeddings prontos, combina similaridade vetorial em um score híbrido. O mock pode citar fonte, chunk, score híbrido, score lexical, termos encontrados e similaridade vetorial. A mensagem do assistente também pode exibir um bloco de diagnóstico com modo de recuperação, ranking, contagens lexical/vetorial e termos usados. A tela de documentos permite colar conteúdo, importar arquivo textual local, editar fonte existente, filtrar fontes por status, reprocessar chunks de uma fonte ou a fila inteira, carregar fontes fixture, rodar um eval manual ou o dataset padrão versionado contra o mesmo ranking híbrido. O histórico usa Supabase quando as variáveis públicas estão configuradas; caso contrário, as mensagens persistem neste navegador usando `localStorage`. A UI já permite listar conversas remotas, abrir conversa existente, criar nova conversa e limpar conversa. A página ainda não faz storage físico de arquivos, PDF/OCR ou RAG semântico completo.
 
 ## Stack Técnica Instalada
 
@@ -296,10 +297,11 @@ src/
 - TASK 035 - Reprocessamento de documentos
 - TASK 036 - Edição básica de documentos
 - TASK 037 - Filtros/status de documentos
+- TASK 038 - Reprocessamento em lote
 
 ## Próximo Marco
 
-Decidir próximo incremento após filtros/status de documentos: embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.
+Decidir próximo incremento após reprocessamento em lote: embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.
 
 ## Status do Provider de IA
 
@@ -331,7 +333,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 037. A v0.1-beta já permite cadastrar, editar e filtrar fontes com conteúdo bruto, importar arquivos textuais, reprocessar chunks, buscar trechos com ranking lexical/local, gerar embeddings mock por chunk, usar recuperação híbrida no chat mock e validar recuperação com evals versionados.
+Checkpoint atual: o trabalho está sincronizado até TASK 038. A v0.1-beta já permite cadastrar, editar e filtrar fontes com conteúdo bruto, importar arquivos textuais, reprocessar chunks individualmente/em lote, buscar trechos com ranking lexical/local, gerar embeddings mock por chunk, usar recuperação híbrida no chat mock e validar recuperação com evals versionados.
 
 ## Segredos
 

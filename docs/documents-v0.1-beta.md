@@ -18,6 +18,7 @@ Status: iniciado na TASK 021.
 - Contadores e filtros por status de ingestão.
 - Geração automática de chunks simples quando há conteúdo bruto.
 - Reprocessamento de chunks por documento a partir de `raw_content`.
+- Reprocessamento em lote de fontes com conteúdo alterado.
 - Busca lexical/local sobre chunks.
 - Uso dos chunks recuperados no chat mock.
 - Ranking lexical/local v2 com termos encontrados e score simples.
@@ -104,6 +105,7 @@ Quando o conteúdo bruto de uma fonte existente é editado:
 - Na TASK 035, foi adicionada rota protegida e ação de UI para reprocessar uma fonte e regenerar seus chunks a partir do conteúdo bruto salvo.
 - Na TASK 036, foi adicionada edição básica de documento existente com invalidação segura de chunks quando o conteúdo bruto muda.
 - Na TASK 037, foram adicionados contadores e filtros de status para listar fontes prontas, pendentes e que precisam reprocessar.
+- Na TASK 038, foi adicionada ação de UI para reprocessar em lote a fila de fontes com `needs_reprocess`.
 
 ## Fora do escopo
 

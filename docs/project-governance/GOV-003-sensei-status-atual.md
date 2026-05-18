@@ -3,9 +3,9 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-18
-- Fase: v0.1-beta com upload textual simples, edição de documentos, filtros de status, reprocessamento de chunks e recuperação híbrida observável
-- Última task concluída: TASK 037
-- Checkpoint atual: documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados e usados em evals
+- Fase: v0.1-beta com upload textual simples, edição de documentos, filtros de status, reprocessamento em lote e recuperação híbrida observável
+- Última task concluída: TASK 038
+- Checkpoint atual: documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados individualmente/em lote e usados em evals
 - Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
 - Modo operacional: single-user/private
 
@@ -67,6 +67,7 @@
 - TASK 035 — Reprocessamento de documentos
 - TASK 036 — Edição básica de documentos
 - TASK 037 — Filtros/status de documentos
+- TASK 038 — Reprocessamento em lote
 
 ## Bloqueios
 
@@ -176,6 +177,7 @@
 - A UI de documentos permite reprocessar uma fonte existente para regenerar seus chunks a partir de `raw_content`.
 - A UI de documentos permite editar título, tipo, referência, notas e conteúdo bruto de uma fonte existente.
 - A UI de documentos mostra contadores e filtros por status de ingestão para orientar QA operacional.
+- A UI de documentos permite reprocessar em lote a fila de fontes com conteúdo alterado.
 - Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -511,11 +513,19 @@
 - O filtro `Pendentes` agrupa fontes ainda sem conteúdo/chunks prontos.
 - Não houve nova rota, migration, storage físico, parsing de PDF/DOCX/HTML ou embeddings reais nesta task.
 
+## Reprocessamento em Lote
+
+- TASK 038 adicionou o botão "Reprocessar fila" em `/workspace/documents`.
+- A ação processa fontes com `ingestion_status = needs_reprocess` e `raw_content` disponível.
+- O processamento em lote reutiliza a rota existente `/api/documents/reprocess`.
+- Cada fonte reprocessada volta para `ingestion_status = ready`, atualiza `chunk_count` e orienta gerar embeddings novamente.
+- Não houve nova rota, migration, storage físico, parsing de PDF/DOCX/HTML ou embeddings reais nesta task.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: decidir próximo incremento após filtros/status de documentos.
+- Próxima implementação planejada: decidir próximo incremento após reprocessamento em lote.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 

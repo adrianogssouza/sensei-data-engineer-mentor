@@ -48,4 +48,5 @@
 - TASK 035 - Concluída: reprocessamento de documentos implementado com rota protegida e botão na UI para regenerar chunks a partir de `raw_content`.
 - TASK 036 - Concluída: edição básica de documentos implementada com `PUT /api/documents`, formulário inline e invalidação segura de chunks quando `raw_content` muda.
 - TASK 037 - Concluída: filtros e contadores de status de documentos implementados para identificar fontes prontas, pendentes e que precisam reprocessar.
-- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto por texto colado ou arquivo textual, permite editar documentos, filtrar por status, reprocessar chunks, buscar com ranking lexical, gerar embeddings mock em pgvector, usar recuperação híbrida no chat mock, exibir diagnóstico visual e rodar evals versionados.
+- TASK 038 - Concluída: reprocessamento em lote da fila `needs_reprocess` implementado usando a rota existente de reprocessamento.
+- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto por texto colado ou arquivo textual, permite editar documentos, filtrar por status, reprocessar chunks individualmente/em lote, buscar com ranking lexical, gerar embeddings mock em pgvector, usar recuperação híbrida no chat mock, exibir diagnóstico visual e rodar evals versionados.

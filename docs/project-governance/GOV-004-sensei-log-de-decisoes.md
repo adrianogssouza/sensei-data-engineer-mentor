@@ -552,3 +552,15 @@ Depois de adicionar edição e reprocessamento, a tela passou a ter estados oper
 
 Impacto:
 `/workspace/documents` passou a exibir contadores de documentos prontos, pendentes e a reprocessar, além de filtros para todos, prontos, pendentes e reprocessar. A mudança é apenas de UI/QA operacional, sem novas rotas, migrations, storage físico, parsing avançado ou embeddings reais.
+
+---
+
+### DEC-048 — Reprocessamento em lote antes de embeddings reais
+
+TASK 038 implementou reprocessamento em lote da fila `needs_reprocess`.
+
+Motivo:
+Depois de editar múltiplas fontes, reprocessar uma por uma gera atrito e aumenta chance de deixar a base em estado parcialmente desatualizado. Antes de avançar para embeddings reais, é melhor tornar o ciclo editar → reprocessar → gerar embeddings mais operacional.
+
+Impacto:
+`/workspace/documents` ganhou o botão "Reprocessar fila", que processa documentos com `ingestion_status = needs_reprocess` e `raw_content` disponível reutilizando a rota protegida `/api/documents/reprocess`. A mudança é apenas de UI/orquestração client-side, sem novas rotas, migrations, storage físico, parsing avançado ou embeddings reais.

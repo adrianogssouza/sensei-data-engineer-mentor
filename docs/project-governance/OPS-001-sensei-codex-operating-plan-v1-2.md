@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 037
-- Checkpoint: filtros e contadores de status de documentos implementados na UI
+- Task atual concluída: TASK 038
+- Checkpoint: reprocessamento em lote da fila `needs_reprocess` implementado na UI
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,7 +19,7 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: decidir próximo incremento após filtros/status de documentos
+- Próxima implementação definida: decidir próximo incremento após reprocessamento em lote
 
 ## Próxima task
 
