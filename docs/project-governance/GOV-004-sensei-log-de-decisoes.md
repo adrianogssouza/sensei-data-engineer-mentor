@@ -528,3 +528,15 @@ Depois do cadastro por texto colado ou arquivo textual, o usuário precisa conse
 
 Impacto:
 O chunking foi extraído para `src/lib/documents/chunking.ts` e reutilizado pela rota principal e pela nova rota protegida `/api/documents/reprocess`. A tela `/workspace/documents` ganhou botão "Reprocessar" por fonte com `raw_content`. O reprocessamento apaga os chunks antigos do documento, cria novos chunks com `embedding_status = pending`, atualiza `chunk_count`/status de ingestão e orienta gerar embeddings novamente. Storage físico, PDF/DOCX/HTML, edição avançada e embeddings reais continuam fora do escopo.
+
+---
+
+### DEC-046 — Edição básica antes de parsing avançado
+
+TASK 036 implementou edição básica de documentos existentes.
+
+Motivo:
+Depois de importar, cadastrar e reprocessar documentos, o usuário precisa corrigir título, referência, notas ou o próprio conteúdo bruto sem remover a fonte e recriá-la. Essa etapa torna a gestão documental prática antes de adicionar parsing de PDF, storage físico ou embeddings reais.
+
+Impacto:
+`PUT /api/documents` passou a atualizar título, tipo, referência, notas e `raw_content`. Quando o conteúdo muda, os chunks antigos são removidos e a fonte fica com `ingestion_status = needs_reprocess`, evitando que a busca use trechos desatualizados. A tela `/workspace/documents` ganhou botão "Editar" e formulário inline para salvar alterações. Parsing avançado, storage físico, embeddings reais e RAG semântico completo continuam fora do escopo.

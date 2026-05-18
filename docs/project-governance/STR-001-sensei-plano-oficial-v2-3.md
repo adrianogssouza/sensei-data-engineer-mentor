@@ -88,6 +88,7 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 033 concluída
 - TASK 034 concluída
 - TASK 035 concluída
+- TASK 036 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Fundação Next.js criada
@@ -118,10 +119,11 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - Fixtures versionadas de fontes de eval implementadas e carregáveis pela UI/API.
 - Upload textual simples para `.txt`, `.md` e `.markdown` implementado no navegador.
 - Reprocessamento de documentos implementado pela UI/API para regenerar chunks a partir de `raw_content`.
+- Edição básica de documentos implementada pela UI/API com invalidação segura de chunks quando o conteúdo bruto muda.
 
 ## Próximo passo
 
-Decidir próximo incremento após reprocessamento de documentos: embeddings reais, parsing avançado/PDF ou edição avançada de documentos.
+Decidir próximo incremento após edição básica de documentos: embeddings reais, parsing avançado/PDF ou melhoria de UX/QA documental.
 
 ## Regra central
 

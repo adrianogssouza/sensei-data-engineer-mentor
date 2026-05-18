@@ -46,4 +46,5 @@
 - TASK 033 - Concluída: fixtures versionadas de fontes para evals implementadas com rota protegida, botão na UI e validação dataset 3/3 em produção.
 - TASK 034 - Concluída: upload textual simples implementado para `.txt`, `.md` e `.markdown`, preenchendo o conteúdo bruto no navegador antes do cadastro.
 - TASK 035 - Concluída: reprocessamento de documentos implementado com rota protegida e botão na UI para regenerar chunks a partir de `raw_content`.
-- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto por texto colado ou arquivo textual, permite reprocessar chunks, busca lexical ranqueada, embeddings mock em pgvector, recuperação híbrida no chat mock, diagnóstico visual da recuperação, eval manual, dataset padrão e fixtures carregáveis de evals.
+- TASK 036 - Concluída: edição básica de documentos implementada com `PUT /api/documents`, formulário inline e invalidação segura de chunks quando `raw_content` muda.
+- Checkpoint atual - Concluído: v0.1-beta já persiste conteúdo bruto por texto colado ou arquivo textual, permite editar documentos, reprocessar chunks, buscar com ranking lexical, gerar embeddings mock em pgvector, usar recuperação híbrida no chat mock, exibir diagnóstico visual e rodar evals versionados.

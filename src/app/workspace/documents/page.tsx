@@ -24,6 +24,7 @@ type DocumentsApiResponse = {
   error?: string;
   documents?: DocumentSource[];
   document?: DocumentSource;
+  contentChanged?: boolean;
 };
 
 type ChunkSearchResult = {
@@ -177,6 +178,15 @@ export default function WorkspaceDocumentsPage() {
   const [reprocessingDocumentId, setReprocessingDocumentId] = useState<
     string | null
   >(null);
+  const [editingDocumentId, setEditingDocumentId] = useState<string | null>(
+    null,
+  );
+  const [editTitle, setEditTitle] = useState("");
+  const [editSourceType, setEditSourceType] = useState("manual");
+  const [editSourcePath, setEditSourcePath] = useState("");
+  const [editNotes, setEditNotes] = useState("");
+  const [editRawContent, setEditRawContent] = useState("");
+  const [isUpdatingDocument, setIsUpdatingDocument] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -378,6 +388,83 @@ export default function WorkspaceDocumentsPage() {
       setErrorMessage("Nao foi possivel reprocessar a fonte.");
     } finally {
       setReprocessingDocumentId(null);
+    }
+  }
+
+  function startEditingDocument(document: DocumentSource) {
+    setEditingDocumentId(document.id);
+    setEditTitle(document.title);
+    setEditSourceType(
+      SOURCE_TYPE_OPTIONS.some((option) => option.value === document.sourceType)
+        ? document.sourceType
+        : "manual",
+    );
+    setEditSourcePath(document.sourcePath ?? "");
+    setEditNotes(getNotes(document.metadata) ?? "");
+    setEditRawContent(document.rawContent ?? "");
+    setStatusMessage(null);
+    setErrorMessage(null);
+  }
+
+  function cancelEditingDocument() {
+    setEditingDocumentId(null);
+    setEditTitle("");
+    setEditSourceType("manual");
+    setEditSourcePath("");
+    setEditNotes("");
+    setEditRawContent("");
+  }
+
+  async function handleUpdateDocument(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!editingDocumentId) {
+      return;
+    }
+
+    setIsUpdatingDocument(true);
+    setStatusMessage(null);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch("/api/documents", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          documentId: editingDocumentId,
+          title: editTitle,
+          sourceType: editSourceType,
+          sourcePath: editSourcePath,
+          notes: editNotes,
+          rawContent: editRawContent,
+        }),
+      });
+      const payload = (await response.json()) as DocumentsApiResponse;
+
+      if (!response.ok || !payload.available || !payload.document) {
+        setErrorMessage(payload.error ?? "Nao foi possivel atualizar a fonte.");
+        return;
+      }
+
+      setDocuments((currentDocuments) =>
+        currentDocuments.map((document) =>
+          document.id === payload.document?.id
+            ? (payload.document as DocumentSource)
+            : document,
+        ),
+      );
+      cancelEditingDocument();
+      setStatusMessage(
+        payload.contentChanged
+          ? "Fonte atualizada. Reprocesse os chunks antes de gerar embeddings."
+          : "Fonte atualizada.",
+      );
+    } catch {
+      setErrorMessage("Nao foi possivel atualizar a fonte.");
+    } finally {
+      setIsUpdatingDocument(false);
     }
   }
 
@@ -945,7 +1032,20 @@ export default function WorkspaceDocumentsPage() {
                       <button
                         className="border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
                         disabled={
+                          isUpdatingDocument ||
+                          reprocessingDocumentId === document.id ||
+                          removingDocumentId === document.id
+                        }
+                        onClick={() => startEditingDocument(document)}
+                        type="button"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+                        disabled={
                           !document.rawContent ||
+                          editingDocumentId === document.id ||
                           reprocessingDocumentId === document.id ||
                           removingDocumentId === document.id
                         }
@@ -965,7 +1065,8 @@ export default function WorkspaceDocumentsPage() {
                         className="border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-red-700 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-red-400 dark:hover:text-red-400"
                         disabled={
                           removingDocumentId === document.id ||
-                          reprocessingDocumentId === document.id
+                          reprocessingDocumentId === document.id ||
+                          editingDocumentId === document.id
                         }
                         onClick={() => void handleRemoveDocument(document.id)}
                         type="button"
@@ -983,10 +1084,111 @@ export default function WorkspaceDocumentsPage() {
                     </p>
                   ) : null}
 
+                  {document.ingestionStatus === "needs_reprocess" ? (
+                    <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">
+                      Conteúdo alterado. Reprocesse os chunks antes de gerar
+                      embeddings.
+                    </p>
+                  ) : null}
+
                   {documentNotes ? (
                     <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-zinc-700 dark:text-zinc-300">
                       {documentNotes}
                     </p>
+                  ) : null}
+
+                  {editingDocumentId === document.id ? (
+                    <form
+                      className="mt-4 grid gap-4 border border-zinc-200 p-4 dark:border-zinc-800"
+                      onSubmit={handleUpdateDocument}
+                    >
+                      <div className="grid gap-4 md:grid-cols-[1fr_180px]">
+                        <label className="grid gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                          Título
+                          <input
+                            className="border border-zinc-300 bg-transparent px-3 py-2 text-base text-zinc-950 outline-none transition-colors focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+                            maxLength={120}
+                            onChange={(event) =>
+                              setEditTitle(event.target.value)
+                            }
+                            required
+                            value={editTitle}
+                          />
+                        </label>
+
+                        <label className="grid gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                          Tipo
+                          <select
+                            className="border border-zinc-300 bg-transparent px-3 py-2 text-base text-zinc-950 outline-none transition-colors focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+                            onChange={(event) =>
+                              setEditSourceType(event.target.value)
+                            }
+                            value={editSourceType}
+                          >
+                            {SOURCE_TYPE_OPTIONS.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      </div>
+
+                      <label className="grid gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                        Referência
+                        <input
+                          className="border border-zinc-300 bg-transparent px-3 py-2 text-base text-zinc-950 outline-none transition-colors focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+                          maxLength={500}
+                          onChange={(event) =>
+                            setEditSourcePath(event.target.value)
+                          }
+                          value={editSourcePath}
+                        />
+                      </label>
+
+                      <label className="grid gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                        Notas
+                        <textarea
+                          className="min-h-24 resize-y border border-zinc-300 bg-transparent px-3 py-2 text-base text-zinc-950 outline-none transition-colors focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+                          maxLength={2000}
+                          onChange={(event) => setEditNotes(event.target.value)}
+                          value={editNotes}
+                        />
+                      </label>
+
+                      <label className="grid gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                        Conteúdo bruto
+                        <textarea
+                          className="min-h-44 resize-y border border-zinc-300 bg-transparent px-3 py-2 text-base text-zinc-950 outline-none transition-colors focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+                          maxLength={20000}
+                          onChange={(event) =>
+                            setEditRawContent(event.target.value)
+                          }
+                          value={editRawContent}
+                        />
+                        <span className="text-xs font-normal text-zinc-500">
+                          {editRawContent.trim().length} caracteres de conteúdo
+                        </span>
+                      </label>
+
+                      <div className="flex flex-wrap items-center gap-3">
+                        <button
+                          className="border border-zinc-950 px-4 py-2 text-sm font-medium text-zinc-950 transition-colors hover:bg-zinc-950 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-50 dark:text-zinc-50 dark:hover:bg-zinc-50 dark:hover:text-zinc-950"
+                          disabled={isUpdatingDocument}
+                          type="submit"
+                        >
+                          {isUpdatingDocument ? "Salvando..." : "Salvar edição"}
+                        </button>
+                        <button
+                          className="border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+                          disabled={isUpdatingDocument}
+                          onClick={cancelEditingDocument}
+                          type="button"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </form>
                   ) : null}
 
                   {document.rawContent ? (

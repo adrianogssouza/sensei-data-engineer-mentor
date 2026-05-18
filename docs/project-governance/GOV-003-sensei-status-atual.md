@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-18
-- Fase: v0.1-beta com upload textual simples, reprocessamento de chunks, recuperação híbrida observável e avaliada
-- Última task concluída: TASK 035
-- Checkpoint atual: documentos podem ser cadastrados por texto colado, arquivo `.txt`/`.md` local, fixtures de eval e reprocessados pela UI
-- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou edição avançada de documentos
+- Fase: v0.1-beta com upload textual simples, edição de documentos, reprocessamento de chunks e recuperação híbrida observável
+- Última task concluída: TASK 036
+- Checkpoint atual: documentos podem ser cadastrados, editados, importados por `.txt`/`.md`, reprocessados e usados em evals
+- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria de UX/QA documental
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -65,6 +65,7 @@
 - TASK 033 — Fixtures versionadas de fontes para evals
 - TASK 034 — Upload textual simples
 - TASK 035 — Reprocessamento de documentos
+- TASK 036 — Edição básica de documentos
 
 ## Bloqueios
 
@@ -172,6 +173,7 @@
 - A UI de documentos pode carregar fontes fixture versionadas para rodar o dataset padrão sem cadastro manual.
 - A UI de documentos importa arquivos `.txt`, `.md` e `.markdown` localmente no navegador para preencher o conteúdo bruto.
 - A UI de documentos permite reprocessar uma fonte existente para regenerar seus chunks a partir de `raw_content`.
+- A UI de documentos permite editar título, tipo, referência, notas e conteúdo bruto de uma fonte existente.
 - Não há RAG, embeddings reais, upload, streaming ou persistência de uso.
 
 ## Guardrails de Uso / Custo
@@ -489,11 +491,21 @@
 - Após reprocessar, a UI atualiza `chunkCount`, `ingestion_status`, `ingested_at` e orienta gerar embeddings novamente.
 - Não houve nova migration, storage físico, parsing de PDF/DOCX/HTML ou embeddings reais nesta task.
 
+## Edição Básica de Documentos
+
+- TASK 036 adicionou `PUT /api/documents` para editar fonte existente.
+- Campos editáveis: título, tipo, referência, notas e conteúdo bruto.
+- A edição preserva metadados existentes e atualiza apenas `metadata.notes`.
+- Quando `raw_content` muda, os chunks antigos são removidos para evitar busca sobre conteúdo desatualizado.
+- Após mudança de conteúdo, a fonte fica com `chunk_count = 0`, `ingestion_status = needs_reprocess` e `ingested_at = null`.
+- A tela `/workspace/documents` ganhou botão "Editar", formulário inline, botão "Salvar edição" e aviso para reprocessar chunks.
+- Não houve nova migration, storage físico, parsing de PDF/DOCX/HTML ou embeddings reais nesta task.
+
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: decidir próximo incremento após reprocessamento de documentos.
+- Próxima implementação planejada: decidir próximo incremento após edição básica de documentos.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -508,4 +520,4 @@
 
 ## Próxima ação recomendada
 
-Escolher entre embeddings reais, parsing avançado/PDF ou edição avançada de documentos.
+Escolher entre embeddings reais, parsing avançado/PDF ou melhoria de UX/QA documental.

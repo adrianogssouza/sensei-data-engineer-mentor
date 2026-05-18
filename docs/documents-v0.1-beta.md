@@ -14,6 +14,7 @@ Status: iniciado na TASK 021.
   - conteúdo bruto manual.
 - Listagem de fontes cadastradas.
 - Remoção de fontes cadastradas.
+- Edição básica de fontes cadastradas.
 - Geração automática de chunks simples quando há conteúdo bruto.
 - Reprocessamento de chunks por documento a partir de `raw_content`.
 - Busca lexical/local sobre chunks.
@@ -70,6 +71,13 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - hash SHA-256 em `content_hash`;
 - timestamp em `ingested_at`.
 
+Quando o conteúdo bruto de uma fonte existente é editado:
+
+- chunks antigos são removidos;
+- `chunk_count` volta para `0`;
+- `ingestion_status` passa para `needs_reprocess`;
+- `ingested_at` volta para `null`.
+
 ## Tipos aceitos
 
 - `manual`
@@ -93,6 +101,7 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - Na TASK 028, uma fonte temporária teve 1 embedding gerado com provider mock e foi removida ao final.
 - Na TASK 029, uma fonte temporária com embedding foi recuperada por busca vetorial e usada pelo chat em modo híbrido; a fonte foi removida ao final.
 - Na TASK 035, foi adicionada rota protegida e ação de UI para reprocessar uma fonte e regenerar seus chunks a partir do conteúdo bruto salvo.
+- Na TASK 036, foi adicionada edição básica de documento existente com invalidação segura de chunks quando o conteúdo bruto muda.
 
 ## Fora do escopo
 
@@ -101,4 +110,4 @@ Registros com conteúdo bruto entram como `ready` e recebem:
 - Parsing de PDF/HTML/DOCX.
 - Embeddings reais via provider externo.
 - RAG semântico com resposta generativa real sobre fontes.
-- Edição avançada do conteúdo bruto já salvo.
+- Histórico/versionamento de edições.

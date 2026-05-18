@@ -16,10 +16,10 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta com upload textual simples, reprocessamento de chunks, recuperação híbrida observável e avaliada
-- Última task concluída: TASK 035
-- Checkpoint atual: documentos podem ser cadastrados por texto colado, arquivo `.txt`/`.md` local, fixtures de eval e reprocessados pela UI
-- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou edição avançada de documentos
+- Fase atual: v0.1-beta com upload textual simples, edição de documentos, reprocessamento de chunks e recuperação híbrida observável
+- Última task concluída: TASK 036
+- Checkpoint atual: documentos podem ser cadastrados, editados, importados por `.txt`/`.md`, reprocessados e usados em evals
+- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria de UX/QA documental
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
@@ -41,7 +41,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Fixtures de evals: `src/lib/documents/retrieval-eval-fixtures.json` e `/api/documents/retrieval-fixtures` carregam fontes padrão no Supabase
 - Upload textual: `/workspace/documents` importa `.txt`, `.md` e `.markdown` no navegador e preenche `raw_content`
 - Reprocessamento de documentos: `/api/documents/reprocess` regenera chunks a partir de `raw_content` existente e deixa embeddings pendentes para nova geração
-- Próxima implementação planejada: decidir próximo incremento após reprocessamento de documentos
+- Edição de documentos: `PUT /api/documents` atualiza título, tipo, referência, notas e `raw_content`; quando o conteúdo muda, chunks antigos são removidos e a fonte fica como `needs_reprocess`
+- Próxima implementação planejada: decidir próximo incremento após edição básica de documentos
 
 ## Objetivo principal 2026
 

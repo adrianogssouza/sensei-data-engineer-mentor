@@ -42,6 +42,10 @@ type CreateDocumentRequestBody = {
   rawContent?: unknown;
 };
 
+type UpdateDocumentRequestBody = CreateDocumentRequestBody & {
+  documentId?: unknown;
+};
+
 function isSourceType(sourceType: unknown): sourceType is SourceType {
   return (
     typeof sourceType === "string" &&
@@ -116,6 +120,24 @@ function toDocumentSource(row: {
 
 function getContentHash(rawContent: string): string {
   return createHash("sha256").update(rawContent).digest("hex");
+}
+
+function mergeNotesMetadata(metadata: Json, notes: string | null): Json {
+  const normalizedMetadata =
+    metadata && typeof metadata === "object" && !Array.isArray(metadata)
+      ? { ...metadata }
+      : {};
+
+  if (notes) {
+    return {
+      ...normalizedMetadata,
+      notes,
+    };
+  }
+
+  delete normalizedMetadata.notes;
+
+  return normalizedMetadata;
 }
 
 function getUnavailableResponse(error: unknown) {
@@ -260,6 +282,118 @@ export async function POST(request: Request) {
     return Response.json({
       available: true,
       document: toDocumentSource(updatedData),
+    });
+  } catch (error) {
+    return getUnavailableResponse(error);
+  }
+}
+
+export async function PUT(request: Request) {
+  if (!hasPrivateAccess(request)) {
+    return getPrivateAccessResponse();
+  }
+
+  let body: UpdateDocumentRequestBody;
+
+  try {
+    body = (await request.json()) as UpdateDocumentRequestBody;
+  } catch {
+    return Response.json(
+      { available: false, error: "JSON invalido.", documents: [] },
+      { status: 400 },
+    );
+  }
+
+  const documentId =
+    typeof body.documentId === "string" ? body.documentId.trim() : "";
+  const title = normalizeTitle(body.title);
+
+  if (!documentId) {
+    return Response.json(
+      { available: false, error: "documentId obrigatorio.", documents: [] },
+      { status: 400 },
+    );
+  }
+
+  if (!title) {
+    return Response.json(
+      { available: false, error: "Titulo obrigatorio.", documents: [] },
+      { status: 400 },
+    );
+  }
+
+  const sourceType = isSourceType(body.sourceType) ? body.sourceType : "manual";
+  const sourcePath = normalizeOptionalText(
+    body.sourcePath,
+    MAX_SOURCE_PATH_LENGTH,
+  );
+  const notes = normalizeOptionalText(body.notes, MAX_NOTES_LENGTH);
+  const rawContent = normalizeOptionalText(
+    body.rawContent,
+    MAX_RAW_CONTENT_LENGTH,
+  );
+  const contentHash = rawContent ? getContentHash(rawContent) : null;
+
+  try {
+    const supabase = await createServerSupabaseClient();
+    const { data: existingDocument, error: existingError } = await supabase
+      .from("documents")
+      .select("id,content_hash,metadata")
+      .eq("id", documentId)
+      .single();
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    const contentChanged = existingDocument.content_hash !== contentHash;
+
+    if (contentChanged) {
+      const { error: deleteChunksError } = await supabase
+        .from("document_chunks")
+        .delete()
+        .eq("document_id", existingDocument.id);
+
+      if (deleteChunksError) {
+        throw deleteChunksError;
+      }
+    }
+
+    const updatedAt = new Date().toISOString();
+    const { data, error } = await supabase
+      .from("documents")
+      .update({
+        title,
+        source_type: sourceType,
+        source_path: sourcePath,
+        raw_content: rawContent,
+        content_char_count: rawContent?.length ?? 0,
+        content_hash: contentHash,
+        chunk_count: contentChanged ? 0 : undefined,
+        ingestion_status: contentChanged
+          ? rawContent
+            ? "needs_reprocess"
+            : "pending"
+          : undefined,
+        ingestion_error: null,
+        ingested_at: contentChanged ? null : undefined,
+        metadata: mergeNotesMetadata(existingDocument.metadata, notes),
+        updated_at: updatedAt,
+      })
+      .eq("id", existingDocument.id)
+      .select(
+        "id,title,source_type,source_path,raw_content,content_char_count,chunk_count,content_hash,ingestion_status,ingestion_error,ingested_at,metadata,created_at,updated_at",
+      )
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return Response.json({
+      available: true,
+      document: toDocumentSource(data),
+      contentChanged,
     });
   } catch (error) {
     return getUnavailableResponse(error);
