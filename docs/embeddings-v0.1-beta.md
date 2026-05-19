@@ -1,6 +1,6 @@
 # Embeddings v0.1-beta
 
-Status: recuperação híbrida observável e avaliada com filtros, edição e reprocessamento em lote após TASK 038.
+Status: recuperação híbrida observável e avaliada com filtros, edição, reprocessamento em lote e fila de embeddings após TASK 039.
 
 ## O que existe
 
@@ -12,6 +12,8 @@ Status: recuperação híbrida observável e avaliada com filtros, edição e re
 - Rota protegida `/api/documents/vector-search`.
 - Função SQL `match_document_chunks`.
 - Botão "Gerar embeddings" em `/workspace/documents`.
+- Contadores da fila de embeddings em `/workspace/documents`.
+- `GET /api/documents/embeddings` para consultar total, pendentes, prontos, erro e skipped.
 - Bloco de diagnóstico no chat para respostas com metadados de recuperação.
 - Eval manual em `/workspace/documents` para validar o topo do ranking híbrido.
 - Dataset padrão versionado em `src/lib/documents/retrieval-eval-dataset.json`.
@@ -54,6 +56,15 @@ A TASK 028 gera embeddings locais determinísticos:
 Essa geração serve para validar persistência no pgvector e fluxo operacional.
 Ela ainda não substitui embeddings reais de OpenAI ou outro provider.
 
+## Fila atual
+
+A TASK 039 tornou a fila de embeddings visível:
+
+- `GET /api/documents/embeddings` resume chunks por `embedding_status`.
+- A UI mostra total, pendentes, prontos, erro e skipped.
+- O botão "Atualizar fila" recarrega a visão sem gerar embeddings.
+- O `POST /api/documents/embeddings` devolve a fila atualizada após processar chunks pendentes.
+
 ## Fora do escopo
 
 - Chamar OpenAI ou outro provider de embeddings.
@@ -78,3 +89,4 @@ Ela ainda não substitui embeddings reais de OpenAI ou outro provider.
 - Na TASK 036, editar `rawContent` passou a invalidar chunks antigos e exigir reprocessamento antes de gerar embeddings novamente.
 - Na TASK 037, a UI passou a mostrar contadores e filtros para identificar documentos prontos, pendentes e a reprocessar.
 - Na TASK 038, a UI passou a reprocessar em lote a fila `needs_reprocess` antes de gerar embeddings novamente.
+- Na TASK 039, a API/UI passaram a exibir a fila de embeddings por status de chunk.

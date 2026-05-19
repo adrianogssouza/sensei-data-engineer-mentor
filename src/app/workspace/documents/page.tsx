@@ -53,6 +53,15 @@ type EmbeddingsApiResponse = {
   processedCount?: number;
   embeddedCount?: number;
   failedCount?: number;
+  queue?: EmbeddingQueueSummary;
+};
+
+type EmbeddingQueueSummary = {
+  total: number;
+  pending: number;
+  ready: number;
+  error: number;
+  skipped: number;
 };
 
 type ReprocessDocumentApiResponse = {
@@ -134,6 +143,14 @@ const DOCUMENT_STATUS_FILTERS: Array<{
 
 const ACCEPTED_TEXT_FILE_EXTENSIONS = [".txt", ".md", ".markdown"];
 
+const EMPTY_EMBEDDING_QUEUE: EmbeddingQueueSummary = {
+  total: 0,
+  pending: 0,
+  ready: 0,
+  error: 0,
+  skipped: 0,
+};
+
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
@@ -170,6 +187,9 @@ export default function WorkspaceDocumentsPage() {
   const [searchMessage, setSearchMessage] = useState<string | null>(null);
   const [isEmbedding, setIsEmbedding] = useState(false);
   const [embeddingMessage, setEmbeddingMessage] = useState<string | null>(null);
+  const [embeddingQueue, setEmbeddingQueue] =
+    useState<EmbeddingQueueSummary>(EMPTY_EMBEDDING_QUEUE);
+  const [isLoadingEmbeddingQueue, setIsLoadingEmbeddingQueue] = useState(false);
   const [evalQuery, setEvalQuery] = useState("");
   const [evalExpectedTitle, setEvalExpectedTitle] = useState("");
   const [evalExpectedContent, setEvalExpectedContent] = useState("");
@@ -268,6 +288,38 @@ export default function WorkspaceDocumentsPage() {
     return () => window.clearTimeout(timeoutId);
   }, []);
 
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      void loadEmbeddingQueue();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  async function loadEmbeddingQueue() {
+    setIsLoadingEmbeddingQueue(true);
+
+    try {
+      const response = await fetch("/api/documents/embeddings", {
+        cache: "no-store",
+      });
+      const payload = (await response.json()) as EmbeddingsApiResponse;
+
+      if (!response.ok || !payload.available || !payload.queue) {
+        setEmbeddingQueue(EMPTY_EMBEDDING_QUEUE);
+        setEmbeddingMessage(payload.error ?? "Fila de embeddings indisponivel.");
+        return;
+      }
+
+      setEmbeddingQueue(payload.queue);
+    } catch {
+      setEmbeddingQueue(EMPTY_EMBEDDING_QUEUE);
+      setEmbeddingMessage("Fila de embeddings indisponivel.");
+    } finally {
+      setIsLoadingEmbeddingQueue(false);
+    }
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSaving(true);
@@ -305,6 +357,7 @@ export default function WorkspaceDocumentsPage() {
       setRawContent("");
       setSourceType("manual");
       setStatusMessage("Fonte cadastrada.");
+      await loadEmbeddingQueue();
     } catch {
       setErrorMessage("Nao foi possivel salvar a fonte.");
     } finally {
@@ -431,6 +484,7 @@ export default function WorkspaceDocumentsPage() {
       setStatusMessage(
         `Fonte reprocessada com ${payload.chunkCount ?? 0} chunks. Gere embeddings novamente.`,
       );
+      await loadEmbeddingQueue();
     } catch {
       setErrorMessage("Nao foi possivel reprocessar a fonte.");
     } finally {
@@ -495,6 +549,7 @@ export default function WorkspaceDocumentsPage() {
       setStatusMessage(
         `${processedCount} fonte(s) reprocessada(s). Gere embeddings novamente.`,
       );
+      await loadEmbeddingQueue();
     } catch {
       setErrorMessage("Nao foi possivel reprocessar as fontes.");
     } finally {
@@ -573,6 +628,7 @@ export default function WorkspaceDocumentsPage() {
           ? "Fonte atualizada. Reprocesse os chunks antes de gerar embeddings."
           : "Fonte atualizada.",
       );
+      await loadEmbeddingQueue();
     } catch {
       setErrorMessage("Nao foi possivel atualizar a fonte.");
     } finally {
@@ -646,6 +702,11 @@ export default function WorkspaceDocumentsPage() {
             payload.model ?? "mock"
           }.`,
       );
+      if (payload.queue) {
+        setEmbeddingQueue(payload.queue);
+      } else {
+        await loadEmbeddingQueue();
+      }
     } catch {
       setEmbeddingMessage("Embeddings indisponiveis.");
     } finally {
@@ -891,14 +952,72 @@ export default function WorkspaceDocumentsPage() {
               não substitui o fallback lexical.
             </p>
           </div>
-          <button
-            className="border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
-            disabled={isEmbedding}
-            onClick={() => void handleGenerateEmbeddings()}
-            type="button"
-          >
-            {isEmbedding ? "Gerando..." : "Gerar embeddings"}
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              className="border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+              disabled={isLoadingEmbeddingQueue}
+              onClick={() => void loadEmbeddingQueue()}
+              type="button"
+            >
+              {isLoadingEmbeddingQueue ? "Atualizando..." : "Atualizar fila"}
+            </button>
+            <button
+              className="border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+              disabled={isEmbedding}
+              onClick={() => void handleGenerateEmbeddings()}
+              type="button"
+            >
+              {isEmbedding ? "Gerando..." : "Gerar embeddings"}
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <p className="text-sm font-medium text-zinc-950 dark:text-zinc-50">
+            Fila de embeddings
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-5">
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Total
+              </p>
+              <p className="mt-2 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {embeddingQueue.total}
+              </p>
+            </div>
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Pendentes
+              </p>
+              <p className="mt-2 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {embeddingQueue.pending}
+              </p>
+            </div>
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Prontos
+              </p>
+              <p className="mt-2 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {embeddingQueue.ready}
+              </p>
+            </div>
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Erro
+              </p>
+              <p className="mt-2 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {embeddingQueue.error}
+              </p>
+            </div>
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Skipped
+              </p>
+              <p className="mt-2 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {embeddingQueue.skipped}
+              </p>
+            </div>
+          </div>
         </div>
 
         <form className="mt-4 flex flex-col gap-3 sm:flex-row" onSubmit={handleSearch}>

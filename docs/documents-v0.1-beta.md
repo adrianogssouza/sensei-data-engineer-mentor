@@ -106,6 +106,7 @@ Quando o conteúdo bruto de uma fonte existente é editado:
 - Na TASK 036, foi adicionada edição básica de documento existente com invalidação segura de chunks quando o conteúdo bruto muda.
 - Na TASK 037, foram adicionados contadores e filtros de status para listar fontes prontas, pendentes e que precisam reprocessar.
 - Na TASK 038, foi adicionada ação de UI para reprocessar em lote a fila de fontes com `needs_reprocess`.
+- Na TASK 039, foi adicionada visão da fila de embeddings com contadores por status de chunk.
 
 ## Fora do escopo
 

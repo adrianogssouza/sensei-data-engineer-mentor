@@ -564,3 +564,15 @@ Depois de editar múltiplas fontes, reprocessar uma por uma gera atrito e aument
 
 Impacto:
 `/workspace/documents` ganhou o botão "Reprocessar fila", que processa documentos com `ingestion_status = needs_reprocess` e `raw_content` disponível reutilizando a rota protegida `/api/documents/reprocess`. A mudança é apenas de UI/orquestração client-side, sem novas rotas, migrations, storage físico, parsing avançado ou embeddings reais.
+
+---
+
+### DEC-049 — Fila de embeddings antes de embeddings reais
+
+TASK 039 implementou observabilidade da fila de embeddings.
+
+Motivo:
+Antes de trocar embeddings mock por embeddings reais, o usuário precisa enxergar quantos chunks ainda estão pendentes, prontos ou com erro. Isso reduz risco operacional e facilita QA sem custo externo.
+
+Impacto:
+`GET /api/documents/embeddings` passou a retornar contadores da fila por `embedding_status`, e `/workspace/documents` passou a exibir total, pendentes, prontos, erro e skipped com atualização manual. O `POST` de geração também retorna a fila atualizada. Não houve nova migration, job assíncrono, storage físico, parsing avançado ou embeddings reais.

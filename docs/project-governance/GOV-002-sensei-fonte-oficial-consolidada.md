@@ -16,9 +16,9 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta com upload textual simples, edição de documentos, filtros de status, reprocessamento em lote e recuperação híbrida observável
-- Última task concluída: TASK 038
-- Checkpoint atual: documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados individualmente/em lote e usados em evals
+- Fase atual: v0.1-beta com upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável e recuperação híbrida observável
+- Última task concluída: TASK 039
+- Checkpoint atual: documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados individualmente/em lote, acompanhados por fila de embeddings e usados em evals
 - Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
@@ -44,7 +44,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Edição de documentos: `PUT /api/documents` atualiza título, tipo, referência, notas e `raw_content`; quando o conteúdo muda, chunks antigos são removidos e a fonte fica como `needs_reprocess`
 - Status de documentos: `/workspace/documents` exibe contadores e filtros para todos, prontos, pendentes e fontes que precisam reprocessar
 - Reprocessamento em lote: `/workspace/documents` permite reprocessar a fila de fontes com `needs_reprocess` usando a rota existente `/api/documents/reprocess`
-- Próxima implementação planejada: decidir próximo incremento após reprocessamento em lote
+- Fila de embeddings: `/api/documents/embeddings` expõe contadores por status e `/workspace/documents` mostra a fila antes/depois da geração mock
+- Próxima implementação planejada: decidir próximo incremento após observabilidade da fila de embeddings
 
 ## Objetivo principal 2026
 
