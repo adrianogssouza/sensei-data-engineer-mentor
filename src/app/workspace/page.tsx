@@ -1,24 +1,25 @@
 import { WorkspaceCard } from "@/components/workspace/workspace-card";
+import { DocumentHealthOverview } from "@/components/workspace/document-health-overview";
 
 const cards = [
   {
     title: "Chat",
-    description: "Planned tutor conversation space. No AI integration yet.",
+    description: "Tutor mock com historico, fallback seguro e recuperacao hibrida sobre fontes.",
     href: "/workspace/chat",
   },
   {
     title: "Documents",
-    description: "Planned document area. No upload, RAG, or pgvector yet.",
+    description: "Fontes, chunks, busca, evals, reprocessamento e health documental.",
     href: "/workspace/documents",
   },
   {
     title: "Usage",
-    description: "Planned usage and cost view. Schema exists, UI is not connected.",
+    description: "Guardrails locais de chamadas, tokens e custo estimado.",
     href: "/workspace/usage",
   },
   {
     title: "Settings",
-    description: "Planned private app settings. No persistence yet.",
+    description: "Area reservada para configuracoes privadas futuras.",
     href: "/workspace/settings",
   },
 ];
@@ -42,11 +43,13 @@ export default function WorkspacePage() {
           Project status
         </h3>
         <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-          The Next.js foundation, Supabase foundation, optional auth foundation,
-          and local data schema exist. Feature pages below are placeholders and
-          do not read or write data yet.
+          The private workspace is connected to Supabase with RLS enabled,
+          protected internal APIs, document ingestion, hybrid retrieval,
+          evals, and operational health checks.
         </p>
       </section>
+
+      <DocumentHealthOverview />
 
       <section className="mt-8 grid gap-4 sm:grid-cols-2">
         {cards.map((card) => (

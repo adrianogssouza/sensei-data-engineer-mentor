@@ -108,6 +108,7 @@ Quando o conteúdo bruto de uma fonte existente é editado:
 - Na TASK 038, foi adicionada ação de UI para reprocessar em lote a fila de fontes com `needs_reprocess`.
 - Na TASK 039, foi adicionada visão da fila de embeddings com contadores por status de chunk.
 - Na TASK 042, foi adicionado health documental com status de banco, fontes, chunks e pendências de embeddings.
+- Na TASK 043, o health documental também passou a aparecer no overview do workspace.
 
 ## Fora do escopo
 

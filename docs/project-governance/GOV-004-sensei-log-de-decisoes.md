@@ -612,3 +612,15 @@ Depois do hardening de RLS, o projeto precisa de uma visão rápida para confirm
 
 Impacto:
 Foi criada a rota protegida `/api/documents/health` com contagens de documentos, chunks e estados de embedding. A tela `/workspace/documents` passou a mostrar o painel "Health documental" e o botão "Verificar health". Não houve nova migration, provider externo, storage físico ou parsing de PDF.
+
+---
+
+### DEC-053 — Health documental no overview
+
+TASK 043 levou o health documental para o overview do workspace.
+
+Motivo:
+Depois de criar o health na área de documentos, o usuário precisa ver o estado operacional da base logo ao abrir o workspace, sem navegar primeiro para a página de documentos.
+
+Impacto:
+`/workspace` passou a carregar um componente client que consulta `/api/documents/health`, mostra status, fontes, chunks e embeddings pendentes, e permite atualizar o sinal. Os cards do overview foram alinhados ao estado real do produto. Não houve nova migration, provider externo, storage físico ou parsing de PDF.

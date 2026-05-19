@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 042
-- Checkpoint: health documental protegido mostra acesso ao banco, fontes, chunks e pendências de embeddings
+- Task atual concluída: TASK 043
+- Checkpoint: overview do workspace mostra health documental e cards alinhados ao estado real do produto
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,7 +19,7 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: decidir próximo incremento após health documental
+- Próxima implementação definida: decidir próximo incremento após health no overview
 
 ## Próxima task
 
