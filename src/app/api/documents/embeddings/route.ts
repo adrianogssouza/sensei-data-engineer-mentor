@@ -5,7 +5,7 @@ import {
   MOCK_EMBEDDING_PROVIDER,
 } from "@/lib/documents/mock-embeddings";
 import { hasPrivateAccess, getPrivateAccessResponse } from "@/lib/private-access";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 
 const DEFAULT_BATCH_LIMIT = 10;
 const MAX_BATCH_LIMIT = 25;
@@ -46,7 +46,7 @@ function getEmptyQueueSummary(): EmbeddingQueueSummary {
 }
 
 async function getEmbeddingQueueSummary(
-  supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>,
+  supabase: ReturnType<typeof createServiceRoleSupabaseClient>,
 ): Promise<EmbeddingQueueSummary> {
   const { data, error } = await supabase
     .from("document_chunks")
@@ -81,7 +81,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const queue = await getEmbeddingQueueSummary(supabase);
 
     return Response.json({
@@ -120,7 +120,7 @@ export async function POST(request: Request) {
   const limit = normalizeLimit(body.limit);
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const { data, error } = await supabase
       .from("document_chunks")
       .select("id,content")

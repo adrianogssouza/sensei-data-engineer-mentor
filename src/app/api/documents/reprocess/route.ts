@@ -4,7 +4,7 @@ import {
   CHUNK_SIZE,
   createTextChunks,
 } from "@/lib/documents/chunking";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 
 type ReprocessDocumentRequestBody = {
   documentId?: unknown;
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const { data: document, error: documentError } = await supabase
       .from("documents")
       .select("id,raw_content")

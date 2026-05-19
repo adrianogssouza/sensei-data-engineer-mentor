@@ -3,9 +3,9 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-19
-- Fase: v0.1-beta com upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável e recuperação híbrida observável
-- Última task concluída: TASK 039
-- Checkpoint atual: documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados individualmente/em lote, acompanhados por fila de embeddings e usados em evals
+- Fase: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável e recuperação híbrida observável
+- Última task concluída: TASK 040
+- Checkpoint atual: dados do Supabase estão protegidos por RLS e acessados pelas APIs internas via service-role server-only; documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados individualmente/em lote, acompanhados por fila de embeddings e usados em evals
 - Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
 - Modo operacional: single-user/private
 
@@ -69,6 +69,7 @@
 - TASK 037 — Filtros/status de documentos
 - TASK 038 — Reprocessamento em lote
 - TASK 039 — Observabilidade da fila de embeddings
+- TASK 040 — Hardening RLS Supabase
 
 ## Bloqueios
 
@@ -116,7 +117,8 @@
 - Trigger helper `set_updated_at()` criado e aplicado às tabelas com `updated_at`.
 - Índices básicos criados para mensagens, eventos de uso e documentos.
 - Tipos TypeScript do banco atualizados manualmente.
-- Schema atual é single-user/private, sem `user_id`, RLS multi-user ou policies com `auth.uid()`.
+- Schema atual é single-user/private, sem `user_id` ou policies com `auth.uid()`.
+- RLS está habilitado nas tabelas do app, sem policies públicas; as APIs internas protegidas usam service-role server-only.
 - pgvector está habilitado e colunas de embedding existem em `document_chunks`.
 - Geração mock de embeddings foi implementada; embeddings reais via OpenAI, upload, RAG semântico e ownership multi-user ainda não foram implementados.
 - Nenhuma migration foi aplicada a banco remoto nesta task.

@@ -4,7 +4,7 @@ import {
   MOCK_EMBEDDING_MODEL,
   MOCK_EMBEDDING_PROVIDER,
 } from "@/lib/documents/mock-embeddings";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 
 const DEFAULT_MAX_RESULTS = 5;
 
@@ -35,7 +35,7 @@ export async function searchVectorDocumentChunks(
     return [];
   }
 
-  const supabase = await createServerSupabaseClient();
+  const supabase = createServiceRoleSupabaseClient();
   const queryEmbedding = formatPgvectorEmbedding(
     createMockEmbedding(normalizedQuery),
   );

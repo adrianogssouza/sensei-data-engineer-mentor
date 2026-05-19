@@ -6,7 +6,7 @@ import {
   CHUNK_SIZE,
   createTextChunks,
 } from "@/lib/documents/chunking";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/types";
 
 const MAX_TITLE_LENGTH = 120;
@@ -157,7 +157,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const { data, error } = await supabase
       .from("documents")
       .select(
@@ -218,7 +218,7 @@ export async function POST(request: Request) {
   const ingestedAt = rawContent ? new Date().toISOString() : null;
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const { data, error } = await supabase
       .from("documents")
       .insert({
@@ -335,7 +335,7 @@ export async function PUT(request: Request) {
   const contentHash = rawContent ? getContentHash(rawContent) : null;
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const { data: existingDocument, error: existingError } = await supabase
       .from("documents")
       .select("id,content_hash,metadata")
@@ -416,7 +416,7 @@ export async function DELETE(request: Request) {
   }
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const { error } = await supabase
       .from("documents")
       .delete()

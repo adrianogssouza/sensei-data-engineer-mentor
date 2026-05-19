@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 
 export const MAX_CHUNK_SEARCH_QUERY_LENGTH = 120;
 const DEFAULT_MAX_RESULTS = 8;
@@ -157,7 +157,7 @@ export async function searchDocumentChunks(
   }
 
   const maxResults = options.maxResults ?? DEFAULT_MAX_RESULTS;
-  const supabase = await createServerSupabaseClient();
+  const supabase = createServiceRoleSupabaseClient();
   const queryTerms = extractChunkSearchTerms(normalizedQuery);
   const candidateQueries = Array.from(
     new Set([normalizedQuery, ...queryTerms].filter(Boolean)),

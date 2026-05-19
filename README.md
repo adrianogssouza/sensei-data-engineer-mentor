@@ -16,9 +16,9 @@ https://sensei-data-engineer-mentor.vercel.app
 
 ## Fase Atual
 
-Fase atual: v0.1-beta privada com upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável e recuperação híbrida lexical + vetorial observável e avaliada.
+Fase atual: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável e recuperação híbrida lexical + vetorial observável e avaliada.
 
-O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema Supabase remoto, shell de workspace, UI de chat com persistência local/remota, UI mínima de histórico, skeleton interno de provider de IA, integração Gemini preparada, documentos manuais, upload textual simples, edição de documentos, filtros de status, chunks, reprocessamento individual/em lote, fila de embeddings, busca lexical ranqueada, pgvector, geração local determinística de embeddings, recuperação híbrida no chat mock, observabilidade da recuperação por mensagem, eval manual de recuperação, dataset padrão de evals e fixtures carregáveis. O modo operacional atual é single-user/private. RAG semântico completo, embeddings reais por provider externo, storage de arquivos, PDF/OCR e shadcn/ui ainda não foram implementados.
+O repositório já possui a fundação inicial em Next.js, documentação de governança, fundação de client Supabase, fundação mínima de Supabase Auth, schema Supabase remoto com RLS habilitado, shell de workspace, UI de chat com persistência local/remota, UI mínima de histórico, skeleton interno de provider de IA, integração Gemini preparada, documentos manuais, upload textual simples, edição de documentos, filtros de status, chunks, reprocessamento individual/em lote, fila de embeddings, busca lexical ranqueada, pgvector, geração local determinística de embeddings, recuperação híbrida no chat mock, observabilidade da recuperação por mensagem, eval manual de recuperação, dataset padrão de evals e fixtures carregáveis. O modo operacional atual é single-user/private. RAG semântico completo, embeddings reais por provider externo, storage de arquivos, PDF/OCR e shadcn/ui ainda não foram implementados.
 
 Handoff de portfólio: `docs/handoff-portfolio-v0.1-alpha.md`.
 
@@ -196,7 +196,7 @@ A fundação de autenticação foi implementada com login por email/password, si
 4. Rode `pnpm dev`.
 5. Acesse `/signup`, `/login` e `/dashboard`.
 
-Nenhuma service role key é usada pelos fluxos de UI/server de auth.
+As APIs internas protegidas usam service-role apenas no servidor para operar com RLS habilitado. A service-role key nunca deve ser exposta no browser.
 
 ## Schema Local do Supabase
 
@@ -214,7 +214,7 @@ ls supabase/migrations
 
 Não iniciar serviços locais do Supabase a menos que uma task peça isso explicitamente. A task atual não iniciou Docker, não aplicou migrations em banco local e não aplicou nada em projeto remoto do Supabase.
 
-O schema inicial é single-user/private e inclui configurações do app, tabelas futuras de histórico de chat, eventos de uso e metadados de documentos. Ele ainda não inclui `pgvector`, `document_chunks`, embeddings, tabelas RAG, colunas de ownership por usuário ou políticas RLS.
+O schema é single-user/private, com RLS habilitado nas tabelas do app e acesso operacional feito por APIs internas protegidas. Ele ainda não inclui tabelas RAG, colunas de ownership por usuário ou políticas multi-user com `auth.uid()`.
 
 ## Estrutura do Projeto
 
@@ -300,10 +300,11 @@ src/
 - TASK 037 - Filtros/status de documentos
 - TASK 038 - Reprocessamento em lote
 - TASK 039 - Observabilidade da fila de embeddings
+- TASK 040 - Hardening RLS Supabase
 
 ## Próximo Marco
 
-Decidir próximo incremento após observabilidade da fila de embeddings: embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.
+Decidir próximo incremento após hardening de RLS: embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.
 
 ## Status do Provider de IA
 
@@ -335,7 +336,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 039. A v0.1-beta já permite cadastrar, editar e filtrar fontes com conteúdo bruto, importar arquivos textuais, reprocessar chunks individualmente/em lote, acompanhar a fila de embeddings, buscar trechos com ranking lexical/local, gerar embeddings mock por chunk, usar recuperação híbrida no chat mock e validar recuperação com evals versionados.
+Checkpoint atual: o trabalho está sincronizado até TASK 040. A v0.1-beta já protege tabelas Supabase com RLS, permite cadastrar, editar e filtrar fontes com conteúdo bruto, importar arquivos textuais, reprocessar chunks individualmente/em lote, acompanhar a fila de embeddings, buscar trechos com ranking lexical/local, gerar embeddings mock por chunk, usar recuperação híbrida no chat mock e validar recuperação com evals versionados.
 
 ## Segredos
 

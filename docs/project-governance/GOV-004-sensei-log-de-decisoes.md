@@ -576,3 +576,15 @@ Antes de trocar embeddings mock por embeddings reais, o usuário precisa enxerga
 
 Impacto:
 `GET /api/documents/embeddings` passou a retornar contadores da fila por `embedding_status`, e `/workspace/documents` passou a exibir total, pendentes, prontos, erro e skipped com atualização manual. O `POST` de geração também retorna a fila atualizada. Não houve nova migration, job assíncrono, storage físico, parsing avançado ou embeddings reais.
+
+---
+
+### DEC-050 — RLS ativo com service-role server-only
+
+TASK 040 implementou hardening de RLS no Supabase.
+
+Motivo:
+O Security Advisor do Supabase apontou tabelas públicas sem RLS. Como o projeto é single-user/private, a correção segura é bloquear acesso direto via anon key e manter acesso operacional somente pelas APIs internas protegidas do Next.js.
+
+Impacto:
+As APIs internas de chat, documentos, busca, embeddings e fixtures passaram a usar `SUPABASE_SERVICE_ROLE_KEY` apenas no servidor. A migration `20260519193000_enable_private_app_rls.sql` habilitou RLS nas tabelas `app_settings`, `chat_threads`, `chat_messages`, `usage_events`, `documents` e `document_chunks`, sem criar policies públicas. As rotas continuam protegidas por senha privada em produção.

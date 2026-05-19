@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 
 const DEFAULT_THREAD_TITLE = "Conversa principal";
 const MAX_THREAD_TITLE_LENGTH = 80;
@@ -34,7 +34,7 @@ function getUnavailableResponse(error: unknown) {
 
 export async function GET() {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const { data, error } = await supabase
       .from("chat_threads")
       .select("id,title,created_at,updated_at,archived_at")
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const { data, error } = await supabase
       .from("chat_threads")
       .insert({
@@ -99,7 +99,7 @@ export async function DELETE(request: Request) {
   }
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const { error } = await supabase
       .from("chat_threads")
       .update({ archived_at: new Date().toISOString() })

@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 
 import retrievalEvalFixtures from "@/lib/documents/retrieval-eval-fixtures.json";
 import { getPrivateAccessResponse, hasPrivateAccess } from "@/lib/private-access";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 
 function getContentHash(rawContent: string): string {
   return createHash("sha256").update(rawContent).digest("hex");
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const fixtureSourcePaths = retrievalEvalFixtures.documents.map(
       (document) => document.sourcePath,
     );

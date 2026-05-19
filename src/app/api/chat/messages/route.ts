@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/types";
 import type { ChatRole } from "@/types/chat";
 
@@ -131,7 +131,7 @@ function getUnavailableResponse(error: unknown) {
 }
 
 async function createThread(title?: unknown): Promise<string> {
-  const supabase = await createServerSupabaseClient();
+  const supabase = createServiceRoleSupabaseClient();
   const normalizedTitle =
     typeof title === "string" && title.trim()
       ? title.trim().slice(0, 80)
@@ -160,7 +160,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const { data, error } = await supabase
       .from("chat_messages")
       .select("id,role,content,metadata,created_at")
@@ -215,7 +215,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = createServiceRoleSupabaseClient();
     const threadId =
       typeof body.threadId === "string" && body.threadId.trim()
         ? body.threadId.trim()

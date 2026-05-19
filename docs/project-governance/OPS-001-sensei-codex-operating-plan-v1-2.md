@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 039
-- Checkpoint: fila de embeddings observável por status na API e na UI de documentos
+- Task atual concluída: TASK 040
+- Checkpoint: RLS habilitado nas tabelas Supabase do app e APIs internas usando service-role server-only
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,7 +19,7 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: decidir próximo incremento após observabilidade da fila de embeddings
+- Próxima implementação definida: decidir próximo incremento após hardening de RLS
 
 ## Próxima task
 

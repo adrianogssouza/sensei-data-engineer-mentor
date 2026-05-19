@@ -7,6 +7,10 @@ type RequiredPublicEnvKey = (typeof REQUIRED_PUBLIC_ENV_KEYS)[number];
 
 export type PublicEnv = Record<RequiredPublicEnvKey, string>;
 
+export type SupabaseServiceRoleEnv = {
+  SUPABASE_SERVICE_ROLE_KEY: string;
+};
+
 export type AiProviderEnv = {
   AI_PROVIDER: string;
   GEMINI_API_KEY?: string;
@@ -46,11 +50,29 @@ function readRequiredEnv(key: RequiredPublicEnvKey): string {
   return value;
 }
 
+function readRequiredServerEnv(key: string): string {
+  const value = process.env[key];
+
+  if (!value) {
+    throw new Error(`Missing required server environment variable: ${key}`);
+  }
+
+  return value;
+}
+
 export function getPublicEnv(): PublicEnv {
   return {
     NEXT_PUBLIC_SUPABASE_URL: readRequiredEnv("NEXT_PUBLIC_SUPABASE_URL"),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: readRequiredEnv(
       "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    ),
+  };
+}
+
+export function getSupabaseServiceRoleEnv(): SupabaseServiceRoleEnv {
+  return {
+    SUPABASE_SERVICE_ROLE_KEY: readRequiredServerEnv(
+      "SUPABASE_SERVICE_ROLE_KEY",
     ),
   };
 }

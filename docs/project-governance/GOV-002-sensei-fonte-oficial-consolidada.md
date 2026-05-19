@@ -16,9 +16,9 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta com upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável e recuperação híbrida observável
-- Última task concluída: TASK 039
-- Checkpoint atual: documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados individualmente/em lote, acompanhados por fila de embeddings e usados em evals
+- Fase atual: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável e recuperação híbrida observável
+- Última task concluída: TASK 040
+- Checkpoint atual: dados do Supabase estão protegidos por RLS e acessados pelas APIs internas via service-role server-only; documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados individualmente/em lote, acompanhados por fila de embeddings e usados em evals
 - Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
@@ -26,6 +26,7 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - URL pública: `https://sensei-data-engineer-mentor.vercel.app`
 - Supabase remoto: projeto `xazgvdegyapkacsijvqw`, migration `20260429132612` aplicada
 - Acesso privado: `/workspace`, `/api/chat/*`, `/api/ai/*` e `/api/documents` protegidos quando `SENSEI_PRIVATE_ACCESS_PASSWORD` está configurada
+- Segurança Supabase: RLS habilitado nas tabelas do app; APIs internas protegidas usam `SUPABASE_SERVICE_ROLE_KEY` apenas no servidor
 - Fontes/documentos: cadastro manual implementado em `/workspace/documents`
 - Ingestão inicial: `raw_content`, contagem de caracteres, hash e `ingested_at` implementados em `documents`
 - Chunks: tabela `document_chunks` criada e preenchida automaticamente a partir de `raw_content`
@@ -45,7 +46,7 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Status de documentos: `/workspace/documents` exibe contadores e filtros para todos, prontos, pendentes e fontes que precisam reprocessar
 - Reprocessamento em lote: `/workspace/documents` permite reprocessar a fila de fontes com `needs_reprocess` usando a rota existente `/api/documents/reprocess`
 - Fila de embeddings: `/api/documents/embeddings` expõe contadores por status e `/workspace/documents` mostra a fila antes/depois da geração mock
-- Próxima implementação planejada: decidir próximo incremento após observabilidade da fila de embeddings
+- Próxima implementação planejada: decidir próximo incremento após hardening de RLS
 
 ## Objetivo principal 2026
 
