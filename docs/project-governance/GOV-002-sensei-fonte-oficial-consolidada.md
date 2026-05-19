@@ -17,8 +17,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
 - Fase atual: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável e recuperação híbrida observável
-- Última task concluída: TASK 040
-- Checkpoint atual: dados do Supabase estão protegidos por RLS e acessados pelas APIs internas via service-role server-only; documentos podem ser cadastrados, editados, filtrados por status, importados por `.txt`/`.md`, reprocessados individualmente/em lote, acompanhados por fila de embeddings e usados em evals
+- Última task concluída: TASK 041
+- Checkpoint atual: QA pós-RLS validou lint remoto do Supabase, bloqueio de escrita direta via anon key e proteção `401` das APIs públicas; dados do Supabase estão protegidos por RLS e acessados pelas APIs internas via service-role server-only
 - Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
@@ -46,7 +46,7 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Status de documentos: `/workspace/documents` exibe contadores e filtros para todos, prontos, pendentes e fontes que precisam reprocessar
 - Reprocessamento em lote: `/workspace/documents` permite reprocessar a fila de fontes com `needs_reprocess` usando a rota existente `/api/documents/reprocess`
 - Fila de embeddings: `/api/documents/embeddings` expõe contadores por status e `/workspace/documents` mostra a fila antes/depois da geração mock
-- Próxima implementação planejada: decidir próximo incremento após hardening de RLS
+- Próxima implementação planejada: decidir próximo incremento após QA pós-RLS
 
 ## Objetivo principal 2026
 

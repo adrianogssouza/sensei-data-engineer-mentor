@@ -588,3 +588,15 @@ O Security Advisor do Supabase apontou tabelas públicas sem RLS. Como o projeto
 
 Impacto:
 As APIs internas de chat, documentos, busca, embeddings e fixtures passaram a usar `SUPABASE_SERVICE_ROLE_KEY` apenas no servidor. A migration `20260519193000_enable_private_app_rls.sql` habilitou RLS nas tabelas `app_settings`, `chat_threads`, `chat_messages`, `usage_events`, `documents` e `document_chunks`, sem criar policies públicas. As rotas continuam protegidas por senha privada em produção.
+
+---
+
+### DEC-051 — QA pós-RLS antes de novas capacidades
+
+TASK 041 validou o hardening de RLS antes de avançar para embeddings reais, parsing avançado ou QA documental novo.
+
+Motivo:
+Depois de ativar RLS em produção, era necessário confirmar que o schema remoto não tinha erros, que a anon key não conseguia escrever diretamente no banco e que as APIs públicas continuavam protegidas.
+
+Impacto:
+`supabase db lint --linked` passou sem erros, a tentativa de `POST` direto em `app_settings` com anon key retornou bloqueio por RLS, e as rotas públicas `/api/documents` e `/api/documents/embeddings` seguiram respondendo `401` sem credenciais. O teste autenticado via CLI não foi executado porque a Vercel não expõe o valor da senha privada no env pull; a validação visual/autenticada pode ser feita pelo usuário no browser.

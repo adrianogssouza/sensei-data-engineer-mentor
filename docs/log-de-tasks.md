@@ -51,4 +51,5 @@
 - TASK 038 - Concluída: reprocessamento em lote da fila `needs_reprocess` implementado usando a rota existente de reprocessamento.
 - TASK 039 - Concluída: observabilidade da fila de embeddings implementada com contadores por status na API e na UI.
 - TASK 040 - Concluída: hardening RLS Supabase implementado com RLS nas tabelas do app e service-role server-only nas APIs internas.
-- Checkpoint atual - Concluído: v0.1-beta já protege tabelas Supabase com RLS, persiste conteúdo bruto por texto colado ou arquivo textual, permite editar documentos, filtrar por status, reprocessar chunks individualmente/em lote, acompanhar fila de embeddings, buscar com ranking lexical, gerar embeddings mock em pgvector, usar recuperação híbrida no chat mock, exibir diagnóstico visual e rodar evals versionados.
+- TASK 041 - Concluída: QA pós-RLS validou lint remoto do Supabase, bloqueio de escrita direta via anon key e proteção pública das APIs.
+- Checkpoint atual - Concluído: v0.1-beta já protege tabelas Supabase com RLS validado, persiste conteúdo bruto por texto colado ou arquivo textual, permite editar documentos, filtrar por status, reprocessar chunks individualmente/em lote, acompanhar fila de embeddings, buscar com ranking lexical, gerar embeddings mock em pgvector, usar recuperação híbrida no chat mock, exibir diagnóstico visual e rodar evals versionados.

@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 040
-- Checkpoint: RLS habilitado nas tabelas Supabase do app e APIs internas usando service-role server-only
+- Task atual concluída: TASK 041
+- Checkpoint: QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção pública das APIs
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,7 +19,7 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: decidir próximo incremento após hardening de RLS
+- Próxima implementação definida: decidir próximo incremento após QA pós-RLS
 
 ## Próxima task
 
