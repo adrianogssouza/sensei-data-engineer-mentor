@@ -600,3 +600,15 @@ Depois de ativar RLS em produção, era necessário confirmar que o schema remot
 
 Impacto:
 `supabase db lint --linked` passou sem erros, a tentativa de `POST` direto em `app_settings` com anon key retornou bloqueio por RLS, e as rotas públicas `/api/documents` e `/api/documents/embeddings` seguiram respondendo `401` sem credenciais. O teste autenticado via CLI não foi executado porque a Vercel não expõe o valor da senha privada no env pull; a validação visual/autenticada pode ser feita pelo usuário no browser.
+
+---
+
+### DEC-052 — Health documental antes de novas capacidades
+
+TASK 042 implementou health documental protegido.
+
+Motivo:
+Depois do hardening de RLS, o projeto precisa de uma visão rápida para confirmar se o banco está acessível pelas APIs internas e se a base documental tem pendências de ingestão, chunks ou embeddings antes de avançar para embeddings reais ou parsing avançado.
+
+Impacto:
+Foi criada a rota protegida `/api/documents/health` com contagens de documentos, chunks e estados de embedding. A tela `/workspace/documents` passou a mostrar o painel "Health documental" e o botão "Verificar health". Não houve nova migration, provider externo, storage físico ou parsing de PDF.

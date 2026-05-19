@@ -27,6 +27,34 @@ type DocumentsApiResponse = {
   contentChanged?: boolean;
 };
 
+type DocumentsHealth = {
+  checkedAt: string;
+  status: "ok" | "degraded";
+  database: {
+    reachable: boolean;
+  };
+  documents: {
+    total: number;
+    ready: number;
+    pending: number;
+    needsReprocess: number;
+  };
+  chunks: {
+    total: number;
+    embeddingPending: number;
+    embeddingReady: number;
+    embeddingError: number;
+    embeddingSkipped: number;
+  };
+  warnings: string[];
+};
+
+type DocumentsHealthApiResponse = {
+  available?: boolean;
+  error?: string;
+  health?: DocumentsHealth;
+};
+
 type ChunkSearchResult = {
   chunkId: string;
   documentId: string;
@@ -222,6 +250,13 @@ export default function WorkspaceDocumentsPage() {
   const [documentStatusFilter, setDocumentStatusFilter] =
     useState<DocumentStatusFilter>("all");
   const [isBulkReprocessing, setIsBulkReprocessing] = useState(false);
+  const [documentsHealth, setDocumentsHealth] =
+    useState<DocumentsHealth | null>(null);
+  const [isLoadingDocumentsHealth, setIsLoadingDocumentsHealth] =
+    useState(false);
+  const [documentsHealthMessage, setDocumentsHealthMessage] = useState<
+    string | null
+  >(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -296,6 +331,39 @@ export default function WorkspaceDocumentsPage() {
     return () => window.clearTimeout(timeoutId);
   }, []);
 
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      void loadDocumentsHealth();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  async function loadDocumentsHealth() {
+    setIsLoadingDocumentsHealth(true);
+    setDocumentsHealthMessage(null);
+
+    try {
+      const response = await fetch("/api/documents/health", {
+        cache: "no-store",
+      });
+      const payload = (await response.json()) as DocumentsHealthApiResponse;
+
+      if (!response.ok || !payload.available || !payload.health) {
+        setDocumentsHealth(null);
+        setDocumentsHealthMessage(payload.error ?? "Health check indisponivel.");
+        return;
+      }
+
+      setDocumentsHealth(payload.health);
+    } catch {
+      setDocumentsHealth(null);
+      setDocumentsHealthMessage("Health check indisponivel.");
+    } finally {
+      setIsLoadingDocumentsHealth(false);
+    }
+  }
+
   async function loadEmbeddingQueue() {
     setIsLoadingEmbeddingQueue(true);
 
@@ -358,6 +426,7 @@ export default function WorkspaceDocumentsPage() {
       setSourceType("manual");
       setStatusMessage("Fonte cadastrada.");
       await loadEmbeddingQueue();
+      await loadDocumentsHealth();
     } catch {
       setErrorMessage("Nao foi possivel salvar a fonte.");
     } finally {
@@ -485,6 +554,7 @@ export default function WorkspaceDocumentsPage() {
         `Fonte reprocessada com ${payload.chunkCount ?? 0} chunks. Gere embeddings novamente.`,
       );
       await loadEmbeddingQueue();
+      await loadDocumentsHealth();
     } catch {
       setErrorMessage("Nao foi possivel reprocessar a fonte.");
     } finally {
@@ -550,6 +620,7 @@ export default function WorkspaceDocumentsPage() {
         `${processedCount} fonte(s) reprocessada(s). Gere embeddings novamente.`,
       );
       await loadEmbeddingQueue();
+      await loadDocumentsHealth();
     } catch {
       setErrorMessage("Nao foi possivel reprocessar as fontes.");
     } finally {
@@ -629,6 +700,7 @@ export default function WorkspaceDocumentsPage() {
           : "Fonte atualizada.",
       );
       await loadEmbeddingQueue();
+      await loadDocumentsHealth();
     } catch {
       setErrorMessage("Nao foi possivel atualizar a fonte.");
     } finally {
@@ -707,6 +779,7 @@ export default function WorkspaceDocumentsPage() {
       } else {
         await loadEmbeddingQueue();
       }
+      await loadDocumentsHealth();
     } catch {
       setEmbeddingMessage("Embeddings indisponiveis.");
     } finally {
@@ -828,6 +901,93 @@ export default function WorkspaceDocumentsPage() {
           a futura base de conhecimento.
         </p>
       </div>
+
+      <section className="border border-zinc-200 p-5 dark:border-zinc-800">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h3 className="text-base font-medium text-zinc-950 dark:text-zinc-50">
+              Health documental
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+              Verifica acesso ao Supabase, volume de fontes, chunks e estados
+              de embeddings depois do hardening de RLS.
+            </p>
+          </div>
+          <button
+            className="border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+            disabled={isLoadingDocumentsHealth}
+            onClick={() => void loadDocumentsHealth()}
+            type="button"
+          >
+            {isLoadingDocumentsHealth ? "Verificando..." : "Verificar health"}
+          </button>
+        </div>
+
+        {documentsHealth ? (
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Status
+              </p>
+              <p
+                className={`mt-2 text-xl font-semibold ${
+                  documentsHealth.status === "ok"
+                    ? "text-emerald-700 dark:text-emerald-400"
+                    : "text-amber-700 dark:text-amber-400"
+                }`}
+              >
+                {documentsHealth.status}
+              </p>
+            </div>
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Banco
+              </p>
+              <p className="mt-2 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {documentsHealth.database.reachable ? "online" : "offline"}
+              </p>
+            </div>
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Fontes
+              </p>
+              <p className="mt-2 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {documentsHealth.documents.total}
+              </p>
+            </div>
+            <div className="border border-zinc-200 p-3 dark:border-zinc-800">
+              <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+                Chunks
+              </p>
+              <p className="mt-2 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+                {documentsHealth.chunks.total}
+              </p>
+            </div>
+          </div>
+        ) : null}
+
+        {documentsHealth ? (
+          <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+            Prontos {documentsHealth.documents.ready} · pendentes{" "}
+            {documentsHealth.documents.pending} · reprocessar{" "}
+            {documentsHealth.documents.needsReprocess} · embeddings pendentes{" "}
+            {documentsHealth.chunks.embeddingPending} · erros{" "}
+            {documentsHealth.chunks.embeddingError}
+          </p>
+        ) : null}
+
+        {documentsHealth?.warnings.length ? (
+          <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">
+            {documentsHealth.warnings.join(" ")}
+          </p>
+        ) : null}
+
+        {documentsHealthMessage ? (
+          <p className="mt-3 text-sm text-red-700 dark:text-red-400">
+            {documentsHealthMessage}
+          </p>
+        ) : null}
+      </section>
 
       <form
         className="grid gap-4 border border-zinc-200 p-5 dark:border-zinc-800"

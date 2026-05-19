@@ -4,8 +4,8 @@
 
 - Data de atualização: 2026-05-19
 - Fase: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável e recuperação híbrida observável
-- Última task concluída: TASK 041
-- Checkpoint atual: QA pós-RLS validou lint remoto do Supabase, bloqueio de escrita direta via anon key e proteção `401` das APIs públicas; dados do Supabase estão protegidos por RLS e acessados pelas APIs internas via service-role server-only
+- Última task concluída: TASK 042
+- Checkpoint atual: health documental protegido valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
 - Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
 - Modo operacional: single-user/private
 
@@ -71,6 +71,7 @@
 - TASK 039 — Observabilidade da fila de embeddings
 - TASK 040 — Hardening RLS Supabase
 - TASK 041 — QA pós-RLS
+- TASK 042 — Health documental
 
 ## Bloqueios
 
