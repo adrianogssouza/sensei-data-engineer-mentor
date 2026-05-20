@@ -110,6 +110,7 @@ Quando o conteúdo bruto de uma fonte existente é editado:
 - Na TASK 042, foi adicionado health documental com status de banco, fontes, chunks e pendências de embeddings.
 - Na TASK 043, o health documental também passou a aparecer no overview do workspace.
 - Na TASK 044, o overview passou a derivar prontidão de recuperação/evals a partir do health documental, com atalhos para documentos e chat.
+- Na TASK 045, o overview passou a incluir smoke test de recuperação usando a busca sobre chunks.
 
 ## Fora do escopo
 

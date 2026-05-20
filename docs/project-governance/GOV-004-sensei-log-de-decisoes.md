@@ -636,3 +636,15 @@ Depois de exibir o health documental no overview, o próximo passo pequeno era t
 
 Impacto:
 `/workspace` passou a derivar o estado "Recuperacao" a partir de `/api/documents/health`, com estados para health carregando/indisponível, base sem chunks, reprocessamento pendente, erro/pêndencia de embeddings e pronto para evals. O painel também inclui atalhos para `/workspace/documents` e `/workspace/chat`. Não houve nova migration, provider externo, storage físico, parsing de PDF ou embeddings reais.
+
+---
+
+### DEC-055 — Smoke test de recuperação no overview
+
+TASK 045 adicionou um smoke test de recuperação ao overview do workspace.
+
+Motivo:
+Depois de mostrar prontidão de recuperação, o usuário precisa validar rapidamente se uma consulta simples retorna chunks sem navegar para a página de documentos e sem acionar provider externo.
+
+Impacto:
+`/workspace` passou a ter um campo de smoke test que chama `/api/documents/search`, mostra a quantidade de chunks recuperados e exibe o primeiro resultado quando existir. A mudança reaproveita a busca lexical/local existente, sem nova migration, provider externo, storage físico, parsing de PDF ou embeddings reais.

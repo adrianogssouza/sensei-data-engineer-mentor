@@ -305,10 +305,11 @@ src/
 - TASK 042 - Health documental
 - TASK 043 - Health documental no overview
 - TASK 044 - Prontidão de recuperação no overview
+- TASK 045 - Smoke test de recuperação no overview
 
 ## Próximo Marco
 
-Decidir próximo incremento após prontidão de recuperação no overview: embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.
+Decidir próximo incremento após smoke test de recuperação no overview: embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.
 
 ## Status do Provider de IA
 
@@ -340,7 +341,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 044. A v0.1-beta já protege tabelas Supabase com RLS validado, expõe health documental no overview e em documentos, mostra prontidão de recuperação/evals no overview, permite cadastrar, editar e filtrar fontes com conteúdo bruto, importar arquivos textuais, reprocessar chunks individualmente/em lote, acompanhar a fila de embeddings, buscar trechos com ranking lexical/local, gerar embeddings mock por chunk, usar recuperação híbrida no chat mock e validar recuperação com evals versionados.
+Checkpoint atual: o trabalho está sincronizado até TASK 045. A v0.1-beta já protege tabelas Supabase com RLS validado, expõe health documental no overview e em documentos, mostra prontidão de recuperação/evals e smoke test de busca no overview, permite cadastrar, editar e filtrar fontes com conteúdo bruto, importar arquivos textuais, reprocessar chunks individualmente/em lote, acompanhar a fila de embeddings, buscar trechos com ranking lexical/local, gerar embeddings mock por chunk, usar recuperação híbrida no chat mock e validar recuperação com evals versionados.
 
 ## Segredos
 

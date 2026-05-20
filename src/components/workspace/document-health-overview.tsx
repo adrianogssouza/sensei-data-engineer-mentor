@@ -31,6 +31,19 @@ type DocumentsHealthApiResponse = {
   health?: DocumentsHealth;
 };
 
+type RecoverySmokeResult = {
+  documentTitle: string;
+  chunkIndex: number;
+  score: number;
+  content: string;
+};
+
+type RecoverySmokeApiResponse = {
+  available?: boolean;
+  error?: string;
+  results?: RecoverySmokeResult[];
+};
+
 type RecoveryReadinessStatus = "ready" | "attention" | "blocked";
 
 type RecoveryReadiness = {
@@ -118,6 +131,10 @@ export function DocumentHealthOverview() {
   const [health, setHealth] = useState<DocumentsHealth | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [smokeQuery, setSmokeQuery] = useState("window functions");
+  const [smokeResults, setSmokeResults] = useState<RecoverySmokeResult[]>([]);
+  const [smokeMessage, setSmokeMessage] = useState<string | null>(null);
+  const [isRunningSmoke, setIsRunningSmoke] = useState(false);
 
   async function loadHealth() {
     setIsLoading(true);
@@ -155,6 +172,48 @@ export function DocumentHealthOverview() {
   const recoveryReadiness = health
     ? getRecoveryReadiness(health)
     : getPendingRecoveryReadiness(isLoading, message);
+
+  async function runRecoverySmoke(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const query = smokeQuery.trim();
+
+    if (!query) {
+      setSmokeResults([]);
+      setSmokeMessage("Informe uma pergunta ou termo para testar.");
+      return;
+    }
+
+    setIsRunningSmoke(true);
+    setSmokeMessage(null);
+
+    try {
+      const response = await fetch(
+        `/api/documents/search?q=${encodeURIComponent(query)}`,
+        { cache: "no-store" },
+      );
+      const payload = (await response.json()) as RecoverySmokeApiResponse;
+      const results = payload.results ?? [];
+
+      if (!response.ok || !payload.available) {
+        setSmokeResults([]);
+        setSmokeMessage(payload.error ?? "Smoke test indisponivel.");
+        return;
+      }
+
+      setSmokeResults(results);
+      setSmokeMessage(
+        results.length > 0
+          ? `${results.length} chunk(s) recuperado(s).`
+          : "Nenhum chunk encontrado para esta consulta.",
+      );
+    } catch {
+      setSmokeResults([]);
+      setSmokeMessage("Smoke test indisponivel.");
+    } finally {
+      setIsRunningSmoke(false);
+    }
+  }
 
   return (
     <section className="mt-8 border-t border-zinc-200 pt-6 dark:border-zinc-800">
@@ -265,6 +324,51 @@ export function DocumentHealthOverview() {
             </Link>
           </div>
         </div>
+
+        <form className="mt-4" onSubmit={runRecoverySmoke}>
+          <label
+            className="text-xs uppercase tracking-[0.16em] text-zinc-500"
+            htmlFor="recovery-smoke-query"
+          >
+            Smoke test
+          </label>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <input
+              className="min-w-0 flex-1 border border-zinc-300 bg-transparent px-3 py-2 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-500 focus:border-zinc-950 dark:border-zinc-700 dark:text-zinc-50 dark:focus:border-zinc-50"
+              id="recovery-smoke-query"
+              onChange={(event) => setSmokeQuery(event.target.value)}
+              placeholder="Ex.: window functions"
+              type="text"
+              value={smokeQuery}
+            />
+            <button
+              className="border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+              disabled={isRunningSmoke}
+              type="submit"
+            >
+              {isRunningSmoke ? "Testando..." : "Testar recuperacao"}
+            </button>
+          </div>
+        </form>
+
+        {smokeMessage ? (
+          <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+            {smokeMessage}
+          </p>
+        ) : null}
+
+        {smokeResults[0] ? (
+          <div className="mt-3 border-t border-zinc-200 pt-3 text-sm dark:border-zinc-800">
+            <p className="font-medium text-zinc-950 dark:text-zinc-50">
+              {smokeResults[0].documentTitle} · chunk{" "}
+              {smokeResults[0].chunkIndex + 1} · score{" "}
+              {smokeResults[0].score}
+            </p>
+            <p className="mt-2 line-clamp-3 leading-6 text-zinc-600 dark:text-zinc-400">
+              {smokeResults[0].content}
+            </p>
+          </div>
+        ) : null}
       </div>
 
       {health?.warnings.length ? (

@@ -16,9 +16,9 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável, recuperação híbrida observável e prontidão de recuperação no overview
-- Última task concluída: TASK 044
-- Checkpoint atual: overview do workspace exibe health documental protegido e prontidão de recuperação/evals com atalhos para documentos e chat; health valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
+- Fase atual: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável, recuperação híbrida observável, prontidão de recuperação e smoke test no overview
+- Última task concluída: TASK 045
+- Checkpoint atual: overview do workspace exibe health documental protegido, prontidão de recuperação/evals e smoke test de busca sobre chunks com atalhos para documentos e chat; health valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
 - Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
@@ -48,7 +48,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Fila de embeddings: `/api/documents/embeddings` expõe contadores por status e `/workspace/documents` mostra a fila antes/depois da geração mock
 - Health documental: `/api/documents/health`, `/workspace` e `/workspace/documents` mostram status operacional de banco, fontes, chunks e pendências
 - Prontidão de recuperação: `/workspace` deriva do health documental se a base está bloqueada, em atenção ou pronta para evals/chat com fontes
-- Próxima implementação planejada: decidir próximo incremento após prontidão de recuperação no overview
+- Smoke test de recuperação: `/workspace` permite consultar `/api/documents/search` rapidamente para validar se a base retorna chunks
+- Próxima implementação planejada: decidir próximo incremento após smoke test de recuperação no overview
 
 ## Objetivo principal 2026
 
