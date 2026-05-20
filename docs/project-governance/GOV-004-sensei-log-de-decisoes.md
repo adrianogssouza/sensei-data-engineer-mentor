@@ -624,3 +624,15 @@ Depois de criar o health na área de documentos, o usuário precisa ver o estado
 
 Impacto:
 `/workspace` passou a carregar um componente client que consulta `/api/documents/health`, mostra status, fontes, chunks e embeddings pendentes, e permite atualizar o sinal. Os cards do overview foram alinhados ao estado real do produto. Não houve nova migration, provider externo, storage físico ou parsing de PDF.
+
+---
+
+### DEC-054 — Prontidão de recuperação no overview
+
+TASK 044 adicionou prontidão de recuperação/evals ao overview do workspace.
+
+Motivo:
+Depois de exibir o health documental no overview, o próximo passo pequeno era transformar os sinais de banco, fontes, chunks e embeddings em uma leitura operacional direta: bloqueado, atenção ou pronto para testar recuperação no chat/evals.
+
+Impacto:
+`/workspace` passou a derivar o estado "Recuperacao" a partir de `/api/documents/health`, com estados para health carregando/indisponível, base sem chunks, reprocessamento pendente, erro/pêndencia de embeddings e pronto para evals. O painel também inclui atalhos para `/workspace/documents` e `/workspace/chat`. Não houve nova migration, provider externo, storage físico, parsing de PDF ou embeddings reais.

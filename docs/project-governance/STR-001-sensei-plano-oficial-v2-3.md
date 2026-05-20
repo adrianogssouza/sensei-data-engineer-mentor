@@ -96,6 +96,7 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 041 concluída
 - TASK 042 concluída
 - TASK 043 concluída
+- TASK 044 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Fundação Next.js criada
@@ -134,10 +135,11 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - QA pós-RLS executado com lint remoto do Supabase, bloqueio direto via anon key e rotas públicas protegidas.
 - Health documental implementado para acompanhar acesso ao banco, fontes, chunks e pendências operacionais.
 - Overview do workspace atualizado com health documental e cards alinhados ao estado real do produto.
+- Overview do workspace atualizado com prontidão de recuperação/evals derivada do health documental.
 
 ## Próximo passo
 
-Decidir próximo incremento após health no overview: embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.
+Decidir próximo incremento após prontidão de recuperação no overview: embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.
 
 ## Regra central
 

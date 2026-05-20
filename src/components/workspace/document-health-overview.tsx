@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type DocumentsHealth = {
@@ -29,6 +30,89 @@ type DocumentsHealthApiResponse = {
   error?: string;
   health?: DocumentsHealth;
 };
+
+type RecoveryReadinessStatus = "ready" | "attention" | "blocked";
+
+type RecoveryReadiness = {
+  status: RecoveryReadinessStatus;
+  label: string;
+  detail: string;
+};
+
+function getRecoveryReadiness(health: DocumentsHealth) {
+  if (!health.database.reachable) {
+    return {
+      status: "blocked",
+      label: "Banco indisponivel",
+      detail: "Confirme Supabase e variaveis de ambiente antes de testar recuperacao.",
+    };
+  }
+
+  if (health.documents.total === 0 || health.chunks.total === 0) {
+    return {
+      status: "blocked",
+      label: "Sem base recuperavel",
+      detail: "Cadastre ou carregue fontes antes de avaliar recuperacao.",
+    };
+  }
+
+  if (health.documents.needsReprocess > 0) {
+    return {
+      status: "attention",
+      label: "Reprocessamento pendente",
+      detail: "Reprocesse fontes alteradas antes de rodar evals ou usar o chat.",
+    };
+  }
+
+  if (health.chunks.embeddingError > 0) {
+    return {
+      status: "attention",
+      label: "Erro em embeddings",
+      detail: "Revise chunks com erro antes de confiar no ranking hibrido.",
+    };
+  }
+
+  if (health.chunks.embeddingPending > 0) {
+    return {
+      status: "attention",
+      label: "Embeddings pendentes",
+      detail: "Gere embeddings para melhorar a recuperacao hibrida.",
+    };
+  }
+
+  return {
+    status: "ready",
+    label: "Pronto para evals",
+    detail: "A base tem chunks e embeddings prontos para validar recuperacao.",
+  };
+}
+
+function getPendingRecoveryReadiness(
+  isLoading: boolean,
+  message: string | null,
+): RecoveryReadiness {
+  if (isLoading) {
+    return {
+      status: "attention",
+      label: "Verificando health",
+      detail: "Aguardando leitura da base antes de liberar o teste de recuperacao.",
+    };
+  }
+
+  if (message) {
+    return {
+      status: "blocked",
+      label: "Health indisponivel",
+      detail: "Corrija a configuracao do health documental antes de avaliar recuperacao.",
+    };
+  }
+
+  return {
+    status: "attention",
+    label: "Health pendente",
+    detail: "Atualize o painel para recalcular a prontidao da recuperacao.",
+  };
+}
 
 export function DocumentHealthOverview() {
   const [health, setHealth] = useState<DocumentsHealth | null>(null);
@@ -67,6 +151,10 @@ export function DocumentHealthOverview() {
 
     return () => window.clearTimeout(timeoutId);
   }, []);
+
+  const recoveryReadiness = health
+    ? getRecoveryReadiness(health)
+    : getPendingRecoveryReadiness(isLoading, message);
 
   return (
     <section className="mt-8 border-t border-zinc-200 pt-6 dark:border-zinc-800">
@@ -140,6 +228,44 @@ export function DocumentHealthOverview() {
           {health.chunks.embeddingError}
         </p>
       ) : null}
+
+      <div className="mt-4 border border-zinc-200 p-4 dark:border-zinc-800">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+              Recuperacao
+            </p>
+            <p
+              className={`mt-2 text-base font-medium ${
+                recoveryReadiness.status === "ready"
+                  ? "text-emerald-700 dark:text-emerald-400"
+                  : recoveryReadiness.status === "attention"
+                    ? "text-amber-700 dark:text-amber-400"
+                    : "text-red-700 dark:text-red-400"
+              }`}
+            >
+              {recoveryReadiness.label}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+              {recoveryReadiness.detail}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              className="border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+              href="/workspace/documents"
+            >
+              Abrir documentos
+            </Link>
+            <Link
+              className="border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
+              href="/workspace/chat"
+            >
+              Testar chat
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {health?.warnings.length ? (
         <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">
