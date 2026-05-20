@@ -111,12 +111,13 @@ Quando o conteúdo bruto de uma fonte existente é editado:
 - Na TASK 043, o health documental também passou a aparecer no overview do workspace.
 - Na TASK 044, o overview passou a derivar prontidão de recuperação/evals a partir do health documental, com atalhos para documentos e chat.
 - Na TASK 045, o overview passou a incluir smoke test de recuperação usando a busca sobre chunks.
+- Na TASK 046, a geração de embeddings passou a suportar provider OpenAI opcional com `text-embedding-3-small`, mantendo mock como padrão.
 
 ## Fora do escopo
 
 - Upload físico de arquivos.
 - Storage de arquivos.
 - Parsing de PDF/HTML/DOCX.
-- Embeddings reais via provider externo.
+- Embeddings reais em produção ainda dependem de configurar `OPENAI_API_KEY` e trocar `EMBEDDINGS_PROVIDER=openai`.
 - RAG semântico com resposta generativa real sobre fontes.
 - Histórico/versionamento de edições.

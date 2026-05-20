@@ -17,12 +17,20 @@ export type AiProviderEnv = {
   GEMINI_MODEL: string;
 };
 
+export type EmbeddingProviderEnv = {
+  EMBEDDINGS_PROVIDER: string;
+  OPENAI_API_KEY?: string;
+  OPENAI_EMBEDDING_MODEL: string;
+};
+
 export type PrivateAccessEnv = {
   SENSEI_PRIVATE_ACCESS_PASSWORD?: string;
 };
 
 const DEFAULT_AI_PROVIDER = "mock";
 const DEFAULT_GEMINI_MODEL = "gemini-2.0-flash-lite";
+const DEFAULT_EMBEDDINGS_PROVIDER = "mock";
+const DEFAULT_OPENAI_EMBEDDING_MODEL = "text-embedding-3-small";
 
 export type AiUsageGuardrailEnv = {
   DAILY_TOKEN_LIMIT: number;
@@ -88,6 +96,16 @@ export function getAiProviderEnv(): AiProviderEnv {
     AI_PROVIDER: process.env.AI_PROVIDER ?? DEFAULT_AI_PROVIDER,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     GEMINI_MODEL: process.env.GEMINI_MODEL ?? DEFAULT_GEMINI_MODEL,
+  };
+}
+
+export function getEmbeddingProviderEnv(): EmbeddingProviderEnv {
+  return {
+    EMBEDDINGS_PROVIDER:
+      process.env.EMBEDDINGS_PROVIDER ?? DEFAULT_EMBEDDINGS_PROVIDER,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    OPENAI_EMBEDDING_MODEL:
+      process.env.OPENAI_EMBEDDING_MODEL ?? DEFAULT_OPENAI_EMBEDDING_MODEL,
   };
 }
 

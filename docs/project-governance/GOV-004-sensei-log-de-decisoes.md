@@ -648,3 +648,15 @@ Depois de mostrar prontidão de recuperação, o usuário precisa validar rapida
 
 Impacto:
 `/workspace` passou a ter um campo de smoke test que chama `/api/documents/search`, mostra a quantidade de chunks recuperados e exibe o primeiro resultado quando existir. A mudança reaproveita a busca lexical/local existente, sem nova migration, provider externo, storage físico, parsing de PDF ou embeddings reais.
+
+---
+
+### DEC-056 — Fundação de embeddings reais via OpenAI
+
+TASK 046 preparou embeddings reais como provider opcional.
+
+Motivo:
+Para o SENSEI ficar operacional de verdade com RAG, a base precisa sair do embedding mock e suportar embeddings reais sem quebrar o modo seguro atual. O próximo passo pequeno era criar a fundação server-side e manter a ativação dependente de variável de ambiente segura.
+
+Impacto:
+Foi criado provider de embeddings `mock`/`openai`, com mock como padrão e OpenAI ativável por `EMBEDDINGS_PROVIDER=openai`, `OPENAI_API_KEY` e `OPENAI_EMBEDDING_MODEL`. A rota `/api/documents/embeddings` passou a usar o provider ativo. A busca vetorial passou a gerar query embedding com o mesmo provider e a RPC `match_document_chunks` foi atualizada para filtrar `embedding_provider` e `embedding_model`, evitando misturar espaços vetoriais mock e reais. Não houve SDK novo, segredo commitado, storage físico ou parsing de PDF.

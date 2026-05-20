@@ -16,10 +16,10 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável, recuperação híbrida observável, prontidão de recuperação e smoke test no overview
-- Última task concluída: TASK 045
-- Checkpoint atual: overview do workspace exibe health documental protegido, prontidão de recuperação/evals e smoke test de busca sobre chunks com atalhos para documentos e chat; health valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
-- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
+- Fase atual: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável, recuperação híbrida observável, prontidão de recuperação, smoke test no overview e fundação de embeddings reais
+- Última task concluída: TASK 046
+- Checkpoint atual: embeddings reais via OpenAI foram preparados como provider opcional, mantendo mock como padrão seguro; overview do workspace exibe health documental protegido, prontidão de recuperação/evals e smoke test de busca sobre chunks com atalhos para documentos e chat; health valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
+- Próxima task: configurar credenciais de embeddings reais na Vercel ou avançar para parsing avançado/PDF
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
 - Repositório GitHub: privado em `adrianogssouza/sensei-data-engineer-mentor`
@@ -34,7 +34,7 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Chat com fontes: `/api/ai/chat` consulta chunks por termos da pergunta e passa trechos ao provider mock
 - Ranking lexical: busca por frase e termos relevantes, com `matchedTerms`, contagens e score simples
 - Embeddings: extensão `vector` habilitada e colunas de embedding preparadas em `document_chunks`
-- Geração de embeddings: rota protegida `/api/documents/embeddings` usa `mock-hash-embedding-v1`
+- Geração de embeddings: rota protegida `/api/documents/embeddings` suporta provider mock por padrão e OpenAI opcional com `EMBEDDINGS_PROVIDER=openai`
 - Recuperação híbrida: `/api/ai/chat` usa ranking lexical + busca vetorial com fallback lexical
 - Observabilidade da recuperação: mensagens do assistente podem exibir modo, ranking, contagens lexical/vetorial e termos usados
 - Evals de recuperação: `/api/documents/retrieval-evals` e UI em `/workspace/documents` validam o topo do ranking híbrido
@@ -49,7 +49,8 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Health documental: `/api/documents/health`, `/workspace` e `/workspace/documents` mostram status operacional de banco, fontes, chunks e pendências
 - Prontidão de recuperação: `/workspace` deriva do health documental se a base está bloqueada, em atenção ou pronta para evals/chat com fontes
 - Smoke test de recuperação: `/workspace` permite consultar `/api/documents/search` rapidamente para validar se a base retorna chunks
-- Próxima implementação planejada: decidir próximo incremento após smoke test de recuperação no overview
+- Embeddings reais: `text-embedding-3-small` preparado via OpenAI API sem SDK; chave real deve ficar apenas em env segura
+- Próxima implementação planejada: configurar embeddings reais em produção ou avançar para parsing avançado/PDF
 
 ## Objetivo principal 2026
 

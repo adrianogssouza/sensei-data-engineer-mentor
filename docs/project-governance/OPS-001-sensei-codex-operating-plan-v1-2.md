@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 045
-- Checkpoint: overview do workspace mostra health documental, prontidão de recuperação/evals, smoke test de busca e atalhos para documentos/chat
+- Task atual concluída: TASK 046
+- Checkpoint: embeddings reais via OpenAI preparados como provider opcional; mock permanece padrão seguro
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada
@@ -19,14 +19,14 @@
 - Runtime real bloqueado por quota/billing do Google (`429 RESOURCE_EXHAUSTED`)
 - Mock fallback operacional
 - Guardrails locais em memória operacionais
-- Próxima implementação definida: decidir próximo incremento após smoke test de recuperação no overview
+- Próxima implementação definida: configurar embeddings reais em produção ou avançar para parsing avançado/PDF
 
 ## Próxima task
 
 Ainda não definida.
 
 Objetivo esperado:
-- escolher entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
+- configurar `EMBEDDINGS_PROVIDER=openai` com `OPENAI_API_KEY` quando houver chave disponível, ou avançar para parsing avançado/PDF
 - manter escopo pequeno e validável
 - não implementar tudo de uma vez; uma task por vez
 - continuar usando sessões curtas de Codex

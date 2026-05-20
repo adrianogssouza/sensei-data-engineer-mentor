@@ -1,9 +1,8 @@
 import {
-  createMockEmbedding,
-  formatPgvectorEmbedding,
-  MOCK_EMBEDDING_MODEL,
-  MOCK_EMBEDDING_PROVIDER,
-} from "@/lib/documents/mock-embeddings";
+  createEmbedding,
+  getActiveEmbeddingProviderConfig,
+} from "@/lib/documents/embeddings";
+import { formatPgvectorEmbedding } from "@/lib/documents/mock-embeddings";
 import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 
 const DEFAULT_MAX_RESULTS = 5;
@@ -36,12 +35,19 @@ export async function searchVectorDocumentChunks(
   }
 
   const supabase = createServiceRoleSupabaseClient();
-  const queryEmbedding = formatPgvectorEmbedding(
-    createMockEmbedding(normalizedQuery),
-  );
+  const provider = getActiveEmbeddingProviderConfig();
+
+  if (!provider.available) {
+    return [];
+  }
+
+  const embeddingResult = await createEmbedding(normalizedQuery);
+  const queryEmbedding = formatPgvectorEmbedding(embeddingResult.embedding);
   const { data, error } = await supabase.rpc("match_document_chunks", {
     query_embedding: queryEmbedding,
     match_count: options.maxResults ?? DEFAULT_MAX_RESULTS,
+    embedding_provider_filter: embeddingResult.provider,
+    embedding_model_filter: embeddingResult.model,
   });
 
   if (error) {
@@ -56,8 +62,8 @@ export async function searchVectorDocumentChunks(
     content: row.content,
     charCount: row.char_count,
     similarity: row.similarity,
-    embeddingProvider: MOCK_EMBEDDING_PROVIDER,
-    embeddingModel: MOCK_EMBEDDING_MODEL,
+    embeddingProvider: embeddingResult.provider,
+    embeddingModel: embeddingResult.model,
     createdAt: row.created_at,
   }));
 }

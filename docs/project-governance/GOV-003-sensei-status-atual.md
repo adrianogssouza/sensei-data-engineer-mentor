@@ -3,10 +3,10 @@
 ## Retrato Atual
 
 - Data de atualização: 2026-05-20
-- Fase: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável, recuperação híbrida observável, prontidão de recuperação e smoke test no overview
-- Última task concluída: TASK 045
-- Checkpoint atual: overview do workspace exibe health documental protegido, prontidão de recuperação/evals e smoke test de busca sobre chunks com atalhos para documentos e chat; health valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
-- Próxima task: decidir entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental
+- Fase: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável, recuperação híbrida observável, prontidão de recuperação, smoke test no overview e fundação de embeddings reais
+- Última task concluída: TASK 046
+- Checkpoint atual: embeddings reais via OpenAI foram preparados como provider opcional, mantendo mock como padrão seguro; overview do workspace exibe health documental protegido, prontidão de recuperação/evals e smoke test de busca sobre chunks com atalhos para documentos e chat; health valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
+- Próxima task: configurar credenciais de embeddings reais na Vercel ou avançar para parsing avançado/PDF
 - Modo operacional: single-user/private
 
 ## Ambiente validado
@@ -75,6 +75,7 @@
 - TASK 043 — Health documental no overview
 - TASK 044 — Prontidão de recuperação no overview
 - TASK 045 — Smoke test de recuperação no overview
+- TASK 046 — Fundação de embeddings reais
 
 ## Bloqueios
 
@@ -125,8 +126,8 @@
 - Schema atual é single-user/private, sem `user_id` ou policies com `auth.uid()`.
 - RLS está habilitado nas tabelas do app, sem policies públicas; as APIs internas protegidas usam service-role server-only.
 - pgvector está habilitado e colunas de embedding existem em `document_chunks`.
-- Geração mock de embeddings foi implementada; embeddings reais via OpenAI, upload, RAG semântico e ownership multi-user ainda não foram implementados.
-- Nenhuma migration foi aplicada a banco remoto nesta task.
+- Geração mock de embeddings foi implementada; embeddings reais via OpenAI foram preparados como provider opcional, mas ainda dependem de chave real em ambiente seguro.
+- Migration `20260520194500_filter_vector_match_by_embedding_provider` aplicada ao Supabase remoto para filtrar busca vetorial por provider/model.
 
 ## Shell do Workspace
 

@@ -245,6 +245,8 @@ export type Database = {
         Args: {
           query_embedding: string;
           match_count?: number;
+          embedding_provider_filter?: string | null;
+          embedding_model_filter?: string | null;
         };
         Returns: {
           chunk_id: string;

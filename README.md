@@ -171,6 +171,16 @@ Gemini é o primeiro provider real para experimentação inicial com controle de
 AI_PROVIDER=mock
 ```
 
+Opcional para embeddings reais:
+
+```bash
+EMBEDDINGS_PROVIDER=openai
+OPENAI_API_KEY=
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+```
+
+Sem `OPENAI_API_KEY`, mantenha `EMBEDDINGS_PROVIDER=mock`. A busca vetorial filtra provider/model para evitar misturar embeddings mock e reais.
+
 Guardrails locais de uso/custo:
 
 ```bash
@@ -306,10 +316,11 @@ src/
 - TASK 043 - Health documental no overview
 - TASK 044 - Prontidão de recuperação no overview
 - TASK 045 - Smoke test de recuperação no overview
+- TASK 046 - Fundação de embeddings reais
 
 ## Próximo Marco
 
-Decidir próximo incremento após smoke test de recuperação no overview: embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.
+Configurar embeddings reais em produção ou avançar para parsing avançado/PDF.
 
 ## Status do Provider de IA
 
@@ -319,7 +330,7 @@ Provider padrão atual: `mock`.
 
 Gemini está disponível pela rota server quando explicitamente habilitado com `AI_PROVIDER=gemini` e `GEMINI_API_KEY`. O modelo padrão é `gemini-2.0-flash-lite`, escolhido para experimentação com controle de custo. Se Gemini não estiver configurado ou falhar, o provider mock permanece como fallback.
 
-Anthropic e OpenAI estão planejados como ids de provider, mas nenhum SDK Anthropic/OpenAI foi instalado. Ainda não há RAG semântico, embeddings reais por provider externo, upload, streaming ou persistência de uso em banco.
+Anthropic e OpenAI seguem planejados para chat/geração, mas nenhum SDK Anthropic/OpenAI foi instalado. Embeddings reais via OpenAI estão preparados por `fetch` server-side, com mock como padrão seguro. Ainda não há RAG semântico completo, upload, streaming ou persistência de uso em banco.
 
 ## Guardrails de Uso / Custo
 
@@ -341,7 +352,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 045. A v0.1-beta já protege tabelas Supabase com RLS validado, expõe health documental no overview e em documentos, mostra prontidão de recuperação/evals e smoke test de busca no overview, permite cadastrar, editar e filtrar fontes com conteúdo bruto, importar arquivos textuais, reprocessar chunks individualmente/em lote, acompanhar a fila de embeddings, buscar trechos com ranking lexical/local, gerar embeddings mock por chunk, usar recuperação híbrida no chat mock e validar recuperação com evals versionados.
+Checkpoint atual: o trabalho está sincronizado até TASK 046. A v0.1-beta já protege tabelas Supabase com RLS validado, expõe health documental no overview e em documentos, mostra prontidão de recuperação/evals e smoke test de busca no overview, permite cadastrar, editar e filtrar fontes com conteúdo bruto, importar arquivos textuais, reprocessar chunks individualmente/em lote, acompanhar a fila de embeddings, buscar trechos com ranking lexical/local, gerar embeddings mock por chunk, preparar embeddings reais via OpenAI, usar recuperação híbrida no chat mock e validar recuperação com evals versionados.
 
 ## Segredos
 

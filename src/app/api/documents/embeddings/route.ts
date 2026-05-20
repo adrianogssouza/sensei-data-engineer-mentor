@@ -1,9 +1,8 @@
 import {
-  createMockEmbedding,
-  formatPgvectorEmbedding,
-  MOCK_EMBEDDING_MODEL,
-  MOCK_EMBEDDING_PROVIDER,
-} from "@/lib/documents/mock-embeddings";
+  createEmbedding,
+  getActiveEmbeddingProviderConfig,
+} from "@/lib/documents/embeddings";
+import { formatPgvectorEmbedding } from "@/lib/documents/mock-embeddings";
 import { hasPrivateAccess, getPrivateAccessResponse } from "@/lib/private-access";
 import { createServiceRoleSupabaseClient } from "@/lib/supabase/server";
 
@@ -82,23 +81,27 @@ export async function GET(request: Request) {
 
   try {
     const supabase = createServiceRoleSupabaseClient();
+    const provider = getActiveEmbeddingProviderConfig();
     const queue = await getEmbeddingQueueSummary(supabase);
 
     return Response.json({
       available: true,
-      provider: MOCK_EMBEDDING_PROVIDER,
-      model: MOCK_EMBEDDING_MODEL,
+      provider: provider.provider,
+      model: provider.model,
+      providerAvailable: provider.available,
       queue,
     });
   } catch (error) {
+    const provider = getActiveEmbeddingProviderConfig();
     const message =
       error instanceof Error ? error.message : "Fila de embeddings indisponivel.";
 
     return Response.json({
       available: false,
       error: message,
-      provider: MOCK_EMBEDDING_PROVIDER,
-      model: MOCK_EMBEDDING_MODEL,
+      provider: provider.provider,
+      model: provider.model,
+      providerAvailable: provider.available,
       queue: getEmptyQueueSummary(),
     });
   }
@@ -121,6 +124,12 @@ export async function POST(request: Request) {
 
   try {
     const supabase = createServiceRoleSupabaseClient();
+    const provider = getActiveEmbeddingProviderConfig();
+
+    if (!provider.available) {
+      throw new Error("Provider de embeddings indisponivel.");
+    }
+
     const { data, error } = await supabase
       .from("document_chunks")
       .select("id,content")
@@ -138,15 +147,14 @@ export async function POST(request: Request) {
 
     for (const chunk of chunks) {
       try {
-        const embedding = formatPgvectorEmbedding(
-          createMockEmbedding(chunk.content),
-        );
+        const result = await createEmbedding(chunk.content);
+        const embedding = formatPgvectorEmbedding(result.embedding);
         const { error: updateError } = await supabase
           .from("document_chunks")
           .update({
             embedding,
-            embedding_provider: MOCK_EMBEDDING_PROVIDER,
-            embedding_model: MOCK_EMBEDDING_MODEL,
+            embedding_provider: result.provider,
+            embedding_model: result.model,
             embedding_status: "ready",
             embedding_error: null,
             embedded_at: new Date().toISOString(),
@@ -175,8 +183,9 @@ export async function POST(request: Request) {
 
     return Response.json({
       available: true,
-      provider: MOCK_EMBEDDING_PROVIDER,
-      model: MOCK_EMBEDDING_MODEL,
+      provider: provider.provider,
+      model: provider.model,
+      providerAvailable: provider.available,
       limit,
       processedCount: chunks.length,
       embeddedCount,
@@ -190,6 +199,9 @@ export async function POST(request: Request) {
     return Response.json({
       available: false,
       error: message,
+      provider: getActiveEmbeddingProviderConfig().provider,
+      model: getActiveEmbeddingProviderConfig().model,
+      providerAvailable: getActiveEmbeddingProviderConfig().available,
       processedCount: 0,
       embeddedCount: 0,
       failedCount: 0,
