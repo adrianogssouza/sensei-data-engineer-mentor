@@ -78,6 +78,7 @@ type EmbeddingsApiResponse = {
   error?: string;
   provider?: string;
   model?: string;
+  providerAvailable?: boolean;
   processedCount?: number;
   embeddedCount?: number;
   failedCount?: number;
@@ -90,6 +91,12 @@ type EmbeddingQueueSummary = {
   ready: number;
   error: number;
   skipped: number;
+};
+
+type EmbeddingProviderStatus = {
+  provider: string;
+  model: string;
+  available: boolean;
 };
 
 type ReprocessDocumentApiResponse = {
@@ -179,6 +186,12 @@ const EMPTY_EMBEDDING_QUEUE: EmbeddingQueueSummary = {
   skipped: 0,
 };
 
+const DEFAULT_EMBEDDING_PROVIDER_STATUS: EmbeddingProviderStatus = {
+  provider: "mock",
+  model: "mock-hash-embedding-v1",
+  available: true,
+};
+
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
@@ -217,6 +230,8 @@ export default function WorkspaceDocumentsPage() {
   const [embeddingMessage, setEmbeddingMessage] = useState<string | null>(null);
   const [embeddingQueue, setEmbeddingQueue] =
     useState<EmbeddingQueueSummary>(EMPTY_EMBEDDING_QUEUE);
+  const [embeddingProviderStatus, setEmbeddingProviderStatus] =
+    useState<EmbeddingProviderStatus>(DEFAULT_EMBEDDING_PROVIDER_STATUS);
   const [isLoadingEmbeddingQueue, setIsLoadingEmbeddingQueue] = useState(false);
   const [evalQuery, setEvalQuery] = useState("");
   const [evalExpectedTitle, setEvalExpectedTitle] = useState("");
@@ -375,11 +390,13 @@ export default function WorkspaceDocumentsPage() {
 
       if (!response.ok || !payload.available || !payload.queue) {
         setEmbeddingQueue(EMPTY_EMBEDDING_QUEUE);
+        updateEmbeddingProviderStatus(payload);
         setEmbeddingMessage(payload.error ?? "Fila de embeddings indisponivel.");
         return;
       }
 
       setEmbeddingQueue(payload.queue);
+      updateEmbeddingProviderStatus(payload);
     } catch {
       setEmbeddingQueue(EMPTY_EMBEDDING_QUEUE);
       setEmbeddingMessage("Fila de embeddings indisponivel.");
@@ -432,6 +449,16 @@ export default function WorkspaceDocumentsPage() {
     } finally {
       setIsSaving(false);
     }
+  }
+
+  function updateEmbeddingProviderStatus(payload: EmbeddingsApiResponse) {
+    setEmbeddingProviderStatus({
+      provider: payload.provider ?? DEFAULT_EMBEDDING_PROVIDER_STATUS.provider,
+      model: payload.model ?? DEFAULT_EMBEDDING_PROVIDER_STATUS.model,
+      available:
+        payload.providerAvailable ??
+        DEFAULT_EMBEDDING_PROVIDER_STATUS.available,
+    });
   }
 
   async function handleTextFileImport(
@@ -764,10 +791,12 @@ export default function WorkspaceDocumentsPage() {
       const payload = (await response.json()) as EmbeddingsApiResponse;
 
       if (!response.ok || !payload.available) {
+        updateEmbeddingProviderStatus(payload);
         setEmbeddingMessage(payload.error ?? "Embeddings indisponiveis.");
         return;
       }
 
+      updateEmbeddingProviderStatus(payload);
       setEmbeddingMessage(
         `${payload.embeddedCount ?? 0} chunk(s) com embedding gerado. ` +
           `${payload.failedCount ?? 0} falha(s). Modelo: ${
@@ -1123,7 +1152,7 @@ export default function WorkspaceDocumentsPage() {
             </button>
             <button
               className="border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50 dark:hover:text-zinc-50"
-              disabled={isEmbedding}
+              disabled={isEmbedding || !embeddingProviderStatus.available}
               onClick={() => void handleGenerateEmbeddings()}
               type="button"
             >
@@ -1136,6 +1165,18 @@ export default function WorkspaceDocumentsPage() {
           <p className="text-sm font-medium text-zinc-950 dark:text-zinc-50">
             Fila de embeddings
           </p>
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            Provider {embeddingProviderStatus.provider} - modelo{" "}
+            {embeddingProviderStatus.model} -{" "}
+            {embeddingProviderStatus.available
+              ? "disponivel"
+              : "indisponivel"}
+          </p>
+          {!embeddingProviderStatus.available ? (
+            <p className="mt-2 text-sm text-amber-700 dark:text-amber-400">
+              Configure a chave do provider antes de gerar embeddings reais.
+            </p>
+          ) : null}
           <div className="mt-3 grid gap-3 sm:grid-cols-5">
             <div className="border border-zinc-200 p-3 dark:border-zinc-800">
               <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">

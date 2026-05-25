@@ -660,3 +660,15 @@ Para o SENSEI ficar operacional de verdade com RAG, a base precisa sair do embed
 
 Impacto:
 Foi criado provider de embeddings `mock`/`openai`, com mock como padrão e OpenAI ativável por `EMBEDDINGS_PROVIDER=openai`, `OPENAI_API_KEY` e `OPENAI_EMBEDDING_MODEL`. A rota `/api/documents/embeddings` passou a usar o provider ativo. A busca vetorial passou a gerar query embedding com o mesmo provider e a RPC `match_document_chunks` foi atualizada para filtrar `embedding_provider` e `embedding_model`, evitando misturar espaços vetoriais mock e reais. Não houve SDK novo, segredo commitado, storage físico ou parsing de PDF.
+
+---
+
+### DEC-057 — Visibilidade operacional do provider de embeddings
+
+TASK 047 tornou o provider de embeddings visível em `/workspace/documents`.
+
+Motivo:
+Depois de preparar OpenAI como provider opcional, a operação precisava deixar claro se a geração está usando mock ou provider real e se a configuração atual permite gerar embeddings.
+
+Impacto:
+`/workspace/documents` passou a exibir provider, modelo e disponibilidade na área da fila de embeddings. Quando o provider configurado estiver indisponível, a ação de gerar embeddings fica bloqueada e a UI orienta configurar a chave antes de tentar gerar embeddings reais. Não houve nova migration, segredo commitado, provider novo, storage físico ou parsing de PDF.

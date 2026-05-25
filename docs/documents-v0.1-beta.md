@@ -112,6 +112,7 @@ Quando o conteúdo bruto de uma fonte existente é editado:
 - Na TASK 044, o overview passou a derivar prontidão de recuperação/evals a partir do health documental, com atalhos para documentos e chat.
 - Na TASK 045, o overview passou a incluir smoke test de recuperação usando a busca sobre chunks.
 - Na TASK 046, a geração de embeddings passou a suportar provider OpenAI opcional com `text-embedding-3-small`, mantendo mock como padrão.
+- Na TASK 047, a área de embeddings passou a mostrar provider/modelo/status e bloquear geração quando o provider configurado estiver indisponível.
 
 ## Fora do escopo
 

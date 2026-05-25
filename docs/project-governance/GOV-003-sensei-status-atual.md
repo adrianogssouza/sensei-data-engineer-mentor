@@ -2,10 +2,10 @@
 
 ## Retrato Atual
 
-- Data de atualização: 2026-05-20
-- Fase: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável, recuperação híbrida observável, prontidão de recuperação, smoke test no overview e fundação de embeddings reais
-- Última task concluída: TASK 046
-- Checkpoint atual: embeddings reais via OpenAI foram preparados como provider opcional, mantendo mock como padrão seguro; overview do workspace exibe health documental protegido, prontidão de recuperação/evals e smoke test de busca sobre chunks com atalhos para documentos e chat; health valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
+- Data de atualização: 2026-05-25
+- Fase: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável, provider de embeddings visível, recuperação híbrida observável, prontidão de recuperação, smoke test no overview e fundação de embeddings reais
+- Última task concluída: TASK 047
+- Checkpoint atual: `/workspace/documents` mostra provider/modelo/status dos embeddings e bloqueia a geração quando o provider configurado estiver indisponível; embeddings reais via OpenAI foram preparados como provider opcional, mantendo mock como padrão seguro; overview do workspace exibe health documental protegido, prontidão de recuperação/evals e smoke test de busca sobre chunks com atalhos para documentos e chat; health valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
 - Próxima task: configurar credenciais de embeddings reais na Vercel ou avançar para parsing avançado/PDF
 - Modo operacional: single-user/private
 
@@ -76,6 +76,7 @@
 - TASK 044 — Prontidão de recuperação no overview
 - TASK 045 — Smoke test de recuperação no overview
 - TASK 046 — Fundação de embeddings reais
+- TASK 047 — Visibilidade do provider de embeddings
 
 ## Bloqueios
 
@@ -536,14 +537,16 @@
 - TASK 039 adicionou `GET /api/documents/embeddings` para resumir chunks por `embedding_status`.
 - A fila mostra total, pendentes, prontos, erro e skipped.
 - `/workspace/documents` exibe a fila perto da busca/chunks e permite atualizar manualmente.
+- TASK 047 adicionou visibilidade de provider/modelo/status dos embeddings na mesma área.
+- A ação de gerar embeddings fica bloqueada quando o provider configurado está indisponível.
 - Gerar embeddings mock, cadastrar, editar e reprocessar fontes atualiza a visão da fila.
-- Não foram adicionados embeddings reais, nova migration, job assíncrono ou storage físico de arquivos.
+- Não foram adicionados nova migration, job assíncrono ou storage físico de arquivos.
 
 ## Plano Curto v0.1-alpha
 
 - TASK 012 definiu a sequência curta para fechar v0.1-alpha.
 - Sequência curta TASK 013 a TASK 017 concluída.
-- Próxima implementação planejada: decidir próximo incremento após observabilidade da fila de embeddings.
+- Próxima implementação planejada: configurar embeddings reais em produção ou avançar para parsing avançado/PDF.
 - Gemini não é bloqueador da v0.1-alpha; mock provider permanece fluxo oficial enquanto quota/billing estiver bloqueado.
 - RAG, embeddings, upload, pgvector, OpenAI/Anthropic SDK, streaming e multi-user continuam fora do escopo até fechar v0.1-alpha.
 
@@ -558,4 +561,4 @@
 
 ## Próxima ação recomendada
 
-Escolher entre embeddings reais, parsing avançado/PDF ou melhoria adicional de QA documental.
+Escolher entre configurar embeddings reais em produção, parsing avançado/PDF ou melhoria adicional de QA documental.

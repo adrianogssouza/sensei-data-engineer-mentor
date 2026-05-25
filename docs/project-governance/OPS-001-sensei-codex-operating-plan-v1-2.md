@@ -10,8 +10,8 @@
 
 ## Estado atual
 
-- Task atual concluída: TASK 046
-- Checkpoint: embeddings reais via OpenAI preparados como provider opcional; mock permanece padrão seguro
+- Task atual concluída: TASK 047
+- Checkpoint: `/workspace/documents` mostra provider/modelo/status dos embeddings; geração é bloqueada quando o provider configurado está indisponível
 - Repositório bootstrapado
 - Ambiente validado
 - Documentação base criada e normalizada

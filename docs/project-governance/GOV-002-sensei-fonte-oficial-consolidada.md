@@ -16,9 +16,9 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Nome: SENSEI Data Engineer Mentor
 - Executor principal: Codex
 - Assistência estratégica: ChatGPT
-- Fase atual: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável, recuperação híbrida observável, prontidão de recuperação, smoke test no overview e fundação de embeddings reais
-- Última task concluída: TASK 046
-- Checkpoint atual: embeddings reais via OpenAI foram preparados como provider opcional, mantendo mock como padrão seguro; overview do workspace exibe health documental protegido, prontidão de recuperação/evals e smoke test de busca sobre chunks com atalhos para documentos e chat; health valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
+- Fase atual: v0.1-beta privada com RLS habilitado, upload textual simples, edição de documentos, filtros de status, reprocessamento em lote, fila de embeddings observável, provider de embeddings visível, recuperação híbrida observável, prontidão de recuperação, smoke test no overview e fundação de embeddings reais
+- Última task concluída: TASK 047
+- Checkpoint atual: `/workspace/documents` mostra provider/modelo/status dos embeddings e bloqueia a geração quando o provider configurado estiver indisponível; embeddings reais via OpenAI foram preparados como provider opcional, mantendo mock como padrão seguro; overview do workspace exibe health documental protegido, prontidão de recuperação/evals e smoke test de busca sobre chunks com atalhos para documentos e chat; health valida acesso ao Supabase, contagens de fontes/chunks e pendências de embeddings; QA pós-RLS validou lint remoto, bloqueio direto via anon key e proteção `401` das APIs públicas
 - Próxima task: configurar credenciais de embeddings reais na Vercel ou avançar para parsing avançado/PDF
 - Bloqueio atual: quota/billing do Google Gemini para chamada real (`429 RESOURCE_EXHAUSTED`)
 - Fallback operacional atual: provider mock
@@ -46,6 +46,7 @@ Em caso de conflito entre documentos, seguir esta precedência:
 - Status de documentos: `/workspace/documents` exibe contadores e filtros para todos, prontos, pendentes e fontes que precisam reprocessar
 - Reprocessamento em lote: `/workspace/documents` permite reprocessar a fila de fontes com `needs_reprocess` usando a rota existente `/api/documents/reprocess`
 - Fila de embeddings: `/api/documents/embeddings` expõe contadores por status e `/workspace/documents` mostra a fila antes/depois da geração mock
+- Provider de embeddings: `/workspace/documents` mostra provider/modelo/status e orienta configurar chave quando o provider real estiver indisponível
 - Health documental: `/api/documents/health`, `/workspace` e `/workspace/documents` mostram status operacional de banco, fontes, chunks e pendências
 - Prontidão de recuperação: `/workspace` deriva do health documental se a base está bloqueada, em atenção ou pronta para evals/chat com fontes
 - Smoke test de recuperação: `/workspace` permite consultar `/api/documents/search` rapidamente para validar se a base retorna chunks

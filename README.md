@@ -317,6 +317,7 @@ src/
 - TASK 044 - Prontidão de recuperação no overview
 - TASK 045 - Smoke test de recuperação no overview
 - TASK 046 - Fundação de embeddings reais
+- TASK 047 - Visibilidade do provider de embeddings
 
 ## Próximo Marco
 
@@ -352,7 +353,7 @@ A integração do provider Gemini está implementada e `/api/ai/chat` alcança a
 
 O fallback mock permanece operacional. Para testar Gemini real no futuro, garanta que o projeto Google AI Studio/API tenha quota disponível ou billing habilitado, configure as variáveis Gemini em `.env.local` e reinicie `pnpm dev`.
 
-Checkpoint atual: o trabalho está sincronizado até TASK 046. A v0.1-beta já protege tabelas Supabase com RLS validado, expõe health documental no overview e em documentos, mostra prontidão de recuperação/evals e smoke test de busca no overview, permite cadastrar, editar e filtrar fontes com conteúdo bruto, importar arquivos textuais, reprocessar chunks individualmente/em lote, acompanhar a fila de embeddings, buscar trechos com ranking lexical/local, gerar embeddings mock por chunk, preparar embeddings reais via OpenAI, usar recuperação híbrida no chat mock e validar recuperação com evals versionados.
+Checkpoint atual: o trabalho está sincronizado até TASK 047. A v0.1-beta já protege tabelas Supabase com RLS validado, expõe health documental no overview e em documentos, mostra prontidão de recuperação/evals e smoke test de busca no overview, permite cadastrar, editar e filtrar fontes com conteúdo bruto, importar arquivos textuais, reprocessar chunks individualmente/em lote, acompanhar a fila de embeddings, ver provider/modelo/status de embeddings, buscar trechos com ranking lexical/local, gerar embeddings mock por chunk, preparar embeddings reais via OpenAI, usar recuperação híbrida no chat mock e validar recuperação com evals versionados.
 
 ## Segredos
 

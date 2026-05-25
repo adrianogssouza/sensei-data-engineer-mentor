@@ -99,6 +99,7 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - TASK 044 concluída
 - TASK 045 concluída
 - TASK 046 concluída
+- TASK 047 concluída
 - Ambiente local validado
 - Documentação normalizada
 - Fundação Next.js criada
@@ -123,6 +124,7 @@ Tutor pessoal com IA focado em acelerar a transição para Engenharia de Dados.
 - Fundação pgvector/embeddings criada em `document_chunks`, ainda sem geração de embeddings/RAG.
 - Geração local determinística de embeddings implementada para chunks pendentes, ainda sem RAG semântico.
 - Recuperação híbrida lexical + vetorial implementada no chat mock, ainda sem RAG semântico.
+- Provider/modelo/status de embeddings visível em `/workspace/documents`, com geração bloqueada quando o provider configurado estiver indisponível.
 - Observabilidade da recuperação exibida no chat com modo, ranking, contagens lexical/vetorial e termos usados.
 - Eval manual de recuperação implementado para validar o topo do ranking híbrido.
 - Dataset versionado de evals de recuperação implementado e executável pela UI/API.
