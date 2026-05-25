@@ -28,6 +28,8 @@ Checklist de deploy mock-first: `docs/deploy-mock-first.md`.
 
 Relatório do deploy: `docs/deploy-v0.1-alpha.md`.
 
+Documento técnico consolidado: `docs/documento-tecnico-sensei.md`.
+
 ## Demo Local
 
 ```bash
@@ -231,6 +233,7 @@ O schema é single-user/private, com RLS habilitado nas tabelas do app e acesso 
 ```text
 docs/
   arquitetura.md
+  documento-tecnico-sensei.md
   desenvolvimento.md
   log-de-tasks.md
   project-governance/
