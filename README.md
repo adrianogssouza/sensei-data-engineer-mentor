@@ -30,6 +30,8 @@ Relatório do deploy: `docs/deploy-v0.1-alpha.md`.
 
 Documento técnico consolidado: `docs/documento-tecnico-sensei.md`.
 
+Pacote para validar o mentor em ChatGPT Project: `docs/chatgpt-project-sensei/`.
+
 ## Demo Local
 
 ```bash
@@ -233,6 +235,7 @@ O schema é single-user/private, com RLS habilitado nas tabelas do app e acesso 
 ```text
 docs/
   arquitetura.md
+  chatgpt-project-sensei/
   documento-tecnico-sensei.md
   desenvolvimento.md
   log-de-tasks.md
