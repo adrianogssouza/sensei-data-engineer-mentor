@@ -32,6 +32,8 @@ Documento técnico consolidado: `docs/documento-tecnico-sensei.md`.
 
 Pacote para validar o mentor em ChatGPT Project: `docs/chatgpt-project-sensei/`.
 
+Checklist e prompts iniciais do mentor: `docs/chatgpt-project-sensei/07-checklist-configuracao-project.md` e `docs/chatgpt-project-sensei/08-prompts-iniciais.md`.
+
 ## Demo Local
 
 ```bash
